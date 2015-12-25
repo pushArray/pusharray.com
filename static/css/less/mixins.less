@@ -1,0 +1,27 @@
+.transition (@params) {
+  -webkit-transition: @params;
+  -moz-transition: @params;
+  -o-transition: @params;
+  transition: @params;
+}
+
+.translate (@x, @y) {
+  -webkit-transform: translate(@x, @y);
+  -moz-transform: translate(@x, @y);
+  -ms-transform: translate(@x, @y);
+  -o-transform: translate(@x, @y);
+  transform: translate(@x, @y);
+}
+
+.animation (@params) {
+  -webkit-animation: @params;
+  -moz-animation: @params;
+  -o-animation: @params;
+  animation: @params;
+}
+
+.originTransform (@x, @y) {
+  -webkit-transform-origin: @x @y;
+  -ms-transform-origin: @x @y;
+  transform-origin: @x @y;
+}

@@ -1,0 +1,46 @@
+/////////////////
+// Semantic.gs // for LESS: http://lesscss.org/
+/////////////////
+
+// Defaults which you can freely override
+@COLUMN_WIDTH: 60;
+@GUTTER_WIDTH: 20;
+@COLUMNS: 12;
+
+// Utility variable — you should never need to modify this
+@GRID_SYSTEM_WIDTH: (@COLUMN_WIDTH * @COLUMNS) + (@GUTTER_WIDTH * @COLUMNS) * 1px;
+
+// Set @TOTAL_WIDTH to 100% for a fluid layout
+@TOTAL_WIDTH: @GRID_SYSTEM_WIDTH;
+
+//////////
+// GRID //
+//////////
+
+body {
+  width: 100%;
+  .clearfix;
+}
+
+.row(@COLUMNS:@COLUMNS) {
+  display: block;
+  width: @TOTAL_WIDTH * ((@GUTTER_WIDTH + @GRID_SYSTEM_WIDTH) / @GRID_SYSTEM_WIDTH);
+  margin: 0 @TOTAL_WIDTH * (((@GUTTER_WIDTH * .5) / @GRID_SYSTEM_WIDTH) * -1);
+  .clearfix;
+}
+
+.column(@x,@COLUMNS:@COLUMNS) {
+  min-height: 1px;
+  display: inline;
+  float: left;
+  width: @TOTAL_WIDTH * ((((@GUTTER_WIDTH + @COLUMN_WIDTH) * @x) - @GUTTER_WIDTH) / @GRID_SYSTEM_WIDTH);
+  margin: 0 @TOTAL_WIDTH * ((@GUTTER_WIDTH * .5) / @GRID_SYSTEM_WIDTH);
+}
+
+.push(@offset:1) {
+  margin-left: @TOTAL_WIDTH * (((@GUTTER_WIDTH + @COLUMN_WIDTH) * @offset) / @GRID_SYSTEM_WIDTH) + @TOTAL_WIDTH * ((@GUTTER_WIDTH * .5) / @GRID_SYSTEM_WIDTH);
+}
+
+.pull(@offset:1) {
+  margin-right: @TOTAL_WIDTH * (((@GUTTER_WIDTH + @COLUMN_WIDTH) * @offset) / @GRID_SYSTEM_WIDTH) + @TOTAL_WIDTH * ((@GUTTER_WIDTH * .5) / @GRID_SYSTEM_WIDTH);
+}

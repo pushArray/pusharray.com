@@ -1,0 +1,35 @@
+// 480px 768px 992px 1200px
+
+@media (max-width: 992px) {
+  .hide-mobile {
+    .hidden;
+  }
+
+  .entry {
+    .side {
+      .column(12);
+    }
+
+    .tweet {
+      margin: 15px auto;
+      .user-container {
+        margin: 0;
+        .user-avatar,
+        .username {
+          .hidden;
+        }
+        .screenname,
+        .timestamp {
+          font-size: 1.55em;
+          font-weight: bold;
+          line-height: 2em;
+        }
+        .screenname {
+          color: inherit;
+          margin: 0;
+        }
+      }
+
+    }
+  }
+}

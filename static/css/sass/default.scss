@@ -1,0 +1,171 @@
+$total-width: 100%; // Affects grid system
+
+body.busy {
+  cursor: progress;
+  .entry.busy {
+    display: block;
+  }
+}
+
+.entry.busy {
+  display: none;
+}
+
+.preloader {
+  z-index: 9999;
+  display: block;
+  position: relative;
+  padding: 5px;
+  overflow: hidden;
+  width: 100%;
+  text-align: center;
+  & > * {
+    vertical-align: middle;
+  }
+  .spinner {
+    @include originTransform(50%, 50%);
+    @include animation("spin .6s infinite linear");
+    @include transition("opacity .15s linear");
+    @extend .inline-block;
+    @extend .relative;
+    height: 30px;
+    width: 30px;
+    pointer-events: none;
+     &.visible {
+        opacity: 1;
+     }
+     &:before {
+      @extend .border-box;
+      @extend .inline-block;
+      content: "";
+      width: 30px;
+      height: 30px;
+      border: 5px solid $font-color;
+      border-right-color: transparent;
+      border-left-color: transparent;
+      border-radius: 100%;
+    }
+  }
+
+  .label {
+    margin-left: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+}
+
+.list {
+  @extend .block;
+  @extend .relative;
+  @extend .no-overflow;
+  padding: 0;
+  margin: 0;
+}
+
+.entry {
+  @extend .no-overflow;
+  @extend .row;
+  .side {
+    @include column(7);
+    padding-left: 70px;
+    border-left: 5px solid;
+    overflow: hidden;
+  }
+}
+
+.tweet {
+  @extend .border-box;
+  @extend .clearfix;
+  @extend .block;
+  @extend .relative;
+  min-width: 320px;
+  max-width: 520px;
+  width: 55%;
+  height: auto;
+  margin: 20px 0;
+  .text {
+    @extend .clearfix;
+    @extend .relative;
+    @extend .block;
+    @extend .no-overflow;
+    font-weight: 700;
+    font-style: normal;
+    white-space: normal;
+    padding: 0;
+    margin: 0;
+    .line {
+      @extend .block;
+      @extend .relative;
+      white-space: nowrap;
+      text-align: left;
+      text-transform: uppercase;
+      &.inline {
+        @extend .inline-block;
+        @extend .relative;
+        clear: none;
+      }
+      a {
+        display: inline-block;
+      }
+    }
+  }
+
+  .user-container {
+    @extend .clearfix;
+    @extend .relative;
+    @extend .block;
+    color: inherit;
+    line-height: 20px;
+    margin-bottom: 10px;
+    .user-avatar {
+      @extend .no-overflow;
+      @extend .absolute;
+      margin-right: 15px;
+      width: 48px;
+      height: 48px;
+      top: 0;
+      left: -60px;
+      border-radius: 3px;
+      background: no-repeat center;
+      background-size: cover;
+    }
+    .username,
+    .timestamp {
+      @extend .relative;
+      @extend .block;
+    }
+    .username,
+    .screenname {
+      @extend .no-overflow;
+      text-overflow: ellipsis;
+    }
+    .username {
+      font-size: 18px;
+      max-width: 45%;
+      margin-right: 10px;
+    }
+    .screenname {
+      @extend .flex-1;
+      color: rgb(157, 174, 181);
+      font-size: 14px;
+    }
+    .timestamp {
+      @extend .flex-1;
+      text-transform: uppercase;
+      font-size: 14px;
+      text-align: right;
+    }
+  }
+}
+
+.fork-me {
+  z-index: 9999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  border: 0;
+}
