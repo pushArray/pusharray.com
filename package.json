@@ -22,13 +22,13 @@
     "uglify-js": "latest"
   },
   "scripts": {
-    "build-debug": "browserify ./static/js/src/main.ts -p [tsify] > ./static/bin/p5.js -d",
+    "build-debug": "browserify ./static/src/main.ts -p [tsify] > ./static/bin/p5.js -d",
     "build-min": "uglifyjs ./static/bin/p5.js -o ./static/bin/p5.js -c",
     "less": "lessc --clean-css static/css/less/all.less static/bin/p5.css",
     "sass": "node-sass static/css/sass/all.scss static/bin/p5.css --output-style compressed",
-    "lint": "tslint ./static/js/**/*.ts",
+    "lint": "tslint ./static/src/**/*.ts",
     "clean": "rm -rf ./static/bin/*",
     "build": "npm run lint && npm run clean && npm run build-debug && npm run build-min && npm run sass",
-    "watch": "watch \"npm run build-debug\" ./static/js/src/"
+    "watch": "watch \"npm run build-debug\" ./static/src/"
   }
 }

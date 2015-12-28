@@ -1,36 +1,39 @@
 import Template from './template';
-import utils from './utils';
-import {TweetData, TweetMedia, TwitterUser} from './tweet.d';
 import Text from './text';
+import {Word} from './word';
+import {
+  TweetData,
+  TweetMedia
+} from './tweet.d';
 import * as consts from './consts';
+import * as dom from '../utils/dom';
+import * as string from '../utils/string';
 
 export default class Tweet {
   /**
    * Creates and returns container element for tweet line.
    */
   static createLine(): Element {
-    let el = utils.createNode('div');
+    let el = dom.createNode('div');
     el.setAttribute('class', 'line inline');
     return el;
   }
 
   private template_: Template;
   private element_: Element;
-  private lines_: HTMLElement[];
   private linesContainer_: HTMLElement;
   private text_: Text;
+  private lines_: HTMLElement[];
 
   constructor(private data_: TweetData, private parent_: HTMLElement) {
-    this.data_.timestamp = utils.timeAgo(
-      utils.fromTwitterDateTime(this.data_.timestamp)
+    this.data_.timestamp = string.timeAgo(
+      string.fromTwitterDateTime(this.data_.timestamp)
     );
     this.template_ = new Template(this.data_);
     this.element_ = this.createDOM();
     this.linesContainer_ = <HTMLElement>this.element.querySelector('.text');
     this.text_ = new Text(this.data);
-
-    console.log(this.text_.text);
-    console.log(this.text_.words);
+    this.lines_ = [];
   }
 
   get element(): Element {
@@ -45,7 +48,7 @@ export default class Tweet {
    * Creates initial Tweet DOM structure.
    */
   createDOM(): Element {
-    let el = utils.createNode('div', {
+    let el = dom.createNode('div', {
       'class': 'tweet'
     });
     el.innerHTML = this.template_.get();
@@ -55,15 +58,16 @@ export default class Tweet {
   }
 
   renderLines() {
-    if (!this.lines_ || !this.lines_.length) {
+    let lines = this.lines_;
+    let lineCount = lines.length;
+    if (lineCount === 0) {
       return;
     }
-    let lines = this.lines_;
-    let lineCount = this.lines_.length;
     let containerWidth = this.linesContainer_.offsetWidth;
     lines.forEach((line, index) => {
-      line.style.lineHeight =
-        line.style.fontSize = consts.BASE_FONT_SIZE * containerWidth / line.offsetWidth + 'px';
+      let fontSize = consts.BASE_FONT_SIZE * containerWidth / line.offsetWidth + 'px';
+      line.style.lineHeight = fontSize;
+      line.style.fontSize = fontSize;
       line.style.zIndex = (lineCount - index).toString();
       let s = containerWidth / line.offsetWidth;
       if (s !== 1) {
@@ -73,61 +77,62 @@ export default class Tweet {
         let ty = h - s * h;
         line.style.transform = `matrix(${s}, 0, 0, ${s}, ${tx}, ${ty}`;
       }
-      line.setAttribute('class', 'line');
+      line.classList.remove('inline');
     });
   }
 
-  /**
-   * Renders text line elements. Tweet element has to be part of the DOM.
-   */
-  render() {
-    /*
-    if (this.lines_ && this.lines_.length) {
-      this.renderLines();
-      return;
-    }
+  resetLines() {
+    this.lines_.forEach(line => {
+      if (!line.classList.contains('inline')) {
+        line.classList.add('inline');
+      }
+      line.style.lineHeight = null;
+      line.style.fontSize = null;
+      line.style.transform = null;
+    });
+  }
 
-    let data = this.data_;
+  parseLines() {
     let linesContainer = this.linesContainer_;
     linesContainer.textContent = '';
     linesContainer.style.fontSize = consts.BASE_FONT_SIZE + 'px';
     let lineStr = '';
     let testStr = '';
-    let currLine = Tweet.createLine();
-    this.lines_ = [<HTMLElement>currLine];
+    let currLine = <HTMLElement>Tweet.createLine();
     linesContainer.appendChild(currLine);
-    let wordsArr = text.split(' ');
-    let indexer = 0;
-    console.log(wordsArr.join(' '));
-    for (let i = 0, l = wordsArr.length; i < l; i++) {
-      let word = wordsArr[i];
-      if (!word) {
-        continue;
-      }
-      console.log(word, indexer, indexer + word.length);
-      indexer = indexer + word.length + 1;
-      word = utils.limitString(word, this.maxLineLength_);
-      testStr = lineStr + ' ' + word;
+    this.lines_ = [currLine];
+    for (let i = 0, l = this.text_.words.length; i < l; i++) {
+      let word = this.text_.words[i];
+      let wordText = word.text;
+      let wordHtml = word.html;
+      testStr = lineStr + wordText;
       testStr = testStr.trim();
-      currLine.textContent = testStr;
+      currLine.appendChild(wordHtml);
       let lastWord = i === l - 1;
-      if (testStr.length > this.maxLineLength_) {
-        if (lineStr.length < this.minLineLength_ || lastWord && word.length < this.minLineLength_) {
+      if (testStr.length > consts.MAX_LINE_LENGTH) {
+        if (lineStr.length < consts.MIN_LINE_LENGTH ||
+            lastWord && wordText.length < consts.MIN_LINE_LENGTH) {
           lineStr = testStr;
         } else {
-          currLine.textContent = lineStr;
-          currLine = Tweet.createLine();
-          this.lines_.push(<HTMLElement>currLine);
+          currLine.removeChild(wordHtml);
+          currLine = <HTMLElement>Tweet.createLine();
           linesContainer.appendChild(currLine);
+          this.lines_.push(currLine);
           lineStr = '';
           i--;
-          indexer -= word.length - 1;
         }
       } else {
         lineStr = testStr;
       }
     }
+  }
+
+  render() {
+    if (this.lines_.length == 0) {
+      this.parseLines();
+    } else {
+      this.resetLines();
+    }
     this.renderLines();
-    */
   }
 }

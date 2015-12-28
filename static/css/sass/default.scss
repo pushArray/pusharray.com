@@ -108,8 +108,12 @@ body.busy {
         @extend .relative;
         clear: none;
       }
-      a {
+      & > .word {
         display: inline-block;
+        position: relative;
+        &:not(:last-child) {
+          margin-right: .25em;
+        }
       }
     }
   }

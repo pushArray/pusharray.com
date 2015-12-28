@@ -2,19 +2,22 @@ doctype html
 html(lang="en-US")
   head
     meta(charset='UTF-8')
-    meta(name='viewport', content='width=device-width', initial-scale='1.0', maximum-scale='1.0', user-scalable='no')
+    meta(
+      name='viewport',
+      content='width=device-width',
+      initial-scale='1.0', maximum-scale='1.0',
+      user-scalable='no'
+    )
     meta(name='handheldfriendly', content='true')
     link(rel="stylesheet", href="/bin/p5.css")
     link(rel='shortcut icon', href='favicon.ico')
+    link(
+      href='https://fonts.googleapis.com/css?family=Roboto:400,700'
+      rel='stylesheet'
+      type='text/css'
+    )
     title= pageTitle
-    script(type="text/javascript", src="//ajax.googleapis.com/ajax/libs/webfont/1.5.6/webfont.js")
-    script(type='text/javascript').
-        WebFont.load({
-            google: {
-                families: ['Roboto:400,700:latin']
-            }
-        });
-    script(type='text/javascript' src='/bin/p5.js')
+    script(type='text/javascript' src='/bin/p5.js' defer)
   body.busy
     #list.list
     .entry.busy
