@@ -15,20 +15,24 @@
   },
   "devDependencies": {
     "browserify": "latest",
-    "less-plugin-clean-css": "latest",
+    "jasmine-core": "latest",
+    "karma": "latest",
+    "karma-browserify": "latest",
+    "karma-jasmine": "latest",
+    "karma-phantomjs-launcher": "latest",
     "tsify": "latest",
     "tslint": "latest",
     "typescript": "latest",
     "uglify-js": "latest"
   },
   "scripts": {
-    "build-debug": "browserify ./static/src/main.ts -p [tsify] > ./static/bin/p5.js -d",
-    "build-min": "uglifyjs ./static/bin/p5.js -o ./static/bin/p5.js -c",
-    "less": "lessc --clean-css static/css/less/all.less static/bin/p5.css",
+    "clean": "rm -rf ./static/bin/*",
+    "watch": "watch \"npm run build-debug\" ./static/src/",
     "sass": "node-sass static/css/sass/all.scss static/bin/p5.css --output-style compressed",
     "lint": "tslint ./static/src/**/*.ts",
-    "clean": "rm -rf ./static/bin/*",
-    "build": "npm run lint && npm run clean && npm run build-debug && npm run build-min && npm run sass",
-    "watch": "watch \"npm run build-debug\" ./static/src/"
+    "test": "karma start",
+    "build-debug": "browserify ./static/src/main.ts -p [tsify] > ./static/bin/p5.js -d",
+    "build-min": "uglifyjs ./static/bin/p5.js -o ./static/bin/p5.js -c",
+    "build": "npm run lint && npm test && npm run clean && npm run build-debug && npm run build-min && npm run sass"
   }
 }

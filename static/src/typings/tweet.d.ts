@@ -5,6 +5,19 @@ export interface TweetUrl {
   url: string;
 }
 
+export interface MediaSize {
+  w: number;
+  h: number;
+  resize: string;
+}
+
+export interface MediaSizes {
+  thumb: MediaSize;
+  small: MediaSize;
+  large: MediaSize;
+  medium: MediaSize;
+}
+
 export interface TweetMedia {
   display_url: string;
   expanded_url: string;
@@ -13,7 +26,7 @@ export interface TweetMedia {
   indices: number[];
   media_url: string;
   media_url_https: string;
-  sizes: any;
+  sizes: MediaSizes;
   source_status_id: number;
   source_status_id_str: string;
   source_user_id: number;
@@ -27,23 +40,28 @@ export interface TweetHashtag {
   indices: number[];
 }
 
+export interface TweetSymbol {
+  text: string;
+  indices: number[];
+}
+
 export interface TweetEntity {
   hashtags: TweetHashtag[];
-  symbols: string[];
+  symbols: TweetSymbol[];
   urls: TweetUrl[];
   user_mentions: TweetMention[];
   media?: TweetMedia[];
 }
 
-export interface TweetData {
+export interface BasicTweet {
   id: string;
   username: string;
   url: string;
   timestamp: string;
-  screenName: string;
+  screen_name: string;
   text: string;
-  userImage: string;
-  profileColor: string;
+  user_image: string;
+  profile_color: string;
   entities: TweetEntity;
 }
 

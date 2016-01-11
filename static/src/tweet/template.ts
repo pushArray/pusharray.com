@@ -1,24 +1,21 @@
-import {TweetData} from './tweet.d';
+import {BasicTweet} from '../typings/tweet';
 
 export default class Template {
   /**
    * Returns new instance of {@link Template}.
    */
-  static create(data: TweetData): Template {
+  static create(data: BasicTweet): Template {
     return new Template(data);
   }
 
-  private template_: string;
+  private _template: string;
 
-  constructor(private data_: TweetData) {
-    this.template_ = this.parse();
+  constructor(private _data: BasicTweet) {
+    this._template = this.parse();
   }
 
-  /**
-   * Returns previously parsed string.
-   */
   get(): string {
-    return this.template_;
+    return this._template;
   }
 
   /**
@@ -26,29 +23,29 @@ export default class Template {
    */
   parse(): string {
     let template = `
-      <a href="${this.data_.url}"
+      <a href="${this._data.url}"
          target="_self"
          class="user-container"
-         style="color: ${this.data_.profileColor}">
+         style="color: ${this._data.profile_color}">
         <div class="user-avatar"
-             style="background: ${this.data_.profileColor} url(${this.data_.userImage});">
+             style="background: ${this._data.profile_color} url(${this._data.user_image});">
         </div>
         <div class="flex-box no-wrap">
             <div class="username">
-                ${this.data_.username}
+                ${this._data.username}
             </div>
             <div class="screenname">
-                @${this.data_.screenName}
+                @${this._data.screen_name}
             </div>
             <div class="timestamp">
-                ${this.data_.timestamp}
+                ${this._data.timestamp}
             </div>
         </div>
       </a>
       <div class="text">
-        ${this.data_.text}
+        ${this._data.text}
       </div>`;
-    this.template_ = template.trim();
-    return this.template_;
+    this._template = template.trim();
+    return this._template;
   }
 }

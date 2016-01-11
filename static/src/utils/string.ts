@@ -6,6 +6,21 @@ const htmlCharMap = {
   'lt': '<',
   'gt': '>'
 };
+const months: string[] = [
+  'Jan', 'Feb', 'Mar', 'Apr',
+  'May', 'Jun', 'Jul', 'Aug',
+  'Sep', 'Oct', 'Nov', 'Dec'
+];
+const periods = {
+  decade: 315360000,
+  year: 31536000,
+  month: 2628000,
+  week: 604800,
+  day: 86400,
+  hour: 3600,
+  minute: 60,
+  second: 1
+};
 
 /**
  * Replaces HTML entities with HTML characters.
@@ -27,18 +42,6 @@ export function fromTwitterDateTime(date: string): Date {
  */
 export function timeAgo(date: Date): string {
   const diff = ((new Date().getTime() - date.getTime()) / 1000) >> 0;
-  const periods = {
-    decade: 315360000,
-    year: 31536000,
-    month: 2628000,
-    week: 604800,
-    day: 86400,
-    hour: 3600,
-    minute: 60,
-    second: 1
-  };
-  const months = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   let ret = '';
   if (diff > periods.month) {
     ret = months[date.getMonth()] + ' ' + date.getDate();
@@ -69,4 +72,11 @@ export function limitString(str: string, length: number): string {
     return str;
   }
   return str.substring(0, length - 3) + '...';
+}
+
+/**
+ * Trims leading and trailing underscores from a given string.
+ */
+export function trimUnderscores(str: string): string {
+  return str.replace(/^_+|_+$/g, '');
 }

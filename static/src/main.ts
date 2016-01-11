@@ -1,9 +1,10 @@
+import {BasicTweet} from './typings/tweet';
 import Tweet from './tweet/tweet';
-import {TweetData} from './tweet/tweet.d';
 import * as dom from './utils/dom';
 
 const win = window;
 const doc = document;
+const tweetsPerPage = 10;
 
 let listEl = dom.getId('list');
 let resizeTimer = 0;
@@ -15,11 +16,11 @@ let windowSize = {
   height: win.innerHeight
 };
 
-function request(callback: Function, params: string = null) {
+function request(callback: Function, ...params: string[]) {
   busy = true;
   let url = '/tweets/';
-  if (params) {
-    url += params;
+  if (Array.isArray(params)) {
+    url += params.join('/');
   }
   let xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
@@ -35,13 +36,13 @@ function request(callback: Function, params: string = null) {
 }
 
 function responseHandler(xhr: XMLHttpRequest): void {
-  let data: TweetData[] = JSON.parse(xhr.responseText);
-  if (!data.length) {
+  let data: BasicTweet[] = JSON.parse(xhr.responseText);
+  if (!data || !data.length) {
     win.removeEventListener('scroll', windowScroll);
     return;
   }
   for (let i = 0; i < data.length; i++) {
-    let datum: TweetData = data[i];
+    let datum: BasicTweet = data[i];
     if (!!~idCache.indexOf(datum.id)) {
       continue;
     }
@@ -57,13 +58,13 @@ function responseHandler(xhr: XMLHttpRequest): void {
     tweet.render();
   }
   if (listEl.offsetHeight < win.innerHeight) {
-    request(responseHandler, idCache[idCache.length - 1]);
+    request(responseHandler, idCache[idCache.length - 1], tweetsPerPage.toString(10));
   }
 }
 
 function windowScroll() {
   if (!busy && win.pageYOffset >= (doc.documentElement.scrollHeight - win.innerHeight) * 0.80) {
-    request(responseHandler, idCache[idCache.length - 1]);
+    request(responseHandler, idCache[idCache.length - 1], tweetsPerPage.toString(10));
   }
 }
 
@@ -84,15 +85,8 @@ function windowResize() {
   resizeTimer = setTimeout(renderTweets, 50);
 }
 
-function init() {
-  win.removeEventListener('load', init, false);
+window.onload = function() {
   win.addEventListener('scroll', windowScroll);
   win.addEventListener('resize', windowResize);
-  request(responseHandler);
-}
-
-if (doc.readyState !== 'complete') {
-  win.addEventListener('load', init, false);
-} else {
-  init.call(win);
-}
+  request(responseHandler, tweetsPerPage.toString(10));
+};

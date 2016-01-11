@@ -1,10 +1,7 @@
+import {Word, EntityWord, Entity} from './word';
+import {BasicTweet} from '../typings/tweet';
 import Template from './template';
 import Text from './text';
-import {Word} from './word';
-import {
-  TweetData,
-  TweetMedia
-} from './tweet.d';
 import * as consts from './consts';
 import * as dom from '../utils/dom';
 import * as string from '../utils/string';
@@ -19,29 +16,25 @@ export default class Tweet {
     return el;
   }
 
-  private template_: Template;
-  private element_: Element;
-  private linesContainer_: HTMLElement;
-  private text_: Text;
-  private lines_: HTMLElement[];
+  private _element: Element;
+  private _template: Template;
+  private _linesContainer: HTMLElement;
+  private _text: Text;
+  private _lines: HTMLElement[];
 
-  constructor(private data_: TweetData, private parent_: HTMLElement) {
-    this.data_.timestamp = string.timeAgo(
-      string.fromTwitterDateTime(this.data_.timestamp)
+  constructor(private _data: BasicTweet, private _parent: HTMLElement) {
+    this._data.timestamp = string.timeAgo(
+      string.fromTwitterDateTime(this._data.timestamp)
     );
-    this.template_ = new Template(this.data_);
-    this.element_ = this.createDOM();
-    this.linesContainer_ = <HTMLElement>this.element.querySelector('.text');
-    this.text_ = new Text(this.data);
-    this.lines_ = [];
+    this._template = new Template(this._data);
+    this._element = this.createDOM();
+    this._linesContainer = <HTMLElement>this._element.querySelector('.text');
+    this._text = new Text(_data);
+    this._lines = [];
   }
 
   get element(): Element {
-    return this.element_;
-  }
-
-  get data(): TweetData {
-    return this.data_;
+    return this._element;
   }
 
   /**
@@ -51,19 +44,19 @@ export default class Tweet {
     let el = dom.createNode('div', {
       'class': 'tweet'
     });
-    el.innerHTML = this.template_.get();
-    this.parent_.style.borderColor = this.data_.profileColor;
-    this.parent_.appendChild(el);
+    el.innerHTML = this._template.get();
+    this._parent.style.borderColor = this._data.profile_color;
+    this._parent.appendChild(el);
     return el;
   }
 
   renderLines() {
-    let lines = this.lines_;
+    let lines = this._lines;
     let lineCount = lines.length;
     if (lineCount === 0) {
       return;
     }
-    let containerWidth = this.linesContainer_.offsetWidth;
+    let containerWidth = this._linesContainer.offsetWidth;
     lines.forEach((line, index) => {
       let fontSize = consts.BASE_FONT_SIZE * containerWidth / line.offsetWidth + 'px';
       line.style.lineHeight = fontSize;
@@ -82,7 +75,7 @@ export default class Tweet {
   }
 
   resetLines() {
-    this.lines_.forEach(line => {
+    this._lines.forEach(line => {
       if (!line.classList.contains('inline')) {
         line.classList.add('inline');
       }
@@ -93,16 +86,19 @@ export default class Tweet {
   }
 
   parseLines() {
-    let linesContainer = this.linesContainer_;
+    let linesContainer = this._linesContainer;
     linesContainer.textContent = '';
     linesContainer.style.fontSize = consts.BASE_FONT_SIZE + 'px';
     let lineStr = '';
     let testStr = '';
     let currLine = <HTMLElement>Tweet.createLine();
     linesContainer.appendChild(currLine);
-    this.lines_ = [currLine];
-    for (let i = 0, l = this.text_.words.length; i < l; i++) {
-      let word = this.text_.words[i];
+    this._lines = [currLine];
+    for (let i = 0, l = this._text.words.length; i < l; i++) {
+      let word = this._text.words[i];
+      if (word instanceof EntityWord && (<EntityWord>word).entity === Entity.Media) {
+        continue;
+      }
       let wordText = word.text;
       let wordHtml = word.html;
       testStr = lineStr + wordText;
@@ -117,7 +113,7 @@ export default class Tweet {
           currLine.removeChild(wordHtml);
           currLine = <HTMLElement>Tweet.createLine();
           linesContainer.appendChild(currLine);
-          this.lines_.push(currLine);
+          this._lines.push(currLine);
           lineStr = '';
           i--;
         }
@@ -128,7 +124,7 @@ export default class Tweet {
   }
 
   render() {
-    if (this.lines_.length == 0) {
+    if (this._lines.length == 0) {
       this.parseLines();
     } else {
       this.resetLines();

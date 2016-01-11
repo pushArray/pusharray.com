@@ -4,43 +4,22 @@ module.exports = function(config) {
     basePath: './',
 
     preprocessors: {
-      'static/js/spec/**/*.spec.js': ['browserify']
+      'static/src/**/*.ts': 'browserify',
+      'static/test/**/*.ts': 'browserify'
     },
 
-    // frameworks to use
-    frameworks: [
-      'browserify',
-      'jasmine'
-    ],
+    frameworks: ['browserify', 'jasmine'],
 
     browserify: {
       debug: true,
-      transform: [
-        'babelify',
-        'browserify-istanbul'
+      plugin: [
+        ['tsify', {target: 'es5'}]
       ]
     },
 
-    // list of files / patterns to load in the browser
-    files: [
-      'static/js/spec/**/*.spec.js'
-    ],
+    files: ['static/test/**/*_spec.ts'],
 
-    // test results reporter to use
-    reporters: [
-      'progress',
-      'coverage'
-    ],
-
-    coverageReporter: {
-      'reporters': [
-        {
-          type: 'text'
-        }, {
-          type: 'text-summary'
-        }
-      ]
-    },
+    reporters: ['progress'],
 
     // web server port
     port: 9876,

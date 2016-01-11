@@ -3,87 +3,61 @@ import * as string from '../utils/string';
 
 export abstract class Word {
 
-  protected html_: HTMLElement;
+  protected _html: HTMLElement;
 
-  constructor(protected text_: string, public startIndex: number, public endIndex: number) {};
+  constructor(protected _text: string, public startIndex: number, public endIndex: number) {};
 
   abstract createHtml(): HTMLElement;
 
   get html() {
-    return this.html_;
+    return this._html;
   }
 
   get text() {
-    return this.text_;
+    return this._text;
   }
 }
 
-export class NormalWord extends  Word {
+export class NormalWord extends Word {
 
-  constructor(protected text_: string, startIndex: number, endIndex: number) {
-    super(text_, startIndex, endIndex);
+  constructor(_text: string, startIndex: number, endIndex: number) {
+    super(_text, startIndex, endIndex);
     this.createHtml();
   }
 
   createHtml(): HTMLElement {
-    this.html_ = dom.createNode('span');
-    this.html_.setAttribute('class', 'word');
-    this.html_.textContent = string.replaceHtmlEntities(this.text_);
+    this._html = dom.createNode('span');
+    this._html.setAttribute('class', 'word');
+    this._html.textContent = string.replaceHtmlEntities(this._text);
     return this.html;
   }
 }
 
-export class UrlWord extends Word {
+export enum Entity {Hashtag, Url, Media, UserMention}
 
-  constructor(
-      protected text_: string,
-      public url: string,
-      public startIndex: number,
-      public endIndex: number
-  ) {
-    super(text_, startIndex, endIndex);
+export class EntityWord extends Word {
+
+  protected _url: string;
+  protected _entity: Entity;
+
+  constructor(text: string, url: string, startIndex: number, endIndex: number, entity: Entity) {
+    super(text, startIndex, endIndex);
+    this._url = url;
+    this._entity = entity;
     this.createHtml();
   }
 
+  get entity(): Entity {
+    return this._entity;
+  }
+
   createHtml(): HTMLElement {
-    this.html_ = dom.createNode('a', {
-      href: this.url
+    this._html = dom.createNode('a', {
+      href: this._url,
+      target: '_blank'
     });
-    this.html_.setAttribute('class', 'word');
-    this.html_.textContent = string.replaceHtmlEntities(this.text_);
-    return this.html_;
-  }
-}
-
-export class MediaWord extends UrlWord {
-  constructor(
-      protected text_: string,
-      public url: string,
-      public startIndex: number,
-      public endIndex: number
-  ) {
-    super(text_, url, startIndex, endIndex);
-  }
-}
-
-export class HashtagWord extends UrlWord {
-  constructor(
-      protected text_: string,
-      public url: string,
-      public startIndex: number,
-      public endIndex: number
-  ) {
-    super(text_, url, startIndex, endIndex);
-  }
-}
-
-export class MentionWord extends UrlWord {
-  constructor(
-      protected text_: string,
-      public url: string,
-      public startIndex: number,
-      public endIndex: number
-  ) {
-    super(text_, url, startIndex, endIndex);
+    this._html.setAttribute('class', 'word');
+    this._html.textContent = string.replaceHtmlEntities(this._text);
+    return this._html;
   }
 }

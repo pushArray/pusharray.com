@@ -1,87 +1,89 @@
 import {
-  TweetData,
+  BasicTweet,
   TweetMedia,
   TweetUrl,
   TweetMention,
   TweetHashtag
-} from './tweet.d';
+} from '../typings/tweet';
 import * as consts from './consts';
 import * as string from '../utils/string';
 import {
   Word,
-  MediaWord,
-  HashtagWord,
-  MentionWord,
-  UrlWord,
-  NormalWord
+  EntityWord,
+  NormalWord,
+  Entity
 } from './word';
 
 export default class Text {
 
-  private words_: Word[];
-  private text_: string;
-  private indices_: number[];
+  private _words: Word[];
+  private _text: string;
+  private _indices: number[];
 
-  constructor(private data_: TweetData) {
+  constructor(private _data: BasicTweet) {
     this.parseText();
     this.parseLinks();
     this.removeEmptyWords();
   }
 
   get words(): Word[] {
-    return this.words_;
+    return this._words;
   }
 
   get text(): string {
-    return this.text_;
+    return this._text;
   }
 
   private parseText() {
-    let text = this.data_.text.replace(/(\n|\r)/gm, ' ').trim();
-    this.text_ = text;
-    this.words_ = [];
-    this.indices_ = [];
+    let text = this._data.text.replace(/(\n|\r)/gm, ' ').trim();
+    this._text = text;
+    this._words = [];
+    this._indices = [];
     let words = text.split(' ');
     let startIndex = 0;
     let endIndex = 0;
     for (let i = 0, l = words.length; i < l; i++) {
       let w: string = words[i];
       endIndex = startIndex + w.length;
-      this.indices_.push(startIndex, endIndex);
+      this._indices.push(startIndex, endIndex);
       let word = new NormalWord(w, startIndex, endIndex);
       startIndex = endIndex + 1;
-      this.words_.push(word);
+      this._words.push(word);
     }
   }
 
   private parseLinks() {
-    let {hashtags, urls, user_mentions: userMentions, media} = this.data_.entities;
+    let {
+        hashtags,
+        urls,
+        media,
+        user_mentions: userMentions
+      } = this._data.entities;
     if (Array.isArray(media)) {
       media.forEach((media: TweetMedia) => {
         let [start, end] = media.indices;
-        let word = new MediaWord(media.display_url, media.expanded_url, start, end);
-        // TODO(logashoff): If words don't overlap insert new word at closest index.
+        let word = new EntityWord(media.display_url, media.expanded_url, start, end, Entity.Media);
         this.replaceWordIfOverlap(word, start, end);
       });
     }
     urls.forEach((url: TweetUrl) => {
       let str = string.limitString(url.display_url, consts.MAX_LINE_LENGTH);
       let [start, end] = url.indices;
-      let word = new UrlWord(str, url.expanded_url, start, end);
+      let word = new EntityWord(str, url.expanded_url, start, end, Entity.Url);
       this.replaceWordIfOverlap(word, start, end);
     });
     userMentions.forEach((mention: TweetMention) => {
       let str = string.limitString('@' + mention.screen_name, consts.MAX_LINE_LENGTH);
       let [start, end] = mention.indices;
       let url = `//twitter.com/${mention.screen_name}`;
-      let word = new MentionWord(str, url, start, end);
+      let word = new EntityWord(str, url, start, end, Entity.UserMention);
       this.replaceWordIfOverlap(word, start, end);
     });
     hashtags.forEach((hash: TweetHashtag) => {
       let str = string.limitString('#' + hash.text, consts.MAX_LINE_LENGTH);
       let [start, end] = hash.indices;
       let url = `//twitter.com/search?q=%23${hash.text}&src=hash`;
-      let word = new HashtagWord(str, url, start, end);
+      let word = new EntityWord(str, url, start, end, Entity.Hashtag);
       this.replaceWordIfOverlap(word, start, end);
     });
   }
@@ -97,10 +99,10 @@ export default class Text {
   }
 
   private removeEmptyWords() {
-    for (let i = 0, l = this.words_.length; i < l; i++) {
-      let word = this.words_[i];
+    for (let i = 0, l = this._words.length; i < l; i++) {
+      let word = this._words[i];
       if (word.text.length === 0) {
-        this.words_.splice(i, 1);
+        this._words.splice(i, 1);
         i--;
         l--;
       }
@@ -110,14 +112,14 @@ export default class Text {
   replaceWord(word: Word, startIndex: number, endIndex: number) {
     let i = this.containsWordAtIndex(startIndex, endIndex);
     if (i > -1) {
-      this.words_.splice(i, 1, word);
+      this._words.splice(i, 1, word);
     }
   }
 
   hasWordOverlap(startIndex: number, endIndex: number): number[] {
-    for (let i = 0, l = this.indices_.length; i < l; i += 2) {
-      let s = this.indices_[i];
-      let e = this.indices_[i + 1];
+    for (let i = 0, l = this._indices.length; i < l; i += 2) {
+      let s = this._indices[i];
+      let e = this._indices[i + 1];
       if (s <= endIndex && startIndex <= e) {
         return [s, e];
       }
@@ -126,8 +128,8 @@ export default class Text {
   }
 
   containsWordAtIndex(startIndex: number, endIndex: number): number {
-    let i = this.indices_.indexOf(startIndex);
-    if (i > -1 && endIndex == this.indices_[i + 1]) {
+    let i = this._indices.indexOf(startIndex);
+    if (i > -1 && endIndex == this._indices[i + 1]) {
       return (i * 0.5) >> 0;
     }
     return -1;

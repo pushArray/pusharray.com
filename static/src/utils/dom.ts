@@ -1,5 +1,9 @@
 const doc = document;
 
+type Attributes = {
+  [attribute: string]: string
+}
+
 /**
  * Queries all elements by specified selector.
  */
@@ -17,7 +21,7 @@ export function getId(id: string): HTMLElement {
 /**
  * Creates HTML element.
  */
-export function createNode(node: string, attrs: {[attribute: string]: string} = null): HTMLElement {
+export function createNode(node: string, attrs: Attributes = null): HTMLElement {
   let nodeEl: HTMLElement = doc.createElement(node);
   for (let attr in attrs) {
     if (attrs.hasOwnProperty(attr)) {
