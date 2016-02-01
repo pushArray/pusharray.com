@@ -4,7 +4,6 @@ module.exports = function(config) {
     basePath: './',
 
     preprocessors: {
-      'static/src/**/*.ts': 'browserify',
       'static/test/**/*.ts': 'browserify'
     },
 
@@ -12,6 +11,13 @@ module.exports = function(config) {
 
     browserify: {
       debug: true,
+      transform: [[
+        'browserify-istanbul', {
+          instrumenterConfig: {
+            embedSource: true
+          }
+        }
+      ]],
       plugin: [
         ['tsify', {target: 'es5'}]
       ]
@@ -19,7 +25,20 @@ module.exports = function(config) {
 
     files: ['static/test/**/*_spec.ts'],
 
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage'],
+
+    coverageReporter: {
+      'reporters': [
+        {
+          type: 'text'
+        }, {
+          type: 'text-summary'
+        }, {
+          type : 'html',
+          dir : 'coverage/'
+        }
+      ]
+    },
 
     // web server port
     port: 9876,

@@ -3,11 +3,17 @@ import * as string from '../utils/string';
 
 export abstract class Word {
 
+  static isEntityWord(word: Word, type: Entity = null): boolean {
+    return word instanceof EntityWord && (type ? (<EntityWord>word).entity === type : true);
+  }
+
   protected _html: HTMLElement;
 
   constructor(protected _text: string, public startIndex: number, public endIndex: number) {};
 
   abstract createHtml(): HTMLElement;
+
+  abstract setColor(color: string): void;
 
   get html() {
     return this._html;
@@ -15,6 +21,10 @@ export abstract class Word {
 
   get text() {
     return this._text;
+  }
+
+  get length() {
+    return this._text.length;
   }
 }
 
@@ -30,6 +40,10 @@ export class NormalWord extends Word {
     this._html.setAttribute('class', 'word');
     this._html.textContent = string.replaceHtmlEntities(this._text);
     return this.html;
+  }
+
+  setColor(color: string) {
+    this._html.style.color = color;
   }
 }
 
@@ -59,5 +73,9 @@ export class EntityWord extends Word {
     this._html.setAttribute('class', 'word');
     this._html.textContent = string.replaceHtmlEntities(this._text);
     return this._html;
+  }
+
+  setColor(color: string) {
+    this._html.style.color = color;
   }
 }

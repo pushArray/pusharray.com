@@ -26,36 +26,9 @@ var (
 	twitterAccessTokenKey    = os.Getenv("TWITTER_ACCESS_TOKEN_KEY")
 	imageMap                 = make(map[string]string)
 	api                      = anaconda.NewTwitterApi(twitterAccessTokenKey, twitterAccessTokenSecret)
-	values                   = url.Values{}
-	instance                 = Twitter{}
+	values                   = &url.Values{}
+	instance                 = &Twitter{}
 )
-
-func getImages(url *string) error {
-	u := *url
-	if imageMap[u] != "" {
-		return nil
-	}
-	urlParts := strings.Split(u, "/")
-	image := urlParts[len(urlParts)-1]
-	imageMap[u] = IMAGE_DIR + image
-	resp, getErr := http.Get(u)
-	if getErr != nil {
-		log.Fatal(getErr)
-		return getErr
-	}
-	defer resp.Body.Close()
-	body, readErr := ioutil.ReadAll(resp.Body)
-	if readErr != nil {
-		log.Fatal(readErr)
-		return readErr
-	}
-	writeErr := ioutil.WriteFile(imageMap[u], body, 0444)
-	if writeErr != nil {
-		log.Fatal(writeErr)
-		return writeErr
-	}
-	return nil
-}
 
 type BasicTweet struct {
 	Id           string            `json:"id"`
@@ -67,6 +40,7 @@ type BasicTweet struct {
 	UserImage    string            `json:"user_image"`
 	ProfileColor string            `json:"profile_color"`
 	Entities     anaconda.Entities `json:"entities"`
+	Protected    bool              `json:"protected"`
 }
 
 type Twitter struct {
@@ -89,6 +63,7 @@ func (t *Twitter) NewBasicTweet(tweet anaconda.Tweet) BasicTweet {
 		UserImage:    imageMap[user.ProfileImageUrlHttps],
 		ProfileColor: "#" + user.ProfileLinkColor,
 		Entities:     at.Entities,
+		Protected:    user.Protected,
 	}
 }
 
@@ -113,7 +88,7 @@ func (t *Twitter) ToBasicTweets(tweets []anaconda.Tweet) (basicTweets []BasicTwe
 }
 
 func (t *Twitter) GetTweets() {
-	t.Tweets, _ = api.GetUserTimeline(values)
+	t.Tweets, _ = api.GetUserTimeline(*values)
 	for _, tweet := range t.Tweets {
 		if tweet.Retweeted {
 			getImages(&tweet.RetweetedStatus.User.ProfileImageUrlHttps)
@@ -159,5 +134,32 @@ func NewTwitter() Twitter {
 	values.Set("include_rts", "true")
 	instance.GetTweets()
 	go instance.PollTweets()
-	return instance
+	return *instance
+}
+
+func getImages(url *string) error {
+	u := *url
+	if imageMap[u] != "" {
+		return nil
+	}
+	urlParts := strings.Split(u, "/")
+	image := urlParts[len(urlParts)-1]
+	imageMap[u] = IMAGE_DIR + image
+	resp, getErr := http.Get(u)
+	defer resp.Body.Close()
+	if getErr != nil {
+		log.Fatal(getErr)
+		return getErr
+	}
+	body, readErr := ioutil.ReadAll(resp.Body)
+	if readErr != nil {
+		log.Fatal(readErr)
+		return readErr
+	}
+	writeErr := ioutil.WriteFile(imageMap[u], body, 0444)
+	if writeErr != nil {
+		log.Fatal(writeErr)
+		return writeErr
+	}
+	return nil
 }

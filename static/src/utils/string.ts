@@ -71,12 +71,5 @@ export function limitString(str: string, length: number): string {
   if (str.length <= length) {
     return str;
   }
-  return str.substring(0, length - 3) + '...';
-}
-
-/**
- * Trims leading and trailing underscores from a given string.
- */
-export function trimUnderscores(str: string): string {
-  return str.replace(/^_+|_+$/g, '');
+  return str.substring(0, length - 3) + '…';
 }

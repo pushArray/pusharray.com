@@ -1,5 +1,5 @@
-import {Tweet, BasicTweet} from './exports';
-import sharedTestData from './shared_test_data';
+import {Tweet, BasicTweet} from '../exports';
+import sharedTestData from '../shared_test_data';
 
 describe('tweet/tweet.ts', () => {
   let tweet: Tweet;

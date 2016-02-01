@@ -1,4 +1,4 @@
-import {createNode} from './exports';
+import {createNode} from '../exports';
 
 describe('utils/dom.ts', () => {
   it('createNode', () => {

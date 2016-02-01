@@ -2,9 +2,8 @@ import {
   replaceHtmlEntities,
   timeAgo,
   limitString,
-  trimUnderscores,
   fromTwitterDateTime
-} from './exports';
+} from '../exports';
 
 describe('utils/string.ts', () => {
   it('replaceHtmlEntities', () => {
@@ -34,16 +33,6 @@ describe('utils/string.ts', () => {
     limitedStr = limitString(str, 17);
     expect(limitedStr).toBe('Lorem ipsum do...');
     expect(limitedStr.length).toBe(17);
-  });
-
-  it('trimUnderscore', () => {
-    runTests('example', '_example', 'example_', '_example_', '____example___');
-    runTests('e_x_a_m_p_l_e', '_e_x_a_m_p_l_e', 'e_x_a_m_p_l_e_', '_e_x_a_m_p_l_e_', '____e_x_a_m_p_l_e___');
-    function runTests(expected: string, ...testStrings: string[]) {
-      testStrings.forEach(value => {
-        expect(trimUnderscores(value)).toBe(expected);
-      });
-    }
   });
 
   it('fromTwitterDateTime', () => {

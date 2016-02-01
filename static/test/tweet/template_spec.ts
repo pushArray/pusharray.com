@@ -1,5 +1,5 @@
-import {Template, BasicTweet} from './exports';
-import sharedTestData from './shared_test_data';
+import {Template, BasicTweet} from '../exports';
+import sharedTestData from '../shared_test_data';
 
 describe('tweet/template.js', () => {
   let tweetData: BasicTweet;

@@ -91,7 +91,7 @@ export default class Text {
   private replaceWordIfOverlap(word: Word, startIndex: number, endIndex: number): boolean {
     let overlap = this.hasWordOverlap(startIndex, endIndex);
     if (overlap.length) {
-      // TODO(logashoff): Merge new word with existing word.
+      // TODO(@logashoff): Merge new word with existing word.
       this.replaceWord(word, overlap[0], overlap[1]);
       return true;
     }

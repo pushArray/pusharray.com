@@ -1,42 +1,28 @@
 import {BasicTweet} from './typings/tweet';
 import Tweet from './tweet/tweet';
+import http from './utils/http';
 import * as dom from './utils/dom';
 
 const win = window;
 const doc = document;
 const tweetsPerPage = 10;
+const baseUrl =  '/tweets';
 
 let listEl = dom.getId('list');
 let resizeTimer = 0;
-let busy = false;
-let tweets: Tweet[] = [];
 let idCache: string[] = [];
+let tweets: Tweet[] = [];
 let windowSize = {
   width: win.innerWidth,
   height: win.innerHeight
 };
 
-function request(callback: Function, ...params: string[]) {
-  busy = true;
-  let url = '/tweets/';
-  if (Array.isArray(params)) {
-    url += params.join('/');
-  }
-  let xhr = new XMLHttpRequest();
-  xhr.open('GET', url, true);
-  xhr.onreadystatechange = function() {
-    if (xhr.status === 200 && xhr.readyState === 4) {
-      busy = false;
-      callback.call(xhr, xhr);
-      doc.body.classList.remove('busy');
-    }
-  };
-  doc.body.classList.add('busy');
-  xhr.send();
+function loadMore() {
+  let url = http.buildUrl(baseUrl, idCache[idCache.length - 1], tweetsPerPage.toString(10));
+  http.get(url, responseHandler);
 }
 
-function responseHandler(xhr: XMLHttpRequest): void {
-  let data: BasicTweet[] = JSON.parse(xhr.responseText);
+function responseHandler(data: any): void {
   if (!data || !data.length) {
     win.removeEventListener('scroll', windowScroll);
     return;
@@ -58,13 +44,14 @@ function responseHandler(xhr: XMLHttpRequest): void {
     tweet.render();
   }
   if (listEl.offsetHeight < win.innerHeight) {
-    request(responseHandler, idCache[idCache.length - 1], tweetsPerPage.toString(10));
+    loadMore();
   }
 }
 
 function windowScroll() {
-  if (!busy && win.pageYOffset >= (doc.documentElement.scrollHeight - win.innerHeight) * 0.80) {
-    request(responseHandler, idCache[idCache.length - 1], tweetsPerPage.toString(10));
+  let threshold = win.pageYOffset >= (doc.documentElement.scrollHeight - win.innerHeight) * 0.80;
+  if (!http.busy && threshold) {
+    loadMore();
   }
 }
 
@@ -85,8 +72,16 @@ function windowResize() {
   resizeTimer = setTimeout(renderTweets, 50);
 }
 
-window.onload = function() {
+function loaded() {
+  win.removeEventListener('load', loaded);
   win.addEventListener('scroll', windowScroll);
   win.addEventListener('resize', windowResize);
-  request(responseHandler, tweetsPerPage.toString(10));
-};
+  http.get(baseUrl + '/10', responseHandler);
+}
+
+if (doc.readyState == 'complete') {
+  loaded();
+} else {
+  win.addEventListener('load', loaded);
+}
+

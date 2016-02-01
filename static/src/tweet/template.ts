@@ -22,6 +22,7 @@ export default class Template {
    * Recreates template string with latest {@link Template#data} changes.
    */
   parse(): string {
+    // TODO(@logashoff): Disable link for private profiles.
     let template = `
       <a href="${this._data.url}"
          target="_self"
