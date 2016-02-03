@@ -1,5 +1,5 @@
 $column-width: 60px;
-$gutter-width: 20px;
+$gutter-width: 0px;
 $columns: 12;
 $grid-system-width: ($column-width * $columns) + ($gutter-width * $columns);
 $total-width: $grid-system-width;

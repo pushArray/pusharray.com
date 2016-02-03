@@ -133,6 +133,7 @@ export class Line {
 
   private _words: Word[];
   private _element: HTMLElement;
+  private _charLength: number = 0;
 
   constructor() {
     this._words = [];
@@ -156,11 +157,7 @@ export class Line {
   }
 
   get charLength(): number {
-    let ret = 0;
-    this._words.forEach(word => {
-      ret += word.length;
-    });
-    return ret;
+    return this._charLength;
   }
 
   get element(): HTMLElement {
@@ -175,6 +172,7 @@ export class Line {
     if (!word) {
       throw new Error('Word has to be defined');
     }
+    this._charLength += word.length;
     this._words.push(word);
   }
 
@@ -182,6 +180,7 @@ export class Line {
     if (!word) {
       throw new Error('Word has to be defined');
     }
+    this._charLength += word.length;
     this._words.unshift(word);
   }
 
@@ -205,6 +204,7 @@ export class Line {
   removeWord(word: Word) {
     let i = this._words.indexOf(word);
     if (i > -1) {
+      this._charLength -= this._words[i].length;
       this._words.splice(i, 1);
     }
   }

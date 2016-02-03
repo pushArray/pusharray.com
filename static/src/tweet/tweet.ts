@@ -4,6 +4,7 @@ import {BasicTweet} from '../typings/tweet';
 import Template from './template';
 import Text from './text';
 import * as consts from './consts';
+import * as color from '../utils/color';
 import * as dom from '../utils/dom';
 import * as string from '../utils/string';
 
@@ -21,7 +22,7 @@ export default class Tweet {
     this._template = new Template(this._data);
     this._element = this.createDOM();
     this._text = new Text(_data);
-    this._lines = new Lines(<HTMLElement>this._element.querySelector('.text'));
+    this._lines = new Lines(<HTMLElement>this._element.querySelector('.line-container'));
   }
 
   get element(): Element {
@@ -36,8 +37,14 @@ export default class Tweet {
       'class': 'tweet'
     });
     el.innerHTML = this._template.get();
-    this._parent.style.borderColor = this._data.profile_color;
-    this._parent.appendChild(el);
+    let p = this._parent;
+    let c = this._data.profile_color;
+    p.style.borderColor = c;
+    p.appendChild(el);
+    let hex = color.fromHexString(c);
+    let rgb = color.hexToRgb(hex);
+    let hsl = color.rgbToHsl(rgb[0], rgb[1], rgb[2]);
+    p.style.color = `hsl(${hsl[0]},100%,50%)`;
     return el;
   }
 
@@ -52,7 +59,6 @@ export default class Tweet {
       let word = words[i];
       if (Word.isEntityWord(word)) {
         let w: EntityWord = <EntityWord>word;
-        w.setColor(this._data.profile_color);
         if (w.entity === Entity.Media) {
           continue;
         }

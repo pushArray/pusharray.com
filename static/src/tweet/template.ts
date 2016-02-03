@@ -44,7 +44,9 @@ export default class Template {
         </div>
       </a>
       <div class="text">
-        ${this._data.text}
+        <div class="line-container">
+          ${this._data.text}
+        </div>
       </div>`;
     this._template = template.trim();
     return this._template;
