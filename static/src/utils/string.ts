@@ -73,3 +73,14 @@ export function limitString(str: string, length: number): string {
   }
   return str.substring(0, length - 3) + '…';
 }
+
+export function extractDomain(url: string): string {
+  let domain: string;
+  if (url.indexOf('://') > -1) {
+    domain = url.split('/')[2];
+  } else {
+    domain = url.split('/')[0];
+  }
+  domain = domain.split(':')[0];
+  return domain;
+}

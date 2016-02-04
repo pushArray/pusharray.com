@@ -14,6 +14,7 @@ export default class Tweet {
   private _template: Template;
   private _text: Text;
   private _lines: Lines;
+  private _hslColor: number[];
 
   constructor(private _data: BasicTweet, private _parent: HTMLElement) {
     this._data.timestamp = string.timeAgo(
@@ -23,6 +24,7 @@ export default class Tweet {
     this._element = this.createDOM();
     this._text = new Text(_data);
     this._lines = new Lines(<HTMLElement>this._element.querySelector('.line-container'));
+    this._hslColor = this.getColor();
   }
 
   get element(): Element {
@@ -36,16 +38,34 @@ export default class Tweet {
     let el = dom.createNode('div', {
       'class': 'tweet'
     });
+    let media = this.getMedia();
+    if (media) {
+      el.style.backgroundImage = `url(${media})`;
+    }
     el.innerHTML = this._template.get();
     let p = this._parent;
-    let c = this._data.profile_color;
-    p.style.borderColor = c;
+    let hsl = this.getColor();
     p.appendChild(el);
+    p.style.color = `hsl(${hsl[0]}, 100%, 50%)`;
+    return el;
+  }
+
+  getColor(): number[] {
+    if (this._hslColor) {
+      return this._hslColor;
+    }
+    let c = this._data.profile_color;
     let hex = color.fromHexString(c);
     let rgb = color.hexToRgb(hex);
-    let hsl = color.rgbToHsl(rgb[0], rgb[1], rgb[2]);
-    p.style.color = `hsl(${hsl[0]},100%,50%)`;
-    return el;
+    return color.rgbToHsl(rgb[0], rgb[1], rgb[2]);
+  }
+
+  getMedia(): string {
+    let media = this._data.entities.media;
+    if (media && media.length) {
+      return media[0].media_url;
+    }
+    return '';
   }
 
   parseLines() {
@@ -59,6 +79,7 @@ export default class Tweet {
       let word = words[i];
       if (Word.isEntityWord(word)) {
         let w: EntityWord = <EntityWord>word;
+        w.setColor(`hsl(${this._hslColor[0]}, 100%, 80%)`);
         if (w.entity === Entity.Media) {
           continue;
         }

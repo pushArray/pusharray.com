@@ -24,28 +24,28 @@ export default class Template {
   parse(): string {
     // TODO(@logashoff): Disable link for private profiles.
     let template = `
-      <a href="${this._data.url}"
-         target="_self"
-         class="user-container"
-         style="color: ${this._data.profile_color}">
-        <div class="user-avatar"
-             style="background: ${this._data.profile_color} url(${this._data.user_image});">
+      <div class="overlay"></div>
+      <div class="text">
+        <div class="line-container">
+          ${this._data.text}
         </div>
-        <div class="flex-box no-wrap">
+      </div>
+      <div class="footer">
+        <div class="card">
+          <div class="avatar"
+               style="background: ${this._data.profile_color} url(${this._data.user_image});">
+          </div>
+          <div class="user">
             <div class="username">
                 ${this._data.username}
             </div>
             <div class="screenname">
                 @${this._data.screen_name}
             </div>
-            <div class="timestamp">
-                ${this._data.timestamp}
-            </div>
+          </div>
         </div>
-      </a>
-      <div class="text">
-        <div class="line-container">
-          ${this._data.text}
+        <div class="timestamp">
+          ${this._data.timestamp}
         </div>
       </div>`;
     this._template = template.trim();

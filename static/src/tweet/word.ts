@@ -67,6 +67,7 @@ export class EntityWord extends Word {
 
   createHtml(): HTMLElement {
     this._html = dom.createNode('a', {
+      title: this._url,
       href: this._url,
       target: '_blank'
     });

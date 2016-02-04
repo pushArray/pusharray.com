@@ -34,7 +34,7 @@ function responseHandler(data: any): void {
     }
     idCache.push(datum.id);
     let sideEl = dom.createNode('div');
-    sideEl.setAttribute('class', 'side right');
+    sideEl.setAttribute('class', 'side');
     let tweet: Tweet = new Tweet(datum, sideEl);
     let entryEl = dom.createNode('div');
     entryEl.setAttribute('class', 'entry');

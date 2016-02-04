@@ -49,7 +49,7 @@ export class Lines {
       let el = line.element;
       this._container.appendChild(el);
       let fontSize = consts.BASE_FONT_SIZE * containerWidth / line.width;
-      el.style.lineHeight = fontSize * 1.15 + 'px';
+      el.style.lineHeight = fontSize + 'px';
       el.style.fontSize = fontSize + 'px';
       el.style.zIndex = (lineCount - index).toString();
       let s = containerWidth / line.width;
@@ -105,6 +105,7 @@ export class Lines {
   }
 
   optimize() {
+    // FIXME(@logashoff): Some words disappear.
     this._lines.forEach((line: Line, index: number) => {
       if (line.charLength < consts.MIN_LINE_LENGTH) {
         this.mergeLines(line, this._lines[index - 1], this._lines[index + 1]);

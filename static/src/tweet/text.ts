@@ -67,7 +67,8 @@ export default class Text {
       });
     }
     urls.forEach((url: TweetUrl) => {
-      let str = string.limitString(url.display_url, consts.MAX_LINE_LENGTH);
+      let str = string.extractDomain(url.expanded_url);
+      str = string.limitString(str, consts.MAX_LINE_LENGTH);
       let [start, end] = url.indices;
       let word = new EntityWord(str, url.expanded_url, start, end, Entity.Url);
       this.replaceWordIfOverlap(word, start, end);
