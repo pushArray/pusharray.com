@@ -5,10 +5,10 @@ import * as dom from './utils/dom';
 
 const win = window;
 const doc = document;
-const tweetsPerPage = 10;
+const itemsPerRequest = 8;
 const baseUrl =  '/tweets';
 
-let listEl = dom.getId('list');
+let columns = dom.queryAll('.columns .column');
 let resizeTimer = 0;
 let idCache: string[] = [];
 let tweets: Tweet[] = [];
@@ -17,9 +17,12 @@ let windowSize = {
   height: win.innerHeight
 };
 
-function loadMore() {
-  let url = http.buildUrl(baseUrl, idCache[idCache.length - 1], tweetsPerPage.toString(10));
-  http.get(url, responseHandler);
+function loadNext() {
+  let id = idCache[idCache.length - 1];
+  if (id) {
+    let url = http.buildUrl(baseUrl, id, itemsPerRequest.toString(10));
+    http.get(url, responseHandler);
+  }
 }
 
 function responseHandler(data: any): void {
@@ -27,31 +30,31 @@ function responseHandler(data: any): void {
     win.removeEventListener('scroll', windowScroll);
     return;
   }
+  let colCount = columns.length;
   for (let i = 0; i < data.length; i++) {
     let datum: BasicTweet = data[i];
     if (!!~idCache.indexOf(datum.id)) {
       continue;
     }
     idCache.push(datum.id);
-    let sideEl = dom.createNode('div');
-    sideEl.setAttribute('class', 'side');
-    let tweet: Tweet = new Tweet(datum, sideEl);
     let entryEl = dom.createNode('div');
     entryEl.setAttribute('class', 'entry');
-    listEl.appendChild(entryEl);
-    entryEl.appendChild(sideEl);
+    let tweet: Tweet = new Tweet(datum, entryEl);
+    columns[i % colCount].appendChild(entryEl);
     tweets.push(tweet);
     tweet.render();
   }
-  if (listEl.offsetHeight < win.innerHeight) {
-    loadMore();
-  }
+
+  // TODO(@logashoff): Based on column container.
+  //if (listEl.offsetHeight < win.innerHeight) {
+  //  loadNext();
+  //}
 }
 
 function windowScroll() {
   let threshold = win.pageYOffset >= (doc.documentElement.scrollHeight - win.innerHeight) * 0.80;
   if (!http.busy && threshold) {
-    loadMore();
+    loadNext();
   }
 }
 
@@ -76,7 +79,7 @@ function loaded() {
   win.removeEventListener('load', loaded);
   win.addEventListener('scroll', windowScroll);
   win.addEventListener('resize', windowResize);
-  http.get(baseUrl + '/10', responseHandler);
+  http.get(`${baseUrl}/${itemsPerRequest}`, responseHandler);
 }
 
 if (doc.readyState == 'complete') {
@@ -84,4 +87,3 @@ if (doc.readyState == 'complete') {
 } else {
   win.addEventListener('load', loaded);
 }
-

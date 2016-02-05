@@ -112,7 +112,7 @@ func (t *Twitter) GetMaxId(maxId string, limit int) (tweets []anaconda.Tweet) {
 			tweet := t.Tweets[i]
 			id := t.GetTweetId(tweet)
 			if id == maxId {
-				if length-i < limit {
+				if length-i <= limit {
 					limit = length - i - 1
 				}
 				min := i + 1

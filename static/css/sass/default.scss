@@ -1,83 +1,70 @@
 $total-width: 100%; // Affects grid system
+$header-height: 60px;
+$spinner-size: 30px;
+
+body {
+  margin-top: $header-height;
+}
 
 body.busy {
   cursor: progress;
-  .entry.busy {
-    display: block;
-  }
-}
-
-.entry.busy {
-  display: none;
-}
-
-.preloader {
-  z-index: 9999;
-  display: block;
-  position: relative;
-  padding: 5px;
-  overflow: hidden;
-  width: 100%;
-  text-align: center;
-  & > * {
-    vertical-align: middle;
-  }
   .spinner {
-    @include originTransform(50%, 50%);
-    @include animation("spin .6s infinite linear");
-    @include transition("opacity .15s linear");
-    @extend .inline-block;
-    @extend .relative;
-    height: 30px;
-    width: 30px;
-    pointer-events: none;
-     &.visible {
-        opacity: 1;
-     }
-     &:before {
-      @extend .border-box;
-      @extend .inline-block;
-      content: "";
-      width: 30px;
-      height: 30px;
-      border: 5px solid $font-color;
-      border-right-color: transparent;
-      border-left-color: transparent;
-      border-radius: 100%;
-    }
-  }
-
-  .label {
-    margin-left: 10px;
-    font-size: 18px;
-    font-weight: 700;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    display: inline-block;
   }
 }
 
-.list {
-  @extend .block;
+header {
+  height: $header-height;
+  background: rgba(0, 0, 0, 0.8);
+  position: fixed;
+  right: 0;
+  left: 0;
+  top: 0;
+  z-index: 10;
+}
+
+.spinner {
+  @include originTransform(50%, 50%);
+  @include animation("spin .6s infinite linear");
+  @include transition("opacity .15s linear");
+  @extend .inline-block;
   @extend .relative;
-  @extend .no-overflow;
-  padding: 0;
-  margin: 0;
+  display: none;
+  position: absolute;
+  pointer-events: none;
+  width: $spinner-size;
+  height: $spinner-size;
+  $offset: $header-height / 2 - $spinner-size / 2;
+  top: $offset;
+  left: $offset;
+   &:before {
+    @extend .border-box;
+    @extend .inline-block;
+    content: "";
+    width: $spinner-size;
+    height: $spinner-size;
+    border: 5px solid;
+    border-right-color: transparent;
+    border-left-color: transparent;
+    border-radius: 100%;
+  }
+}
+
+.columns {
+  .column {
+    @include column(3)
+  }
 }
 
 .entry {
+  @include row();
   @extend .no-overflow;
-  @extend .row;
-  background: rgba(0, 0, 0, .70);
-  .side {
-    overflow: hidden;
-    display: block;
-    position: relative;
-    margin: 0 auto;
-    width: 700px;
-    min-width: 700px;
-  }
+  display: block;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: rgba(0, 0, 0, .80);
+  border-left: 1px solid;
 }
 
 .tweet {
@@ -85,18 +72,29 @@ body.busy {
   @extend .clearfix;
   @extend .block;
   @extend .relative;
-  //background-image: url(http://3.bp.blogspot.com/_uQJlFoekK9A/TP9rgKf2qPI/AAAAAAAAEDc/N9zFVO5hfQw/s1600/earth-3d.gif);
   background-position: 50%;
   background-clip: border-box;
   background-size: cover;
   padding: 30px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   .overlay {
-    background-color: rgba(0, 0, 0, .74);
+    background-color: rgba(0, 0, 0, .8);
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
+  }
+  .text, .footer {
+    @extend .border-box;
+    @extend .block;
+    @extend .relative;
+    width: 100%;
+    min-width: 325px;
+    max-width: 520px;
   }
   .text {
     @extend .clearfix;
@@ -105,8 +103,8 @@ body.busy {
     @extend .no-overflow;
     font-weight: 700;
     white-space: normal;
-    padding: 0 3em 1em;
     text-transform: uppercase;
+    padding: 0 20px;
     a {
       @extend .border-box;
       box-sizing: border-box;
@@ -134,32 +132,30 @@ body.busy {
   }
 
   .footer {
-    color: inherit;
-    line-height: 20px;
     display: flex;
-    padding: 0 3em;
     align-items: center;
-    box-sizing: border-box;
+    color: inherit;
+    padding: 20px 20px 0;
     .card, .timestamp {
       z-index: 1;
     }
     .card {
-      display: inline-block;
+      display: flex;
+      align-items: center;
       padding: 10px;
       border: 1px solid;
+      cursor: pointer;
       .avatar {
         @extend .no-overflow;
         @extend .absolute;
+        display: inline-block;
+        position: relative;
         width: 48px;
         height: 48px;
-        border-radius: 3px;
-        float: none;
-        position: relative;
-        display: inline-block;
       }
       .user {
-        position: relative;
         display: inline-block;
+        position: relative;
         margin-left: 10px;
         .username, .screenname {
           @extend .no-overflow;
@@ -167,6 +163,7 @@ body.busy {
         }
         .username {
           font-size: 18px;
+          font-weight: bold;
         }
         .screenname {
           font-size: 14px;
@@ -182,12 +179,4 @@ body.busy {
       flex: 1;
     }
   }
-}
-
-.fork-me {
-  z-index: 9999;
-  position: fixed;
-  top: 0;
-  left: 0;
-  border: 0;
 }
