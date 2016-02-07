@@ -1,4 +1,5 @@
-const doc = document;
+const body = document.body;
+const classList = body.classList;
 
 class Http {
 
@@ -13,10 +14,11 @@ class Http {
   }
 
   buildUrl(url: string, ...rest: string[]) {
-    return url + '/' + rest.join('/');
+    return `${url}/${rest.join('/')}`;
   }
 
   request(method: string, url: string, callback: Function): XMLHttpRequest {
+    classList.remove('error');
     this._busy = true;
     let xhr = new XMLHttpRequest();
     xhr.open(method, url, true);
@@ -24,10 +26,13 @@ class Http {
       if (xhr.status >= 200 && xhr.status < 300) {
         this._busy = false;
         callback.call(null, JSON.parse(xhr.responseText));
-        doc.body.classList.remove('busy');
+        classList.remove('busy');
       }
     };
-    doc.body.classList.add('busy');
+    xhr.onerror = () => {
+      classList.add('error');
+    };
+    classList.add('busy');
     xhr.send();
     return xhr;
   }

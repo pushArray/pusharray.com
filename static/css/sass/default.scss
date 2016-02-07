@@ -1,21 +1,29 @@
 $total-width: 100%; // Affects grid system
-$header-height: 60px;
-$spinner-size: 30px;
+$progress-height: 4px;
+$header-height: $progress-height;
 
 body {
-  margin-top: $header-height;
-}
-
-body.busy {
-  cursor: progress;
-  .spinner {
-    display: inline-block;
+  &.busy {
+    cursor: progress;
+    .progress {
+      display: block;
+    }
+  }
+  &.error {
+    .progress {
+      background-color: hsla(0, 0%, 80%, 1);
+      & .indeterminate {
+        background-color: hsla(0, 0%, 60%, 1);
+        .line1, .line2 {
+          animation-play-state: paused;
+        }
+      }
+    }
   }
 }
 
 header {
   height: $header-height;
-  background: rgba(0, 0, 0, 0.8);
   position: fixed;
   right: 0;
   left: 0;
@@ -23,47 +31,55 @@ header {
   z-index: 10;
 }
 
-.spinner {
-  @include originTransform(50%, 50%);
-  @include animation("spin .6s infinite linear");
-  @include transition("opacity .15s linear");
-  @extend .inline-block;
+.progress {
+  @extend .no-overflow;
+  @extend .border-box;
   @extend .relative;
   display: none;
-  position: absolute;
-  pointer-events: none;
-  width: $spinner-size;
-  height: $spinner-size;
-  $offset: $header-height / 2 - $spinner-size / 2;
-  top: $offset;
-  left: $offset;
-   &:before {
-    @extend .border-box;
-    @extend .inline-block;
-    content: "";
-    width: $spinner-size;
-    height: $spinner-size;
-    border: 5px solid;
-    border-right-color: transparent;
-    border-left-color: transparent;
-    border-radius: 100%;
+  width: 100%;
+  height: $progress-height;
+  background-color: hsl(185, 100%, 50%);
+  background-clip: padding-box;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+
+  & .indeterminate {
+    background-color: hsla(55, 100%, 50%, 1);
+
+    .line1, .line2 {
+      position: absolute;
+      background-color: inherit;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      will-change: left, right;
+    }
+
+    .line1 {
+      @include animation('indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite');
+    }
+
+    .line2 {
+      @include animation('indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite');
+    }
   }
 }
 
 .columns {
-  .column {
-    @include column(3)
+  .column-group {
+    @include column(6);
+    .column {
+      @include column(6);
+    }
   }
 }
 
 .entry {
   @include row();
   @extend .no-overflow;
-  display: block;
-  position: relative;
-  box-sizing: border-box;
-  overflow: hidden;
-  background: rgba(0, 0, 0, .80);
+  @extend .border-box;
+  @extend .relative;
+  @extend .block;
+  background: rgba(0, 0, 0, .8);
   border-left: 1px solid;
 }
 
@@ -107,7 +123,6 @@ header {
     padding: 0 20px;
     a {
       @extend .border-box;
-      box-sizing: border-box;
       color: inherit;
     }
     .line {
@@ -121,8 +136,8 @@ header {
         clear: none;
       }
       & > .word {
-        display: inline-block;
-        position: relative;
+        @extend .relative;
+        @extend .inline-block;
         text-shadow: 1px 1px #000000;
         &:not(:last-child) {
           margin-right: .25em;
@@ -147,34 +162,35 @@ header {
       cursor: pointer;
       .avatar {
         @extend .no-overflow;
-        @extend .absolute;
-        display: inline-block;
-        position: relative;
+        @extend .inline-block;
+        @extend .relative;
         width: 48px;
         height: 48px;
       }
       .user {
-        display: inline-block;
-        position: relative;
+        @extend .inline-block;
+        @extend .relative;
         margin-left: 10px;
         .username, .screenname {
-          @extend .no-overflow;
           text-overflow: ellipsis;
         }
         .username {
           font-size: 18px;
+          line-height: 18px;
           font-weight: bold;
         }
         .screenname {
           font-size: 14px;
+          line-height: 14px;
+          margin-top: .35em;
         }
       }
     }
     .timestamp {
+      @extend .inline-block;
       text-transform: uppercase;
       font-size: 16px;
       text-align: right;
-      display: inline-block;
       font-weight: bold;
       flex: 1;
     }

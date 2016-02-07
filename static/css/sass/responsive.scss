@@ -1,30 +1,19 @@
-// 480px 768px 992px 1200px
-@media (max-width: 992px) {
-  .hide-mobile {
-    display: none;
-  }
-  .entry {
-    .side {
-      @include column(12);
+@media (max-width: 1300px) {
+  .columns {
+    .column-group {
+      @include column(6);
+      .column {
+        @include column(12);
+      }
     }
-    .tweet {
-      margin: 15px auto;
-      .user-container {
-        margin: 0;
-        .user-avatar,
-        .username {
-          display: none;
-        }
-        .screenname,
-        .timestamp {
-          font-size: 1.55em;
-          font-weight: bold;
-          line-height: 2em;
-        }
-        .screenname {
-          color: inherit;
-          margin: 0;
-        }
+  }
+}
+
+@media (max-width: 650px) {
+  .columns {
+    .column-group {
+      .column {
+        @include column(12);
       }
     }
   }

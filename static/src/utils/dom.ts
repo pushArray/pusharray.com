@@ -4,6 +4,10 @@ type Attributes = {
   [attribute: string]: string
 }
 
+export function query(query: string, element: NodeSelector = doc): NodeSelector {
+  return element.querySelector(query);
+}
+
 /**
  * Queries all elements by specified selector.
  */

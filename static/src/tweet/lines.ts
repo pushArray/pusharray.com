@@ -105,7 +105,6 @@ export class Lines {
   }
 
   optimize() {
-    // FIXME(@logashoff): Some words disappear.
     this._lines.forEach((line: Line, index: number) => {
       if (line.charLength < consts.MIN_LINE_LENGTH) {
         this.mergeLines(line, this._lines[index - 1], this._lines[index + 1]);
@@ -186,10 +185,15 @@ export class Line {
   }
 
   appendLine(line: Line) {
-    line.words.forEach(word => {
-      this.appendWord(word);
-      line.removeWord(word);
-    });
+    for (let i = 0, l = line.length; i < l; i++) {
+      let w = line.getWordAt(i);
+      if (w) {
+        this.appendWord(w);
+        line.removeWord(w);
+        i--;
+        l--;
+      }
+    }
   }
 
   prependLine(line: Line) {
