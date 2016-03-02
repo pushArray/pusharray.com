@@ -1,20 +1,11 @@
 @media (max-width: 1300px) {
-  .columns {
-    .column-group {
-      @include column(6);
-      .column {
-        @include column(12);
-      }
-    }
+  .column.col-main {
+    flex-direction: column;
   }
 }
 
 @media (max-width: 650px) {
-  .columns {
-    .column-group {
-      .column {
-        @include column(12);
-      }
-    }
+  .column.col-group {
+    flex-direction: column;
   }
 }

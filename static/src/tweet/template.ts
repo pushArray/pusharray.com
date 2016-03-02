@@ -33,7 +33,7 @@ export default class Template {
       <div class="footer">
         <div class="card">
           <div class="avatar"
-               style="background: ${this._data.profile_color} url(${this._data.user_image});">
+               style="background-color: ${this._data.profile_color}; background-image: url(${this._data.user_image})">
           </div>
           <div class="user">
             <div class="username">

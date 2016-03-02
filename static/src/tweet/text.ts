@@ -1,3 +1,4 @@
+import * as consts from './consts';
 import {
   BasicTweet,
   TweetMedia,
@@ -5,7 +6,6 @@ import {
   TweetMention,
   TweetHashtag
 } from '../typings/tweet';
-import * as consts from './consts';
 import * as string from '../utils/string';
 import {
   Word,

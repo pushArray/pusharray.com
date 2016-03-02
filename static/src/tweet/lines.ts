@@ -1,5 +1,5 @@
-import * as dom from '../utils/dom';
 import * as consts from './consts';
+import * as dom from '../utils/dom';
 import {Word} from './word';
 
 export class Lines {
@@ -49,7 +49,6 @@ export class Lines {
       let el = line.element;
       this._container.appendChild(el);
       let fontSize = consts.BASE_FONT_SIZE * containerWidth / line.width;
-      el.style.lineHeight = fontSize + 'px';
       el.style.fontSize = fontSize + 'px';
       el.style.zIndex = (lineCount - index).toString();
       let s = containerWidth / line.width;

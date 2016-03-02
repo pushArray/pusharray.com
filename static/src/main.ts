@@ -1,11 +1,11 @@
 import {BasicTweet} from './typings/tweet';
 import Tweet from './tweet/tweet';
-import http from './utils/http';
 import * as dom from './utils/dom';
+import http from './utils/http';
 
 const doc = document;
 const win = window;
-const columns = dom.queryAll('.columns .column');
+const columns = dom.queryAll('.column.list');
 const itemsPerRequest = columns.length * 2;
 const baseUrl = '/tweets';
 const idCache: string[] = [];

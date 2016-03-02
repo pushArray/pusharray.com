@@ -1,12 +1,12 @@
-import {Word, EntityWord, Entity} from './word';
+import * as consts from './consts';
 import {Lines, Line} from './lines';
-import {BasicTweet} from '../typings/tweet';
 import Template from './template';
 import Text from './text';
-import * as consts from './consts';
+import {BasicTweet} from '../typings/tweet';
 import * as color from '../utils/color';
 import * as dom from '../utils/dom';
 import * as string from '../utils/string';
+import {Word, EntityWord, Entity} from './word';
 
 export default class Tweet {
 
@@ -17,7 +17,7 @@ export default class Tweet {
   private _hslColor: number[];
 
   constructor(private _data: BasicTweet, private _parent: HTMLElement) {
-    this._data.timestamp = string.timeAgo(
+    this._data.timestamp = string.getShortDate(
       string.fromTwitterDateTime(this._data.timestamp)
     );
     this._template = new Template(this._data);

@@ -11,16 +11,8 @@ const months: string[] = [
   'May', 'Jun', 'Jul', 'Aug',
   'Sep', 'Oct', 'Nov', 'Dec'
 ];
-const periods = {
-  decade: 315360000,
-  year: 31536000,
-  month: 2628000,
-  week: 604800,
-  day: 86400,
-  hour: 3600,
-  minute: 60,
-  second: 1
-};
+const pn: number[] = [2628000, 604800, 86400, 3600, 60, 1];
+const ps: string[] = ['M', 'w', 'd', 'h', 'm', 's'];
 
 /**
  * Replaces HTML entities with HTML characters.
@@ -40,26 +32,22 @@ export function fromTwitterDateTime(date: string): Date {
  * Returns formatted date object as string.
  * Forked from http://stackoverflow.com/a/1229594
  */
-export function timeAgo(date: Date): string {
+export function getShortDate(date: Date): string {
   const diff = ((new Date().getTime() - date.getTime()) / 1000) >> 0;
   let ret = '';
-  if (diff > periods.month) {
-    ret = months[date.getMonth()] + ' ' + date.getDate();
+  if (diff > pn[0]) {
+    ret = `${months[date.getMonth()]} ${date.getDate()}`;
     if (date.getFullYear() !== new Date().getFullYear()) {
       ret += ', ' + String(date.getFullYear());
     }
   } else {
-    for (let prop in periods) {
-      if (periods.hasOwnProperty(prop)) {
-        let val = periods[prop];
-        if (diff >= val) {
-          let time = (diff / val) >> 0;
-          ret += time + ' ' + (time > 1 ? prop + 's' : prop);
-          break;
-        }
+    for (let i = 0; i < pn.length; i++) {
+      let val = pn[i];
+      if (diff >= val) {
+        ret += (diff / val >> 0) + ps[i];
+        break;
       }
     }
-    ret += ' ago';
   }
   return ret;
 }

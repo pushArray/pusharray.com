@@ -9,12 +9,12 @@ class Http {
     return this._busy;
   }
 
-  get(url: string, callback: Function): XMLHttpRequest {
-    return this.request('GET', url, callback);
-  }
-
   buildUrl(url: string, ...rest: string[]) {
     return `${url}/${rest.join('/')}`;
+  }
+
+  get(url: string, callback: Function): XMLHttpRequest {
+    return this.request('GET', url, callback);
   }
 
   request(method: string, url: string, callback: Function): XMLHttpRequest {

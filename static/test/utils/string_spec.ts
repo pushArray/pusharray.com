@@ -1,6 +1,6 @@
 import {
   replaceHtmlEntities,
-  timeAgo,
+  getShortDate,
   limitString,
   fromTwitterDateTime
 } from '../exports';
@@ -12,7 +12,7 @@ describe('utils/string.ts', () => {
   });
 
   it('timeAgo', () => {
-    expect(timeAgo(new Date(1970, 0, 1))).toBe('Jan 1, 1970');
+    expect(getShortDate(new Date(1970, 0, 1))).toBe('Jan 1, 1970');
   });
 
   it('limitString', () => {
