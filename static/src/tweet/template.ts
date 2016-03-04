@@ -24,7 +24,6 @@ export default class Template {
   parse(): string {
     // TODO(@logashoff): Disable link for private profiles.
     let template = `
-      <div class="overlay"></div>
       <div class="text">
         <div class="line-container">
           ${this._data.text}

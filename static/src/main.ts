@@ -37,10 +37,17 @@ function responseHandler(data: any): void {
       continue;
     }
     idCache.push(datum.id);
-    let entryEl = dom.createNode('div');
-    entryEl.setAttribute('class', 'entry');
-    let tweet: Tweet = new Tweet(datum, entryEl);
-    columns[i % colCount].appendChild(entryEl);
+    let entry = dom.createNode('li');
+    entry.setAttribute('class', 'entry');
+    let bg = dom.createNode('div');
+    bg.setAttribute('class', 'background-overlay');
+    entry.appendChild(bg);
+    let tweet: Tweet = new Tweet(datum, entry);
+    let image = tweet.getMedia();
+    if (image) {
+      bg.style.backgroundImage = `url(${image})`;
+    }
+    columns[i % colCount].appendChild(entry);
     tweets.push(tweet);
     delayRender(tweet);
   }

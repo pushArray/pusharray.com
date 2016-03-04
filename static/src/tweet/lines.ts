@@ -49,15 +49,17 @@ export class Lines {
       let el = line.element;
       this._container.appendChild(el);
       let fontSize = consts.BASE_FONT_SIZE * containerWidth / line.width;
-      el.style.fontSize = fontSize + 'px';
-      el.style.zIndex = (lineCount - index).toString();
+      let style = el.style;
+      style.fontSize = fontSize + 'px';
+      style.lineHeight = fontSize * .77 + 'px';
+      style.zIndex = (lineCount - index).toString();
       let s = containerWidth / line.width;
       if (s !== 1) {
         let w = line.width;
         let h = line.height;
         let tx = s * (containerWidth - w) * 0.5;
         let ty = h - s * h;
-        el.style.transform = `matrix(${s}, 0, 0, ${s}, ${tx}, ${ty}`;
+        style.transform = `matrix(${s}, 0, 0, ${s}, ${tx}, ${ty}`;
       }
       el.classList.remove('inline');
     });

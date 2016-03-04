@@ -38,8 +38,6 @@ header {
   width: 100%;
   height: $progress-height;
   background-color: hsl(185, 100%, 50%);
-  background-clip: padding-box;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
 
   & .indeterminate {
     background-color: hsla(55, 100%, 50%, 1);
@@ -69,24 +67,34 @@ header {
   flex: 1;
   align-items: stretch;
   flex-direction: row;
-
-  .list {
-    flex-direction: column;
-    align-items: stretch;
-
-    .entry {
-      flex: 1;
-    }
-  }
 }
 
-.entry {
-  @extend .no-overflow;
-  @extend .border-box;
-  @extend .relative;
-  @extend .block;
-  background: rgba(0, 0, 0, .8);
-  border-left: 1px solid;
+ul.list {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0;
+  margin: 0;
+
+  li.entry {
+    @extend .no-overflow;
+    @extend .border-box;
+    @extend .relative;
+    @extend .block;
+    border-left: 1px solid;
+    flex: 1;
+
+    .background-overlay {
+      background-position: 50%;
+      background-clip: border-box;
+      background-size: cover;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      opacity: .25;
+    }
+  }
 }
 
 .tweet {
@@ -94,22 +102,12 @@ header {
   @extend .clearfix;
   @extend .block;
   @extend .relative;
-  background-position: 50%;
-  background-clip: border-box;
-  background-size: cover;
+
   padding: 30px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  .overlay {
-    background-color: rgba(0, 0, 0, .8);
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-  }
   .text, .footer {
     @extend .border-box;
     @extend .block;
@@ -136,7 +134,8 @@ header {
       @extend .relative;
       white-space: nowrap;
       text-align: left;
-      line-height: 1.1em;
+      margin: 10px 0;
+
       &.inline {
         @extend .inline-block;
         @extend .relative;
@@ -157,7 +156,7 @@ header {
     display: flex;
     align-items: center;
     color: inherit;
-    padding: 20px 20px 0;
+    padding: 10px 20px 0;
     .card, .timestamp {
       z-index: 1;
     }
@@ -171,9 +170,9 @@ header {
         @extend .relative;
         width: 48px;
         height: 48px;
-        border: 1px solid;
         background-repeat: no-repeat;
         background-position: center;
+        padding: 1px;
       }
       .user {
         @extend .inline-block;

@@ -38,10 +38,6 @@ export default class Tweet {
     let el = dom.createNode('div', {
       'class': 'tweet'
     });
-    let media = this.getMedia();
-    if (media) {
-      el.style.backgroundImage = `url(${media})`;
-    }
     el.innerHTML = this._template.get();
     let p = this._parent;
     let hsl = this.getColor();
