@@ -52,6 +52,15 @@ export function getShortDate(date: Date): string {
   return ret;
 }
 
+export function getFullDate(date: Date): string {
+  let monthDate = date.getDate();
+  let month = months[date.getMonth()];
+  let year = date.getFullYear();
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  return `${monthDate} ${month}, ${year} - ${hours}:${minutes}`;
+}
+
 /**
  * Returns string truncated to the length specified.
  */

@@ -63,6 +63,9 @@ export interface BasicTweet {
   user_image: string;
   profile_color: string;
   entities: TweetEntity;
+  protected: boolean;
+  shortDate?: string;
+  fullDate?: string;
 }
 
 export interface TweetMention {

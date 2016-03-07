@@ -1,12 +1,13 @@
+import './typings/es6-promise/es6-promise.d.ts';
 import {BasicTweet} from './typings/tweet';
 import Tweet from './tweet/tweet';
 import * as dom from './utils/dom';
 import http from './utils/http';
 
-const doc = document;
 const win = window;
+const mainColumn = <HTMLElement>dom.query('.column.col-main');
 const columns = dom.queryAll('.column.list');
-const itemsPerRequest = columns.length * 2;
+const itemsPerRequest = columns.length * 4;
 const baseUrl = '/tweets';
 const idCache: string[] = [];
 const tweets: Tweet[] = [];
@@ -19,63 +20,70 @@ let resizeTimer = 0;
 
 function loadNext() {
   let id = idCache[idCache.length - 1];
+  let url = '';
+  let count = itemsPerRequest.toString(10);
   if (id) {
-    let url = http.buildUrl(baseUrl, id, itemsPerRequest.toString(10));
-    http.get(url, responseHandler);
+    url = http.buildUrl(baseUrl, id, count);
+  } else {
+    url = http.buildUrl(baseUrl, count);
   }
+  http.get(url, responseHandler);
 }
 
 function responseHandler(data: any): void {
-  if (!data || !data.length) {
-    win.removeEventListener('scroll', windowScroll);
-    return;
-  }
-  let colCount = columns.length;
-  for (let i = 0; i < data.length; i++) {
-    let datum: BasicTweet = data[i];
-    if (!!~idCache.indexOf(datum.id)) {
-      continue;
+  if (Array.isArray(data)) {
+    let colCount = columns.length;
+    let pending: Promise<Tweet>[] = [];
+    for (let i = 0; i < data.length; i++) {
+      let datum: BasicTweet = data[i];
+      if (!!~idCache.indexOf(datum.id)) {
+        continue;
+      }
+      idCache.push(datum.id);
+      let entry = dom.createNode('li');
+      entry.setAttribute('class', 'entry');
+      let bg = dom.createNode('div');
+      bg.setAttribute('class', 'background-overlay');
+      entry.appendChild(bg);
+      let tweet: Tweet = new Tweet(datum, entry);
+      let image = tweet.getMedia();
+      if (image) {
+        bg.style.backgroundImage = `url(${image})`;
+      }
+      columns[i % colCount].appendChild(entry);
+      tweets.push(tweet);
+      pending.push(delayRender(tweet));
     }
-    idCache.push(datum.id);
-    let entry = dom.createNode('li');
-    entry.setAttribute('class', 'entry');
-    let bg = dom.createNode('div');
-    bg.setAttribute('class', 'background-overlay');
-    entry.appendChild(bg);
-    let tweet: Tweet = new Tweet(datum, entry);
-    let image = tweet.getMedia();
-    if (image) {
-      bg.style.backgroundImage = `url(${image})`;
-    }
-    columns[i % colCount].appendChild(entry);
-    tweets.push(tweet);
-    delayRender(tweet);
-  }
-
-  let col1 = <HTMLElement>columns[0];
-  if (col1.offsetHeight < win.innerHeight) {
-    loadNext();
+    resizeAfterRender(pending);
   }
 }
 
-function delayRender(tweet: Tweet) {
-  setTimeout(() => tweet.render(), 0);
+function resizeAfterRender(pending: Promise<Tweet>[]) {
+  Promise.all(pending).then((tweet) => {
+    if (mainColumn.offsetHeight < win.innerHeight) {
+      loadNext();
+    }
+  });
 }
 
-function windowScroll() {
-  let threshold = win.pageYOffset >= (doc.documentElement.scrollHeight - win.innerHeight) * 0.80;
-  if (!http.busy && threshold) {
-    loadNext();
-  }
+function delayRender(tweet: Tweet): Promise<Tweet> {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      tweet.render();
+      resolve(tweet);
+    }, 0);
+  });
 }
 
 function renderTweets() {
   let ww = win.innerWidth;
   let wh = win.innerHeight;
   if (windowSize.width !== ww || windowSize.height !== wh) {
+    let pending: Promise<Tweet>[] = [];
     for (let tweet of tweets) {
-      tweet.render();
+      pending.push(delayRender(tweet));
     }
+    resizeAfterRender(pending);
   }
   windowSize.width = ww;
   windowSize.height = wh;
@@ -86,15 +94,5 @@ function windowResize() {
   resizeTimer = setTimeout(renderTweets, 50);
 }
 
-function loaded() {
-  win.removeEventListener('load', loaded);
-  win.addEventListener('scroll', windowScroll);
-  win.addEventListener('resize', windowResize);
-  http.get(`${baseUrl}/${itemsPerRequest * 2 + itemsPerRequest * 0.5}`, responseHandler);
-}
-
-if (doc.readyState == 'complete') {
-  loaded();
-} else {
-  win.addEventListener('load', loaded);
-}
+win.addEventListener('resize', windowResize);
+loadNext();

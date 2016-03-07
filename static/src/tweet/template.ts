@@ -22,31 +22,42 @@ export default class Template {
    * Recreates template string with latest {@link Template#data} changes.
    */
   parse(): string {
-    // TODO(@logashoff): Disable link for private profiles.
-    let template = `
+    let data = this._data;
+    let text = `
       <div class="text">
         <div class="line-container">
-          ${this._data.text}
-        </div>
-      </div>
-      <div class="footer">
-        <div class="card">
-          <div class="avatar"
-               style="background-color: ${this._data.profile_color}; background-image: url(${this._data.user_image})">
-          </div>
-          <div class="user">
-            <div class="username">
-                ${this._data.username}
-            </div>
-            <div class="screenname">
-                @${this._data.screen_name}
-            </div>
-          </div>
-        </div>
-        <div class="timestamp">
-          ${this._data.timestamp}
+          ${data.text}
         </div>
       </div>`;
+    let userContent = `
+      <div class="avatar"
+           style="background-color: ${data.profile_color}; background-image: url(${data.user_image})">
+      </div>
+      <div class="user">
+        <div class="username">
+            ${data.username}
+        </div>
+        <div class="screenname">
+            @${data.screen_name} <span class="timestamp" title="${data.fullDate}">${data.shortDate}</span>
+        </div>
+      </div>`;
+    let user = '';
+    if (data.protected) {
+      user = `
+        <div class="card">
+          ${userContent}
+        </div>`;
+    } else {
+      user = `
+        <a class="card" href="${data.url}" target="_blank">
+          ${userContent}
+        </a>`;
+    }
+    let template = `
+      <div class="header">
+        ${user}
+      </div>
+      ${text}`;
     this._template = template.trim();
     return this._template;
   }

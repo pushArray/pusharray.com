@@ -65,28 +65,36 @@ header {
   display: flex;
   position: relative;
   flex: 1;
-  align-items: stretch;
   flex-direction: row;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 ul.list {
   flex-direction: column;
-  align-items: stretch;
   padding: 0;
   margin: 0;
+  flex: 1;
 
   li.entry {
     @extend .no-overflow;
     @extend .border-box;
     @extend .relative;
     @extend .block;
+
+    padding: 30px 0 40px;
     border-left: 1px solid;
-    flex: 1;
+    width: 100%;
+
+    &:last-child {
+      flex: 1;
+    }
 
     .background-overlay {
       background-position: 50%;
       background-clip: border-box;
       background-size: cover;
+      background-repeat: no-repeat;
       position: absolute;
       left: 0;
       right: 0;
@@ -103,12 +111,17 @@ ul.list {
   @extend .block;
   @extend .relative;
 
-  padding: 30px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  .text, .footer {
+  visibility: hidden;
+
+  &.rendered {
+    visibility: visible;
+  }
+
+  .text, .header {
     @extend .border-box;
     @extend .block;
     @extend .relative;
@@ -124,7 +137,7 @@ ul.list {
     font-weight: 700;
     white-space: normal;
     text-transform: uppercase;
-    padding: 0 20px;
+    padding: 0 15px;
     a {
       @extend .border-box;
       color: inherit;
@@ -152,18 +165,18 @@ ul.list {
     }
   }
 
-  .footer {
+  .header {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     color: inherit;
-    padding: 10px 20px 0;
+    padding: 0 10px 5px;
     .card, .timestamp {
       z-index: 1;
     }
     .card {
       display: flex;
       align-items: center;
-      cursor: pointer;
+      color: inherit;
       .avatar {
         @extend .no-overflow;
         @extend .inline-block;
@@ -188,16 +201,16 @@ ul.list {
         }
         .screenname {
           font-size: 14px;
-          line-height: 20px;
+          line-height: 16px;
         }
       }
     }
     .timestamp {
       @extend .inline-block;
-      font-size: 14px;
-      text-align: right;
-      font-weight: bold;
-      flex: 1;
+      font-size: 12px;
+      line-height: inherit;
+      font-weight: normal;
+      margin-left: 10px;
     }
   }
 }

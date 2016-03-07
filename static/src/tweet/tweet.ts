@@ -17,9 +17,9 @@ export default class Tweet {
   private _hslColor: number[];
 
   constructor(private _data: BasicTweet, private _parent: HTMLElement) {
-    this._data.timestamp = string.getShortDate(
-      string.fromTwitterDateTime(this._data.timestamp)
-    );
+    let date = string.fromTwitterDateTime(_data.timestamp);
+    _data.shortDate = string.getShortDate(date);
+    _data.fullDate = string.getFullDate(date);
     this._template = new Template(this._data);
     this._element = this.createDOM();
     this._text = new Text(_data);
@@ -96,6 +96,11 @@ export default class Tweet {
   }
 
   render() {
+    let el = this._element;
+    let classList = el.classList;
+    if (classList.contains('rendered')) {
+      classList.remove('rendered');
+    }
     let lines = this._lines;
     if (lines.length == 0) {
       this.parseLines();
@@ -103,5 +108,6 @@ export default class Tweet {
       lines.resetHtml();
     }
     lines.render();
+    classList.add('rendered');
   }
 }
