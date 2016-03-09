@@ -29,34 +29,27 @@ export default class Template {
           ${data.text}
         </div>
       </div>`;
-    let userContent = `
-      <div class="avatar"
-           style="background-color: ${data.profile_color}; background-image: url(${data.user_image})">
-      </div>
-      <div class="user">
-        <div class="username">
+    let tweetInfo = `
+      <div class="username">
             ${data.username}
         </div>
-        <div class="screenname">
-            @${data.screen_name} <span class="timestamp" title="${data.fullDate}">${data.shortDate}</span>
-        </div>
-      </div>`;
-    let user = '';
+      <span class="timestamp" title="${data.fullDate}">
+          ${data.shortDate}
+        </span>`;
+    let header = '';
     if (data.protected) {
-      user = `
-        <div class="card">
-          ${userContent}
+      header = `
+        <div class="header">
+          ${tweetInfo}
         </div>`;
     } else {
-      user = `
-        <a class="card" href="${data.url}" target="_blank">
-          ${userContent}
+      header = `
+        <a class="header" href="${data.url}" target="_blank">
+          ${tweetInfo}
         </a>`;
     }
     let template = `
-      <div class="header">
-        ${user}
-      </div>
+      ${header}
       ${text}`;
     this._template = template.trim();
     return this._template;
