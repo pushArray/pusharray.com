@@ -24,12 +24,8 @@ export default class Template {
   parse(): string {
     let data = this._data;
     let text = `
-      <div class="text">
-        <div class="line-container">
-          ${data.text}
-        </div>
-      </div>`;
-    let tweetInfo = `
+      <div class="text"></div>`;
+    let user = `
       <div class="username">
             ${data.username}
         </div>
@@ -40,12 +36,12 @@ export default class Template {
     if (data.protected) {
       header = `
         <div class="header">
-          ${tweetInfo}
+          ${user}
         </div>`;
     } else {
       header = `
         <a class="header" href="${data.url}" target="_blank">
-          ${tweetInfo}
+          ${user}
         </a>`;
     }
     let template = `

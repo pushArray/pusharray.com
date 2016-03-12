@@ -1,5 +1,4 @@
 import * as consts from './consts';
-import {Lines, Line} from './lines';
 import Template from './template';
 import Text from './text';
 import {BasicTweet} from '../typings/tweet';
@@ -13,7 +12,6 @@ export default class Tweet {
   private _element: Element;
   private _template: Template;
   private _text: Text;
-  private _lines: Lines;
   private _hslColor: number[];
 
   constructor(private _data: BasicTweet, private _parent: HTMLElement) {
@@ -22,8 +20,7 @@ export default class Tweet {
     _data.fullDate = string.getFullDate(date);
     this._template = new Template(this._data);
     this._element = this.createDOM();
-    this._text = new Text(_data);
-    this._lines = new Lines(<HTMLElement>this._element.querySelector('.line-container'));
+    this._text = new Text(_data, <HTMLElement>this._element.querySelector('.text'));
     this._hslColor = this.getColor();
   }
 
@@ -40,8 +37,8 @@ export default class Tweet {
     });
     el.innerHTML = this._template.get();
     let p = this._parent;
-    let hsl = this.getColor();
     p.appendChild(el);
+    let hsl = this.getColor();
     p.style.color = `hsl(${hsl[0]}, 100%, 50%)`;
     return el;
   }
@@ -64,50 +61,12 @@ export default class Tweet {
     return '';
   }
 
-  parseLines() {
-    let lines = this._lines;
-    let lineStr = '';
-    let testStr = '';
-    let currLine = new Line();
-    lines.addLine(currLine);
-    let words = this._text.words;
-    for (let i = 0, l = words.length; i < l; i++) {
-      let word = words[i];
-      if (Word.isEntityWord(word)) {
-        let w: EntityWord = <EntityWord>word;
-        w.setColor(`hsl(${this._hslColor[0]}, 100%, 80%)`);
-        if (w.entity === Entity.Media) {
-          continue;
-        }
-      }
-      let wordText = word.text;
-      testStr = lineStr + wordText;
-      if (testStr.length > consts.MAX_LINE_LENGTH) {
-        currLine = new Line();
-        currLine.appendWord(word);
-        lines.addLine(currLine);
-        lineStr = wordText;
-      } else {
-        lineStr = testStr;
-        currLine.appendWord(word);
-      }
-    }
-    lines.optimize();
-  }
-
   render() {
     let el = this._element;
     let classList = el.classList;
     if (classList.contains('rendered')) {
       classList.remove('rendered');
     }
-    let lines = this._lines;
-    if (lines.length == 0) {
-      this.parseLines();
-    } else {
-      lines.resetHtml();
-    }
-    lines.render();
     classList.add('rendered');
   }
 }

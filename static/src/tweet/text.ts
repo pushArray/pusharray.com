@@ -20,7 +20,7 @@ export default class Text {
   private _text: string;
   private _indices: number[];
 
-  constructor(private _data: BasicTweet) {
+  constructor(private _data: BasicTweet, private _container: HTMLElement) {
     this.parseText();
     this.parseLinks();
     this.removeEmptyWords();
