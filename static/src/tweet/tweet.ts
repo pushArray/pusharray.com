@@ -5,7 +5,6 @@ import {BasicTweet} from '../typings/tweet';
 import * as color from '../utils/color';
 import * as dom from '../utils/dom';
 import * as string from '../utils/string';
-import {Word, EntityWord, Entity} from './word';
 
 export default class Tweet {
 
@@ -67,6 +66,9 @@ export default class Tweet {
     if (classList.contains('rendered')) {
       classList.remove('rendered');
     }
+    this._text.render();
+    let hsl = this.getColor();
+    this._text.setLinkColor(`hsl(${hsl[0]}, 100%, 80%)`);
     classList.add('rendered');
   }
 }

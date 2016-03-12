@@ -3,10 +3,6 @@ import * as string from '../utils/string';
 
 export abstract class Word {
 
-  static isEntityWord(word: Word, type: Entity = null): boolean {
-    return word instanceof EntityWord && (type ? (<EntityWord>word).entity === type : true);
-  }
-
   protected _html: HTMLElement;
 
   constructor(protected _text: string, public startIndex: number, public endIndex: number) {};
@@ -28,7 +24,7 @@ export abstract class Word {
   }
 }
 
-export class NormalWord extends Word {
+export class TextWord extends Word {
 
   constructor(_text: string, startIndex: number, endIndex: number) {
     super(_text, startIndex, endIndex);
@@ -47,22 +43,14 @@ export class NormalWord extends Word {
   }
 }
 
-export enum Entity {Hashtag, Url, Media, UserMention}
-
 export class EntityWord extends Word {
 
   protected _url: string;
-  protected _entity: Entity;
 
-  constructor(text: string, url: string, startIndex: number, endIndex: number, entity: Entity) {
+  constructor(text: string, url: string, startIndex: number, endIndex: number) {
     super(text, startIndex, endIndex);
     this._url = url;
-    this._entity = entity;
     this.createHtml();
-  }
-
-  get entity(): Entity {
-    return this._entity;
   }
 
   createHtml(): HTMLElement {
@@ -80,3 +68,5 @@ export class EntityWord extends Word {
     this._html.style.color = color;
   }
 }
+
+export class MediaWord extends EntityWord {}

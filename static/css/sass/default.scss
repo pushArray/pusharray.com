@@ -82,12 +82,9 @@ ul.list {
     @extend .relative;
     @extend .block;
 
-    border-left: 1px solid;
     width: 100%;
-
-    &:last-child {
-      flex: 1;
-    }
+    flex: 1;
+    padding: 15px;
 
     .background-overlay {
       background-position: 50%;
@@ -133,8 +130,12 @@ ul.list {
     @extend .no-overflow;
     font-weight: 700;
     white-space: normal;
-    text-transform: uppercase;
-    padding: 0 30px 30px;
+    padding: 20px;
+    font-size: 24px;
+    line-height: 28px;
+    background-color: rgba(0, 0, 0, 0.20);
+    border-left: 1px solid;
+    text-shadow: 1px 1px #000;
 
     a {
       @extend .border-box;
@@ -155,20 +156,16 @@ ul.list {
       & > .word {
         @extend .relative;
         @extend .inline-block;
-        text-shadow: 1px 1px #000000;
-        &:not(:last-child) {
-          margin-right: .25em;
-        }
       }
     }
   }
 
   .header {
+    cursor: default;
     display: flex;
     align-items: center;
     color: inherit;
-    padding: 30px 10px 20px;
-    cursor: default;
+    padding: 0 0 10px 0;
 
     .username, .timestamp {
       font-size: 16px;
