@@ -1,4 +1,3 @@
-import * as consts from './consts';
 import {
   BasicTweet,
   TweetHashtag,
@@ -26,15 +25,11 @@ export default class Text {
     this.parseText();
   }
 
-  get text(): string {
-    return this._text;
-  }
-
-  private insertWord(word: Word, index: number = 0) {
+  private insertWord(word: Word, index = 0) {
     this._words.splice(index, 0, word);
   }
 
-  private getWordIndex(word: Word, start: number = 0, end: number = 0): number {
+  private getWordIndex(word: Word, start = 0, end = 0): number {
     let i = start + ((end - start) * 0.5) >> 0;
     let w = this._words[i];
     if (!w) {
@@ -52,28 +47,32 @@ export default class Text {
   }
 
   private parseText() {
-    for (let i = 0; i < this._words.length; i++) {
-      let w = this._words[i];
-      let nw = this._words[i + 1];
-      let si = w.startIndex;
-      let ei = w.endIndex;
-      let fi = this._words.length - 1;
-      if (i == 0 && si > 0) {
-        let t = this._text.slice(0, si);
-        let tw = new TextWord(t, 0, si);
-        this._words.splice(i, 0, tw);
-      } else if (i == fi && fi > ei) {
-        let t = this._text.slice(fi, ei);
-        let tw = new TextWord(t, 0, si);
-        this._words.splice(i, 0, tw);
-      } else if (nw) {
-        let nwsi = nw.startIndex;
-        let t = this._text.slice(ei, nwsi);
-        if (t.length) {
-          let tw = new TextWord(t, ei, nwsi);
-          this._words.splice(i + 1, 0, tw);
+    let words = this._words;
+    let text = this._text;
+    if (words.length) {
+      let newText: Word[] = [];
+      let k = 0;
+      let wl = words.length;
+      let l = wl * 2  + 1;
+      let csi = 0;
+      for (let i = 0; i < l; i++) {
+        let word = words[k++];
+        if (!word) {
+          let ei = text.length;
+          newText.push(new TextWord(text.slice(csi, ei), csi, ei));
+          break;
+        } else if (csi !== word.startIndex) {
+          let ei = word.startIndex;
+          newText.push(new TextWord(text.slice(csi, ei), csi, ei), word);
+          i++;
+        } else if (csi == word.startIndex) {
+          newText.push(word);
         }
+        csi = word.endIndex;
       }
+      this._words = newText;
+    } else {
+      words.push(new TextWord(text, 0, text.length));
     }
   }
 
@@ -83,33 +82,44 @@ export default class Text {
       media.forEach((media: TweetMedia) => {
         let [start, end] = media.indices;
         let word = new MediaWord(media.display_url, media.expanded_url, start, end);
-        this.findIndexAndInsert(word);
+        this.addWord(word);
+        if (this._linkColor) {
+          word.setColor(this._linkColor);
+        }
       });
     }
     urls.forEach((url: TweetUrl) => {
       let str = string.extractDomain(url.expanded_url);
-      str = string.limitString(str, consts.MAX_LINE_LENGTH);
       let [start, end] = url.indices;
       let word = new EntityWord(str, url.expanded_url, start, end);
-      this.findIndexAndInsert(word);
+      this.addWord(word);
+      if (this._linkColor) {
+        word.setColor(this._linkColor);
+      }
     });
     userMentions.forEach((mention: TweetMention) => {
-      let str = string.limitString('@' + mention.screen_name, consts.MAX_LINE_LENGTH);
+      let str = `@${mention.screen_name}`;
       let [start, end] = mention.indices;
       let url = `//twitter.com/${mention.screen_name}`;
       let word = new EntityWord(str, url, start, end);
-      this.findIndexAndInsert(word);
+      this.addWord(word);
+      if (this._linkColor) {
+        word.setColor(this._linkColor);
+      }
     });
     hashtags.forEach((hash: TweetHashtag) => {
-      let str = string.limitString('#' + hash.text, consts.MAX_LINE_LENGTH);
+      let str = `#${hash.text}`;
       let [start, end] = hash.indices;
       let url = `//twitter.com/search?q=%23${hash.text}&src=hash`;
       let word = new EntityWord(str, url, start, end);
-      this.findIndexAndInsert(word);
+      this.addWord(word);
+      if (this._linkColor) {
+        word.setColor(this._linkColor);
+      }
     });
   }
 
-  findIndexAndInsert(word: Word) {
+  addWord(word: Word) {
     let i = this.getWordIndex(word, 0, this._words.length);
     this.insertWord(word, i);
   }
@@ -132,6 +142,6 @@ export default class Text {
       if (word instanceof EntityWord) {
         word.setColor(color);
       }
-    })
+    });
   }
 }

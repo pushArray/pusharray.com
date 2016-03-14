@@ -2,13 +2,9 @@ package twitter
 
 import (
 	"github.com/logashoff/anaconda"
-	"io/ioutil"
-	"log"
-	"net/http"
 	"net/url"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -24,7 +20,6 @@ var (
 	twitterConsumerSecret    = os.Getenv("TWITTER_CONSUMER_SECRET")
 	twitterAccessTokenSecret = os.Getenv("TWITTER_ACCESS_TOKEN_SECRET")
 	twitterAccessTokenKey    = os.Getenv("TWITTER_ACCESS_TOKEN_KEY")
-	imageMap                 = make(map[string]string)
 	api                      = anaconda.NewTwitterApi(twitterAccessTokenKey, twitterAccessTokenSecret)
 	values                   = &url.Values{}
 	instance                 = &Twitter{}
@@ -60,7 +55,7 @@ func (t *Twitter) NewBasicTweet(tweet anaconda.Tweet) BasicTweet {
 		Timestamp:    at.CreatedAt,
 		ScreenName:   user.ScreenName,
 		Text:         at.Text,
-		UserImage:    imageMap[user.ProfileImageUrlHttps],
+		UserImage:    user.ProfileImageUrlHttps,
 		ProfileColor: "#" + user.ProfileLinkColor,
 		Entities:     at.Entities,
 		Protected:    user.Protected,
@@ -89,13 +84,6 @@ func (t *Twitter) ToBasicTweets(tweets []anaconda.Tweet) (basicTweets []BasicTwe
 
 func (t *Twitter) GetTweets() {
 	t.Tweets, _ = api.GetUserTimeline(*values)
-	for _, tweet := range t.Tweets {
-		if tweet.Retweeted {
-			getImages(&tweet.RetweetedStatus.User.ProfileImageUrlHttps)
-		} else {
-			getImages(&tweet.User.ProfileImageUrlHttps)
-		}
-	}
 }
 
 func (t *Twitter) PollTweets() {
@@ -135,31 +123,4 @@ func NewTwitter() Twitter {
 	instance.GetTweets()
 	go instance.PollTweets()
 	return *instance
-}
-
-func getImages(url *string) error {
-	u := *url
-	if imageMap[u] != "" {
-		return nil
-	}
-	urlParts := strings.Split(u, "/")
-	image := urlParts[len(urlParts)-1]
-	imageMap[u] = IMAGE_DIR + image
-	resp, getErr := http.Get(u)
-	defer resp.Body.Close()
-	if getErr != nil {
-		log.Fatal(getErr)
-		return getErr
-	}
-	body, readErr := ioutil.ReadAll(resp.Body)
-	if readErr != nil {
-		log.Fatal(readErr)
-		return readErr
-	}
-	writeErr := ioutil.WriteFile(imageMap[u], body, 0444)
-	if writeErr != nil {
-		log.Fatal(writeErr)
-		return writeErr
-	}
-	return nil
 }

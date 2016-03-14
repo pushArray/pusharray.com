@@ -1,4 +1,3 @@
-import * as consts from './consts';
 import Template from './template';
 import Text from './text';
 import {BasicTweet} from '../typings/tweet';

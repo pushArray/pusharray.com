@@ -7,16 +7,10 @@ import http from './utils/http';
 const win = window;
 const mainColumn = <HTMLElement>dom.query('.column.col-main');
 const columns = dom.queryAll('.column.list');
-const itemsPerRequest = columns.length * 4;
+const itemsPerRequest = columns.length * 6;
 const baseUrl = '/tweets';
 const idCache: string[] = [];
 const tweets: Tweet[] = [];
-const windowSize = {
-  width: win.innerWidth,
-  height: win.innerHeight
-};
-
-let resizeTimer = 0;
 
 function loadNext() {
   let id = idCache[idCache.length - 1];
@@ -55,11 +49,13 @@ function responseHandler(data: any): void {
       pending.push(delayRender(tweet));
     }
     resizeAfterRender(pending);
+  } else {
+    win.removeEventListener('scroll', windowScroll);
   }
 }
 
 function resizeAfterRender(pending: Promise<Tweet>[]) {
-  Promise.all(pending).then((tweet) => {
+  Promise.all(pending).then(() => {
     if (mainColumn.offsetHeight < win.innerHeight) {
       loadNext();
     }
@@ -67,7 +63,7 @@ function resizeAfterRender(pending: Promise<Tweet>[]) {
 }
 
 function delayRender(tweet: Tweet): Promise<Tweet> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       tweet.render();
       resolve(tweet);
@@ -75,24 +71,13 @@ function delayRender(tweet: Tweet): Promise<Tweet> {
   });
 }
 
-function renderTweets() {
-  let ww = win.innerWidth;
-  let wh = win.innerHeight;
-  if (windowSize.width !== ww || windowSize.height !== wh) {
-    let pending: Promise<Tweet>[] = [];
-    for (let tweet of tweets) {
-      pending.push(delayRender(tweet));
-    }
-    resizeAfterRender(pending);
+function windowScroll() {
+  let scrollHeight = document.documentElement.scrollHeight;
+  let threshold = win.pageYOffset >= (scrollHeight - win.innerHeight) * 0.80;
+  if (!http.busy && threshold) {
+    loadNext();
   }
-  windowSize.width = ww;
-  windowSize.height = wh;
 }
 
-function windowResize() {
-  clearInterval(resizeTimer);
-  resizeTimer = setTimeout(renderTweets, 50);
-}
-
-win.addEventListener('resize', windowResize);
+win.addEventListener('scroll', windowScroll);
 loadNext();

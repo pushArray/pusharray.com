@@ -82,9 +82,7 @@ ul.list {
     @extend .relative;
     @extend .block;
 
-    width: 100%;
-    flex: 1;
-    padding: 15px;
+    padding: 25px 15px;
 
     .background-overlay {
       background-position: 50%;
@@ -128,10 +126,9 @@ ul.list {
     @extend .relative;
     @extend .block;
     @extend .no-overflow;
-    font-weight: 700;
     white-space: normal;
-    padding: 20px;
-    font-size: 24px;
+    padding: 15px;
+    font-size: 20px;
     line-height: 28px;
     background-color: rgba(0, 0, 0, 0.20);
     border-left: 1px solid;
@@ -162,26 +159,19 @@ ul.list {
 
   .header {
     cursor: default;
-    display: flex;
-    align-items: center;
+    display: inline-block;
+    position: relative;
     color: inherit;
     padding: 0 0 10px 0;
-
-    .username, .timestamp {
-      font-size: 16px;
-      line-height: 22px;
-      color: inherit;
-    }
-
-    .username {
-      font-weight: bold;
-      flex: 1;
-    }
+    line-height: 22px;
+    font-size: 16px;
+    font-weight: 700;
 
     .timestamp {
-      font-size: 14px;
       font-weight: normal;
-      text-align: right;
+      font-size: 14px;
+      line-height: inherit;
+      margin-left: 10px;
     }
   }
 

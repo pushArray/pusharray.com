@@ -26,12 +26,7 @@ export default class Template {
     let text = `
       <div class="text"></div>`;
     let user = `
-      <div class="username">
-            ${data.username}
-        </div>
-      <span class="timestamp" title="${data.fullDate}">
-          ${data.shortDate}
-        </span>`;
+         ${data.username} <span class="timestamp" title="${data.fullDate}">${data.shortDate}</span>`;
     let header = '';
     if (data.protected) {
       header = `
