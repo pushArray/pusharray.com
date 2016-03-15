@@ -33,7 +33,9 @@ export default class Text {
       while (w) {
         if (w.startIndex > word.startIndex) {
           w.insertBefore(word);
-          this._word = word;
+          if (!word.prev) {
+              this._word = word;
+          }
           break;
         } else if (!w.next) {
           w.insertAfter(word);
