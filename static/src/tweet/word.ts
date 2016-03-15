@@ -1,11 +1,14 @@
 import * as dom from '../utils/dom';
+import Node from '../utils/node';
 import * as string from '../utils/string';
 
-export abstract class Word {
+export abstract class Word extends Node {
 
   protected _html: HTMLElement;
 
-  constructor(protected _text: string, public startIndex: number, public endIndex: number) {};
+  constructor(protected _text: string, public startIndex: number, public endIndex: number) {
+    super();
+  };
 
   abstract createHtml(): HTMLElement;
 
