@@ -82,13 +82,12 @@ ul.list {
     @extend .relative;
     @extend .block;
 
-    padding: 25px 15px;
+    padding: 15px;
 
     .background-overlay {
-      background-position: 50%;
       background-clip: border-box;
       background-size: cover;
-      background-repeat: no-repeat;
+      background: no-repeat 50%;
       position: absolute;
       left: 0;
       right: 0;
@@ -110,29 +109,51 @@ ul.list {
   align-items: center;
   justify-content: center;
   visibility: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  background-color: hsla(210, 20%, 15%, 1);
 
   &.rendered {
     visibility: visible;
   }
 
-  .text, .header {
+
+  .text, .media, .header {
     @extend .border-box;
     @extend .block;
     @extend .relative;
-    width: 100%;
+    width: 100%;;
   }
+
+  .media {
+    min-height: 100px;
+    display: none;
+    background-origin: content-box;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center top;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    opacity: .25;
+
+    &.render {
+      display: block;
+    }
+  }
+
+  .header, .text {
+    border-left: 1px solid;
+    text-shadow: 0 1px rgba(0, 0, 0, 0.8);
+  }
+
   .text {
-    @extend .clearfix;
-    @extend .relative;
-    @extend .block;
     @extend .no-overflow;
     white-space: normal;
-    padding: 15px;
-    font-size: 20px;
-    line-height: 28px;
-    background-color: rgba(0, 0, 0, 0.20);
-    border-left: 1px solid;
-    text-shadow: 1px 1px #000;
+    font-size: 18px;
+    line-height: 24px;
+    padding: 20px;
 
     a {
       @extend .border-box;
@@ -158,20 +179,48 @@ ul.list {
   }
 
   .header {
+    display: flex;
     cursor: default;
-    display: inline-block;
-    position: relative;
     color: inherit;
-    padding: 0 0 10px 0;
+    padding: 15px 15px 0;
     line-height: 22px;
     font-size: 16px;
     font-weight: 700;
 
+    .user-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+
+      .user-image {
+        width: 48px;
+        height: 48px;
+
+        display: inline-block;
+        position: relative;
+      }
+
+      .user {
+        display: inline-block;
+        position: relative;
+        margin-left: 10px;
+
+        .username {
+          display: block;
+        }
+
+        .screen-name {
+          display: block;
+          font-size: 12px;
+          font-weight: normal;
+        }
+      }
+    }
+
     .timestamp {
       font-weight: normal;
-      font-size: 14px;
+      font-size: 12px;
       line-height: inherit;
-      margin-left: 10px;
     }
   }
 

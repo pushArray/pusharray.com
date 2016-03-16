@@ -40,10 +40,6 @@ function responseHandler(data: any): void {
       bg.setAttribute('class', 'background-overlay');
       entry.appendChild(bg);
       let tweet: Tweet = new Tweet(datum, entry);
-      let image = tweet.getMedia();
-      if (image) {
-        bg.style.backgroundImage = `url(${image})`;
-      }
       columns[i % colCount].appendChild(entry);
       tweets.push(tweet);
       pending.push(delayRender(tweet));

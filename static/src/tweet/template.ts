@@ -26,7 +26,14 @@ export default class Template {
     let text = `
       <div class="text"></div>`;
     let user = `
-         ${data.username} <span class="timestamp" title="${data.fullDate}">${data.shortDate}</span>`;
+         <div class="user-container">
+            <div class="user-image" style="background-image: url(${data.user_image})"></div>
+            <div class="user">
+              <span class="username">${data.username}</span>
+              <span class="screen-name">@${data.screen_name}</span>
+            </div>
+         </div>
+         <span class="timestamp" title="${data.fullDate}">${data.shortDate}</span>`;
     let header = '';
     if (data.protected) {
       header = `
@@ -40,6 +47,7 @@ export default class Template {
         </a>`;
     }
     let template = `
+      <div class="media"></div>
       ${header}
       ${text}`;
     this._template = template.trim();

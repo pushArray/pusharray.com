@@ -67,7 +67,14 @@ export default class Tweet {
     }
     this._text.render();
     let hsl = this.getColor();
-    this._text.setLinkColor(`hsl(${hsl[0]}, 100%, 80%)`);
+    this._text.setLinkColor(`hsl(${hsl[0]}, 100%, 50%)`);
+    this._text.setTextColor(`hsl(${hsl[0]}, 100%, 70%)`);
+    let image = this.getMedia();
+    if (image) {
+      let bg = <HTMLElement>dom.query('.media', el);
+      bg.classList.add('render');
+      bg.style.backgroundImage = `url(${image})`;
+    }
     classList.add('rendered');
   }
 }
