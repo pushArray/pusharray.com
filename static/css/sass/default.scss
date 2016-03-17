@@ -75,27 +75,18 @@ ul.list {
   padding: 0;
   margin: 0;
   flex: 1;
+}
 
-  li.entry {
-    @extend .no-overflow;
-    @extend .border-box;
-    @extend .relative;
-    @extend .block;
+.box {
+  @extend .no-overflow;
+  @extend .border-box;
+  @extend .relative;
+  @extend .block;
 
-    padding: 15px;
-
-    .background-overlay {
-      background-clip: border-box;
-      background-size: cover;
-      background: no-repeat 50%;
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      opacity: .25;
-    }
-  }
+  background-color: hsla(210, 20%, 15%, 1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  border-left: 1px solid;
+  margin: 10px;
 }
 
 .tweet {
@@ -109,19 +100,16 @@ ul.list {
   align-items: center;
   justify-content: center;
   visibility: hidden;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-  background-color: hsla(210, 20%, 15%, 1);
 
   &.rendered {
     visibility: visible;
   }
 
-
-  .text, .media, .header {
+  .media, .header, .text {
     @extend .border-box;
     @extend .block;
     @extend .relative;
-    width: 100%;;
+    width: 100%;
   }
 
   .media {
@@ -143,16 +131,12 @@ ul.list {
     }
   }
 
-  .header, .text {
-    border-left: 1px solid;
-    text-shadow: 0 1px rgba(0, 0, 0, 0.8);
-  }
-
   .text {
     @extend .no-overflow;
     white-space: normal;
     font-size: 18px;
     line-height: 24px;
+    font-weight: 500;
     padding: 20px;
 
     a {
@@ -182,10 +166,10 @@ ul.list {
     display: flex;
     cursor: default;
     color: inherit;
-    padding: 15px 15px 0;
+    padding: 20px 15px 0;
     line-height: 22px;
     font-size: 16px;
-    font-weight: 700;
+    font-weight: normal;
 
     .user-container {
       flex: 1;
@@ -195,7 +179,9 @@ ul.list {
       .user-image {
         width: 48px;
         height: 48px;
-
+        padding: 1px;
+        background-repeat: no-repeat;
+        background-position: center;
         display: inline-block;
         position: relative;
       }
@@ -207,12 +193,12 @@ ul.list {
 
         .username {
           display: block;
+          font-weight: 500;
         }
 
         .screen-name {
           display: block;
           font-size: 12px;
-          font-weight: normal;
         }
       }
     }

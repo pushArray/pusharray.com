@@ -1,5 +1,7 @@
 import './typings/es6-promise/es6-promise.d.ts';
 import {BasicTweet} from './typings/tweet';
+import Box from './tweet/box';
+import {TweetTemplate} from './tweet/template';
 import Tweet from './tweet/tweet';
 import * as dom from './utils/dom';
 import http from './utils/http';
@@ -34,13 +36,9 @@ function responseHandler(data: any): void {
         continue;
       }
       idCache.push(datum.id);
-      let entry = dom.createNode('li');
-      entry.setAttribute('class', 'entry');
-      let bg = dom.createNode('div');
-      bg.setAttribute('class', 'background-overlay');
-      entry.appendChild(bg);
-      let tweet: Tweet = new Tweet(datum, entry);
-      columns[i % colCount].appendChild(entry);
+      let tweet: Tweet = new Tweet(datum, new TweetTemplate());
+      let box = new Box(tweet);
+      columns[i % colCount].appendChild(box.element);
       tweets.push(tweet);
       pending.push(delayRender(tweet));
     }

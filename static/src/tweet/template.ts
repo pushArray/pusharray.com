@@ -1,18 +1,13 @@
 import {BasicTweet} from '../typings/tweet';
 
-export default class Template {
-  /**
-   * Returns new instance of {@link Template}.
-   */
-  static create(data: BasicTweet): Template {
-    return new Template(data);
-  }
+export interface Template {
+  create(data: any): string;
+  get(): string;
+}
 
-  private _template: string;
+export class TweetTemplate implements Template {
 
-  constructor(private _data: BasicTweet) {
-    this._template = this.parse();
-  }
+  private _template: string = '';
 
   get(): string {
     return this._template;
@@ -21,13 +16,12 @@ export default class Template {
   /**
    * Recreates template string with latest {@link Template#data} changes.
    */
-  parse(): string {
-    let data = this._data;
+  create(data: BasicTweet): string {
     let text = `
       <div class="text"></div>`;
     let user = `
          <div class="user-container">
-            <div class="user-image" style="background-image: url(${data.user_image})"></div>
+            <div class="user-image" style="background-image: url(${data.user_image}); background-color: ${data.profile_color};"></div>
             <div class="user">
               <span class="username">${data.username}</span>
               <span class="screen-name">@${data.screen_name}</span>
@@ -50,7 +44,23 @@ export default class Template {
       <div class="media"></div>
       ${header}
       ${text}`;
-    this._template = template.trim();
+
+    return this._template = template.trim();
+  }
+}
+
+export class BoxTemplate implements Template {
+
+  private _template: string = '';
+
+  get(): string {
     return this._template;
+  }
+
+  create(): string {
+    let template = `
+      <div class="tweet-container"></div>
+    `;
+    return this._template = template;
   }
 }

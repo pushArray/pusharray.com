@@ -1,4 +1,4 @@
-import Template from './template';
+import {Template} from './template';
 import Text from './text';
 import {BasicTweet} from '../typings/tweet';
 import * as color from '../utils/color';
@@ -8,18 +8,15 @@ import * as string from '../utils/string';
 export default class Tweet {
 
   private _element: Element;
-  private _template: Template;
   private _text: Text;
   private _hslColor: number[];
 
-  constructor(private _data: BasicTweet, private _parent: HTMLElement) {
+  constructor(private _data: BasicTweet, private _template: Template) {
     let date = string.fromTwitterDateTime(_data.timestamp);
     _data.shortDate = string.getShortDate(date);
     _data.fullDate = string.getFullDate(date);
-    this._template = new Template(this._data);
     this._element = this.createDOM();
     this._text = new Text(_data, <HTMLElement>this._element.querySelector('.text'));
-    this._hslColor = this.getColor();
   }
 
   get element(): Element {
@@ -30,14 +27,8 @@ export default class Tweet {
    * Creates initial Tweet DOM structure.
    */
   createDOM(): Element {
-    let el = dom.createNode('div', {
-      'class': 'tweet'
-    });
-    el.innerHTML = this._template.get();
-    let p = this._parent;
-    p.appendChild(el);
-    let hsl = this.getColor();
-    p.style.color = `hsl(${hsl[0]}, 100%, 50%)`;
+    let el = dom.createNode('div', {'class': 'tweet'});
+    el.innerHTML = this._template.create(this._data);
     return el;
   }
 
