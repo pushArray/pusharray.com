@@ -1,6 +1,6 @@
 import {Template} from './template';
 import Text from './text';
-import {BasicTweet} from '../typings/tweet';
+import {BasicTweet} from '../typings/tweet.d';
 import * as color from '../utils/color';
 import * as dom from '../utils/dom';
 import * as string from '../utils/string';
@@ -59,7 +59,7 @@ export default class Tweet {
     this._text.render();
     let hsl = this.getColor();
     this._text.setLinkColor(`hsl(${hsl[0]}, 100%, 50%)`);
-    this._text.setTextColor(`hsl(${hsl[0]}, 100%, 70%)`);
+    this._text.setTextColor(`hsl(${hsl[0]}, 70%, 80%)`);
     let image = this.getMedia();
     if (image) {
       let bg = <HTMLElement>dom.query('.media', el);
