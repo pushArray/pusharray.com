@@ -1,24 +1,24 @@
-import {BasicTweet} from '../typings/tweet';
+import {Tweet} from "../data/twitter";
 
 export interface Template {
   create(data: any): string;
   get(): string;
 }
 
-export class TweetTemplate implements Template {
+export class CardTemplate implements Template {
 
-  private _template: string = '';
+  private _template: string;
+
+  constructor(tweet: Tweet) {
+    this._template = this.create(tweet);
+  }
 
   get(): string {
     return this._template;
   }
 
-  /**
-   * Recreates template string with latest {@link Template#data} changes.
-   */
-  create(data: BasicTweet): string {
-    let text = `
-      <div class="text"></div>`;
+  create(tweet: Tweet): string {
+    let data = tweet.data;
     let user = `
          <div class="user-container">
             <div class="user-image" style="background-image: url(${data.user_image}); background-color: ${data.profile_color};"></div>
@@ -40,27 +40,40 @@ export class TweetTemplate implements Template {
           ${user}
         </a>`;
     }
-    let template = `
-      <div class="media"></div>
-      ${header}
-      ${text}`;
 
-    return this._template = template.trim();
+    let tweetBody = `
+      ${header}
+      <div class="text"></div>`;
+
+    return `
+      <div class="media" style="background-image: url(${tweet.getMedia()})"></div>
+      <div class="tweet-container">
+        ${tweetBody}
+      </div>`;
   }
 }
 
-export class BoxTemplate implements Template {
+export class LayoutTemplate implements Template {
 
   private _template: string = '';
+
+  constructor() {
+    this._template = this.create();
+  }
 
   get(): string {
     return this._template;
   }
 
   create(): string {
-    let template = `
-      <div class="tweet-container"></div>
-    `;
-    return this._template = template;
+    return `
+      <div class="column col-group">
+        <ul class="column list col-1"></ul>
+        <ul class="column list col-2"></ul>
+      </div>
+      <div class="column col-group">
+        <ul class="column list col-3"></ul>
+        <ul class="column list col-4"></ul>
+      </div>`;
   }
 }

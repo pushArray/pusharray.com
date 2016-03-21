@@ -2,8 +2,8 @@
   "rules": {
     "class-name": true,
     "comment-format": [true, "check-space"],
-    "indent": [true, "spaces", 2],
-    "max-line-length": 100,
+    "indent": [true, "spaces"],
+    "max-line-length": [true, 100],
     "one-line": [true,
       "check-open-brace",
       "check-whitespace"
@@ -20,14 +20,13 @@
       "check-type",
       "check-module"
     ],
-    "typedef-whitespace": [true,
-      {
-        "call-signature": "nospace",
-        "index-signature": "nospace",
-        "parameter": "nospace",
-        "property-declaration": "nospace",
-        "variable-declaration": "nospace"
-      }],
+    "typedef-whitespace": [true, {
+      "call-signature": "nospace",
+      "index-signature": "nospace",
+      "parameter": "nospace",
+      "property-declaration": "nospace",
+      "variable-declaration": "nospace"
+    }],
     "next-line": [true,
       "check-catch",
       "check-else"

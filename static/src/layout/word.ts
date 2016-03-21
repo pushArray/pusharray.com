@@ -1,8 +1,9 @@
+import {Render} from './render';
 import * as dom from '../utils/dom';
-import Node from '../utils/node';
+import Link from '../utils/link';
 import * as string from '../utils/string';
 
-export abstract class Word extends Node {
+export abstract class Word extends Link implements Render {
 
   protected _html: HTMLElement;
 
@@ -24,6 +25,10 @@ export abstract class Word extends Node {
 
   get length() {
     return this._text.length;
+  }
+
+  render(container: Node): void {
+    container.appendChild(this._html);
   }
 }
 

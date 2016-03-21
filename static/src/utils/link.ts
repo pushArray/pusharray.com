@@ -1,15 +1,15 @@
-export default class Node {
+export default class Link {
 
-  public next: Node;
-  public prev: Node;
+  public next: Link;
+  public prev: Link;
 
-  insertAfter(newNode: Node) {
+  insertAfter(newNode: Link) {
     newNode.prev = this;
     newNode.next = this.next;
     this.next = newNode;
   }
 
-  insertBefore(newNode: Node) {
+  insertBefore(newNode: Link) {
     if (this.prev) {
       this.prev.next = newNode;
     }

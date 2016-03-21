@@ -37,10 +37,9 @@ header {
   display: none;
   width: 100%;
   height: $progress-height;
-  background-color: hsl(185, 100%, 50%);
 
   & .indeterminate {
-    background-color: hsla(55, 100%, 50%, 1);
+    background-color: rgb(109, 189, 255);
 
     .line1, .line2 {
       position: absolute;
@@ -77,44 +76,19 @@ ul.list {
   flex: 1;
 }
 
-.box {
+.card {
   @extend .no-overflow;
   @extend .border-box;
   @extend .relative;
   @extend .block;
 
-  background-color: hsla(210, 20%, 15%, 1);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-  border-left: 1px solid;
+  background-color: rgba(80, 80, 80, 0.15);;
   margin: 10px;
-}
-
-.tweet {
-  @extend .border-box;
-  @extend .clearfix;
-  @extend .block;
-  @extend .relative;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  visibility: hidden;
-
-  &.rendered {
-    visibility: visible;
-  }
-
-  .media, .header, .text {
-    @extend .border-box;
-    @extend .block;
-    @extend .relative;
-    width: 100%;
-  }
+  padding: 25px 15px;
 
   .media {
     min-height: 100px;
-    display: none;
+    display: block;
     background-origin: content-box;
     background-size: cover;
     background-repeat: no-repeat;
@@ -130,6 +104,25 @@ ul.list {
       display: block;
     }
   }
+}
+
+.tweet-container {
+  @extend .border-box;
+  @extend .clearfix;
+  @extend .block;
+  @extend .relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .header, .text {
+    @extend .border-box;
+    @extend .block;
+    @extend .relative;
+    width: 100%;
+  }
 
   .text {
     @extend .no-overflow;
@@ -138,6 +131,9 @@ ul.list {
     line-height: 24px;
     font-weight: 500;
     padding: 20px;
+    background-color: hsla(210, 20%, 15%, 1);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.35);
+    margin-top: 15px;
 
     a {
       @extend .border-box;
@@ -166,7 +162,6 @@ ul.list {
     display: flex;
     cursor: default;
     color: inherit;
-    padding: 20px 15px 0;
     line-height: 22px;
     font-size: 16px;
     font-weight: normal;

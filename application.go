@@ -3,7 +3,6 @@ package main
 import (
 	"./twitter"
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"html/template"
 	"log"
@@ -19,22 +18,7 @@ var (
 	tmplVars = make(map[string]string)
 )
 
-func tweetMaxIdHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	maxId := vars["maxId"]
-	count, _ := strconv.ParseInt(vars["count"], 10, 64)
-	if count == 0 {
-		count = 10
-	}
-	slice := twttr.GetMaxId(maxId, int(count))
-	js, err := json.Marshal(twttr.ToBasicTweets(slice))
-	if err != nil {
-		fmt.Println("Error parsing JSON.")
-	}
-	w.Write(js)
-}
-
-func allTweetsHandler(w http.ResponseWriter, r *http.Request) {
+func tweetsHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	count, _ := strconv.ParseInt(vars["count"], 10, 0)
 	if count == 0 {
@@ -62,10 +46,9 @@ func handleStatic(r *mux.Router, p []string) {
 func main() {
 	tmplVars["Title"] = PAGE_TITLE
 	router := mux.NewRouter()
+	router.Queries("maxId", "count", "userId")
 	router.HandleFunc("/", indexHandler)
-	router.HandleFunc("/tweets/{maxId}/{count}", tweetMaxIdHandler)
-	router.HandleFunc("/tweets/{count}", allTweetsHandler)
-	router.HandleFunc("/tweets/", allTweetsHandler)
+	router.HandleFunc("/tweets", tweetsHandler)
 	http.Handle("/", router)
 	handleStatic(router, []string{"static"})
 	log.Println("Listening at 8080")

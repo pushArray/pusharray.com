@@ -1,24 +1,24 @@
-export interface TweetUrl {
+export type TweetUrl = {
   display_url: string;
   expanded_url: string;
   indices: number[];
   url: string;
 }
 
-export interface MediaSize {
+export type MediaSize = {
   w: number;
   h: number;
   resize: string;
 }
 
-export interface MediaSizes {
+export type MediaSizes = {
   thumb: MediaSize;
   small: MediaSize;
   large: MediaSize;
   medium: MediaSize;
 }
 
-export interface TweetMedia {
+export type TweetMedia = {
   display_url: string;
   expanded_url: string;
   id: number;
@@ -35,17 +35,17 @@ export interface TweetMedia {
   url: string;
 }
 
-export interface TweetHashtag {
+export type TweetHashtag = {
   text: string;
   indices: number[];
 }
 
-export interface TweetSymbol {
+export type TweetSymbol = {
   text: string;
   indices: number[];
 }
 
-export interface TweetEntity {
+export type TweetEntity = {
   hashtags: TweetHashtag[];
   symbols: TweetSymbol[];
   urls: TweetUrl[];
@@ -53,7 +53,7 @@ export interface TweetEntity {
   media?: TweetMedia[];
 }
 
-export interface BasicTweet {
+export type BasicTweet = {
   id: string;
   username: string;
   url: string;
@@ -68,7 +68,7 @@ export interface BasicTweet {
   fullDate?: string;
 }
 
-export interface TweetMention {
+export type TweetMention = {
   id: number;
   id_str: string;
   indices: number[];

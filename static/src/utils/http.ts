@@ -1,41 +1,46 @@
-const body = document.body;
-const classList = body.classList;
+import '../typings/promise.d';
 
-class Http {
+type XhrPromise = {
+  xhr: XMLHttpRequest;
+  promise: Promise<string>;
+}
 
-  private _busy: boolean = false;
+type UrlParams = {
+  [param: string]: string|number
+}
 
-  get busy(): boolean {
-    return this._busy;
+export function buildUrl(url: string, params: UrlParams = null) {
+  if (params) {
+    let urlParams = '';
+    for (let param in params) {
+      if (params.hasOwnProperty(param) && params[param]) {
+        urlParams += `${param}=${params[param]}&`;
+      }
+    }
+    if (urlParams) {
+      url += `?${urlParams}`.substr(0, urlParams.length - 1);
+    }
   }
+  return url;
+}
 
-  buildUrl(url: string, ...rest: string[]) {
-    return `${url}/${rest.join('/')}`;
-  }
+export function get(url: string): XhrPromise {
+  return request('GET', url);
+}
 
-  get(url: string, callback: Function): XMLHttpRequest {
-    return this.request('GET', url, callback);
-  }
-
-  request(method: string, url: string, callback: Function): XMLHttpRequest {
-    classList.remove('error');
-    this._busy = true;
-    let xhr = new XMLHttpRequest();
-    xhr.open(method, url, true);
+export function request(method: string, url: string): XhrPromise {
+  let xhr = new XMLHttpRequest();
+  let promise = new Promise<string>((resolve, reject) => {
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) {
-        this._busy = false;
-        callback.call(null, JSON.parse(xhr.responseText));
-        classList.remove('busy');
+        resolve(xhr.responseText);
       }
     };
     xhr.onerror = () => {
-      classList.add('error');
+      reject(xhr.responseText);
     };
-    classList.add('busy');
-    xhr.send();
-    return xhr;
-  }
+  });
+  xhr.open(method, url, true);
+  xhr.send();
+  return {xhr, promise};
 }
-
-export default new Http();

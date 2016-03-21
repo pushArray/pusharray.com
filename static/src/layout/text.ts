@@ -1,5 +1,6 @@
+import {Render} from './render';
 import {
-  BasicTweet,
+  TweetEntity,
   TweetHashtag,
   TweetMedia,
   TweetMention,
@@ -13,14 +14,13 @@ import {
   Word,
 } from './word';
 
-export default class Text {
+export default class Text implements Render {
 
-  private _text: string;
   private _linkColor: string;
   private _word: Word;
 
-  constructor(private _data: BasicTweet, private _container: HTMLElement) {
-    this._text = this._data.text.replace(/(\n|\r)/gm, ' ').trim();
+  constructor(private _text: string, private _entities: TweetEntity) {
+    this._text = this._text.replace(/(\n|\r)/gm, ' ').trim();
     this.parseEntities();
     this.parseText();
   }
@@ -79,7 +79,7 @@ export default class Text {
   }
 
   private parseEntities() {
-    let {hashtags, urls, media, user_mentions: userMentions} = this._data.entities;
+    let {hashtags, urls, media, user_mentions: userMentions} = this._entities;
     if (Array.isArray(media)) {
       media.forEach((media: TweetMedia) => {
         let [start, end] = media.indices;
@@ -109,18 +109,14 @@ export default class Text {
     });
   }
 
-  render() {
+  render(container: Node): void {
     let w = this._word;
     while (w) {
       if (!(w instanceof MediaWord)) {
-        this._container.appendChild(w.html);
+        container.appendChild(w.html);
       }
       w = <Word>w.next;
     }
-  }
-
-  setTextColor(color: string) {
-    this._container.style.color = color;
   }
 
   setLinkColor(color: string) {
