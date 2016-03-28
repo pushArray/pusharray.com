@@ -1,4 +1,4 @@
-$progress-height: 4px;
+$progress-height: 2px;
 $header-height: $progress-height;
 
 body {
@@ -104,6 +104,20 @@ ul.list {
       display: block;
     }
   }
+
+  &.focused {
+    margin: 50px 10px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+
+    .text {
+      font-size: 16px;
+    }
+
+    .media {
+      display: none;
+    }
+  }
 }
 
 .tweet-container {
@@ -117,11 +131,40 @@ ul.list {
   align-items: center;
   justify-content: center;
 
-  .header, .text {
+  .header, .text, .tweet {
     @extend .border-box;
     @extend .block;
     @extend .relative;
     width: 100%;
+  }
+
+  .timestamp {
+    font-weight: normal;
+    font-size: 14px;
+    line-height: inherit;
+    width: 100%;
+    text-align: right;
+    display: block;
+    position: relative;
+    margin-bottom: 15px;
+  }
+
+  .cluster-button, .tweets-cluster {
+    display: none;
+    position: relative;
+
+    .timestamp {
+      margin-top: 15px;
+    }
+
+    &.visible {
+      display: block;
+    }
+  }
+
+  .cluster-button {
+    margin-top: 20px;
+    cursor: pointer;
   }
 
   .text {
@@ -133,7 +176,6 @@ ul.list {
     padding: 20px;
     background-color: hsla(210, 20%, 15%, 1);
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.35);
-    margin-top: 15px;
 
     a {
       @extend .border-box;
@@ -193,15 +235,9 @@ ul.list {
 
         .screen-name {
           display: block;
-          font-size: 12px;
+          font-size: 14px;
         }
       }
-    }
-
-    .timestamp {
-      font-weight: normal;
-      font-size: 12px;
-      line-height: inherit;
     }
   }
 

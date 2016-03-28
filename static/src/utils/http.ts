@@ -9,7 +9,7 @@ type UrlParams = {
   [param: string]: string|number
 }
 
-export function buildUrl(url: string, params: UrlParams = null) {
+export function buildUrl(url: string, params: UrlParams = null): string {
   if (params) {
     let urlParams = '';
     for (let param in params) {

@@ -1,3 +1,9 @@
+type Period = {
+  length: number;
+  long: string;
+  short: string;
+}
+
 const htmlCharRegExp = /&(nbsp|amp|quot|lt|gt);/g;
 const htmlCharMap = {
   'nbsp': ' ',
@@ -11,8 +17,32 @@ const months: string[] = [
   'May', 'Jun', 'Jul', 'Aug',
   'Sep', 'Oct', 'Nov', 'Dec'
 ];
-const pn: number[] = [2628000, 604800, 86400, 3600, 60, 1];
-const ps: string[] = ['M', 'w', 'd', 'h', 'm', 's'];
+
+const periods: Period[] = [{
+    length: 2628000,
+    short: 'M',
+    long: 'Month'
+  }, {
+    length: 604800,
+    short: 'w',
+    long: 'Week'
+  }, {
+    length: 86400,
+    short: 'd',
+    long: 'Day'
+  }, {
+    length: 3600,
+    short: 'h',
+    long: 'Hour'
+  }, {
+    length: 60,
+    short: 'm',
+    long: 'Minute'
+  }, {
+    length: 1,
+    short: 's',
+    long: 'Second'
+  }];
 
 /**
  * Replaces HTML entities with HTML characters.
@@ -35,16 +65,16 @@ export function fromTwitterDateTime(date: string): Date {
 export function getShortDate(date: Date): string {
   const diff = ((new Date().getTime() - date.getTime()) / 1000) >> 0;
   let ret = '';
-  if (diff > pn[0]) {
-    ret = `${months[date.getMonth()]} ${date.getDate()}`;
+  if (diff > periods[0].length) {
+    ret = `${months[date.getMonth()]}`;
     if (date.getFullYear() !== new Date().getFullYear()) {
-      ret += ', ' + String(date.getFullYear());
+      ret = `${ret} ${String(date.getFullYear())}`;
     }
   } else {
-    for (let i = 0; i < pn.length; i++) {
-      let val = pn[i];
-      if (diff >= val) {
-        ret += (diff / val >> 0) + ps[i];
+    for (let i = 0; i < periods.length; i++) {
+      let period = periods[i];
+      if (diff >= period.length) {
+        ret += (diff / period.length >> 0) + period.short;
         break;
       }
     }

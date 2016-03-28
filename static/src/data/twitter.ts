@@ -70,7 +70,7 @@ export class Tweets extends EventEmitter {
     return this._data;
   }
 
-  private dataHandler(data: string) {
+  protected dataHandler(data: string) {
     this._data = [];
     let tweets: BasicTweet[] = JSON.parse(data);
     let i = 0;
@@ -96,5 +96,52 @@ export class Tweets extends EventEmitter {
       this._xhr = xhr;
       promise.then(this.dataHandler);
     }
+  }
+}
+
+export class Cluster {
+  private _data: Tweet[];
+
+  constructor() {
+    this._data = [];
+  }
+
+  get data(): Tweet[] {
+    return this._data;
+  }
+
+  get(index: number): Tweet {
+    return this._data[index];
+  }
+
+  add(tweet: Tweet) {
+    this._data.push(tweet);
+  }
+}
+
+export class Clusters {
+
+  private _data: Cluster[];
+
+  constructor(private _tweets: Tweets) {
+    this._data = [];
+    this.create(this._tweets);
+  }
+
+  get data(): Cluster[] {
+    return this._data;
+  }
+
+  private create(tweets: Tweets) {
+    let users = {};
+    tweets.data.forEach((tweet: Tweet) => {
+      let user = tweet.data.screen_name;
+      let cluster = users[user] || new Cluster();
+      cluster.add(tweet);
+      if (!users[user]) {
+        this._data.push(cluster);
+        users[user] = cluster;
+      }
+    });
   }
 }

@@ -26,8 +26,7 @@ export class CardTemplate implements Template {
               <span class="username">${data.username}</span>
               <span class="screen-name">@${data.screen_name}</span>
             </div>
-         </div>
-         <span class="timestamp" title="${data.fullDate}">${data.shortDate}</span>`;
+         </div>`;
     let header = '';
     if (data.protected) {
       header = `
@@ -43,7 +42,12 @@ export class CardTemplate implements Template {
 
     let tweetBody = `
       ${header}
-      <div class="text"></div>`;
+      <div class="latest-tweet tweet">
+        <span class="timestamp" title="${data.fullDate}">${data.shortDate}</span>
+        <div class="text"></div>
+      </div>
+      <div class="tweets-cluster tweet"></div>
+      <div class="cluster-button"></div>`;
 
     return `
       <div class="media" style="background-image: url(${tweet.getMedia()})"></div>
