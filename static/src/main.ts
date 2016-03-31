@@ -1,15 +1,13 @@
 import * as twitter from './data/twitter';
 import Card from './layout/card';
-import Layout from './layout/layout';
+import layout from './layout/layout';
 
 const body = document.body;
-const layout = new Layout();
-layout.render(body);
 const tweets = new twitter.Tweets();
 
 function dataHandler() {
-  let clusters = new twitter.Clusters(tweets);
-  clusters.data.forEach((cluster: twitter.Cluster) => {
+  let group = new twitter.Groups(tweets);
+  group.data.forEach((cluster: twitter.Group) => {
     let card = new Card(cluster);
     card.render(layout.getNextColumn());
   });
@@ -18,3 +16,5 @@ function dataHandler() {
 
 tweets.on(twitter.EVENT_LOADED, dataHandler);
 tweets.load();
+
+layout.render(body);

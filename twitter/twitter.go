@@ -12,7 +12,7 @@ const (
 	IMAGE_DIR       = "./static/images/twitter/"
 	POLL_INTERVAL   = 15 * time.Minute
 	TWITTER_USER_ID = 111507370
-	TWEET_COUNT     = 300
+	TWEET_COUNT     = 50
 )
 
 var (

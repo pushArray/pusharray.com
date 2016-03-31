@@ -61,8 +61,8 @@ header {
 }
 
 .column {
+  @extend .relative;
   display: flex;
-  position: relative;
   flex: 1;
   flex-direction: row;
   overflow: hidden;
@@ -81,41 +81,15 @@ ul.list {
   @extend .border-box;
   @extend .relative;
   @extend .block;
-
-  background-color: rgba(80, 80, 80, 0.15);;
+  background-color: rgba(80, 80, 80, 0.15);
   margin: 10px;
-  padding: 25px 15px;
+  padding: 20px 0 0;
 
-  .media {
-    min-height: 100px;
-    display: block;
-    background-origin: content-box;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center top;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    opacity: .25;
-
-    &.render {
-      display: block;
-    }
-  }
-
-  &.focused {
-    margin: 50px 10px;
-    padding-top: 50px;
-    padding-bottom: 50px;
-
-    .text {
-      font-size: 16px;
-    }
-
-    .media {
-      display: none;
+  &.disabled {
+    .media, .tweet-container {
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
     }
   }
 }
@@ -125,79 +99,19 @@ ul.list {
   @extend .clearfix;
   @extend .block;
   @extend .relative;
-
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
 
   .header, .text, .tweet {
     @extend .border-box;
     @extend .block;
     @extend .relative;
-    width: 100%;
   }
 
-  .timestamp {
-    font-weight: normal;
-    font-size: 14px;
-    line-height: inherit;
-    width: 100%;
-    text-align: right;
-    display: block;
-    position: relative;
-    margin-bottom: 15px;
-  }
-
-  .cluster-button, .tweets-cluster {
-    display: none;
-    position: relative;
-
-    .timestamp {
-      margin-top: 15px;
-    }
-
-    &.visible {
-      display: block;
-    }
-  }
-
-  .cluster-button {
-    margin-top: 20px;
-    cursor: pointer;
-  }
-
-  .text {
-    @extend .no-overflow;
-    white-space: normal;
-    font-size: 18px;
-    line-height: 24px;
-    font-weight: 500;
-    padding: 20px;
-    background-color: hsla(210, 20%, 15%, 1);
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.35);
-
-    a {
-      @extend .border-box;
-      color: inherit;
-    }
-    .line {
-      @extend .block;
-      @extend .relative;
-      white-space: nowrap;
-      text-align: left;
-      margin: 15px 0;
-
-      &.inline {
-        @extend .inline-block;
-        @extend .relative;
-        clear: none;
-      }
-      & > .word {
-        @extend .relative;
-        @extend .inline-block;
-      }
-    }
+  .text:not(:last-child) {
+    margin-bottom: 2px;
   }
 
   .header {
@@ -207,6 +121,7 @@ ul.list {
     line-height: 22px;
     font-size: 16px;
     font-weight: normal;
+    padding: 0 10px;
 
     .user-container {
       flex: 1;
@@ -214,22 +129,21 @@ ul.list {
       align-items: center;
 
       .user-image {
+        @extend .inline-block;
+        @extend .relative;
         width: 48px;
         height: 48px;
-        padding: 1px;
         background-repeat: no-repeat;
         background-position: center;
-        display: inline-block;
-        position: relative;
       }
 
       .user {
-        display: inline-block;
-        position: relative;
+        @extend .inline-block;
+        @extend .relative;
         margin-left: 10px;
 
         .username {
-          display: block;
+          @extend .block;
           font-weight: 500;
         }
 
@@ -243,5 +157,63 @@ ul.list {
 
   a.header {
     cursor: auto;
+  }
+}
+
+.media {
+  @extend .block;
+  @extend .relative;
+  min-height: 150px;
+  background-origin: content-box;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center top;
+}
+
+.timestamp {
+  @extend .block;
+  @extend .relative;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: inherit;
+  width: 100%;
+  text-align: right;
+  margin-bottom: 10px;
+  padding: 0 10px;
+  box-sizing: border-box;
+
+  &:not(:first-child) {
+    margin-top: 10px;
+  }
+}
+
+.text {
+  @extend .no-overflow;
+  white-space: normal;
+  font-size: 16px;
+  line-height: 24px;
+  padding: 30px 20px;
+  background-color: hsla(210, 20%, 15%, 1);
+
+  a {
+    @extend .border-box;
+    color: inherit;
+  }
+  .line {
+    @extend .block;
+    @extend .relative;
+    white-space: nowrap;
+    text-align: left;
+    margin: 15px 0;
+
+    &.inline {
+      @extend .inline-block;
+      @extend .relative;
+      clear: none;
+    }
+    & > .word {
+      @extend .relative;
+      @extend .inline-block;
+    }
   }
 }

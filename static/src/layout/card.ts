@@ -1,11 +1,8 @@
 import {Render} from './render';
 import {CardTemplate} from './template';
 import Text from './text';
-import {Cluster, Tweet} from '../data/twitter';
+import {Group, Tweet} from '../data/twitter';
 import * as dom from '../utils/dom';
-
-const doc = document;
-const body = doc.body;
 
 export default class Card implements Render {
 
@@ -17,12 +14,17 @@ export default class Card implements Render {
   }
 
   private _element: HTMLElement;
-  private _clusterContainer: HTMLElement;
-  private _clusterButton: HTMLElement;
 
-  constructor(private _cluster: Cluster) {
+  constructor(private _cluster: Group) {
     this._element = this.createHtml();
-    this.bodyClickHandler = this.bodyClickHandler.bind(this);
+  }
+
+  get cluster(): Group {
+    return this._cluster;
+  }
+
+  get element(): HTMLElement {
+    return this._element;
   }
 
   private createHtml(): HTMLElement {
@@ -35,81 +37,43 @@ export default class Card implements Render {
     let hsl = tweet.getColor();
     el.style.color = `hsl(${hsl[0]}, 100%, 50%)`;
 
-    let textContainer = <HTMLElement>dom.query('.text', el);
-    Card.renderText(textContainer, tweet, hsl);
+    let textContainer = <HTMLElement>dom.query('.text-container', el);
 
-    if (cluster.data.length > 1) {
-      let clusterButton = <HTMLElement>dom.query('.cluster-button', el);
-      clusterButton.addEventListener('click', this.clusterHandler.bind(this), true);
-      clusterButton.classList.add('visible');
-      clusterButton.textContent = `+${cluster.data.length - 1}`;
-      this._clusterButton = clusterButton;
-    }
-
-    return el;
-  }
-
-  private createCluster(): HTMLElement {
-    let el = <HTMLElement>dom.query('.tweets-cluster', this._element);
-
-    let tweets = this._cluster.data;
-    let i = 1;
+    let tweets = cluster.data;
+    let i = 0;
     let l = tweets.length;
     l = l > 10 ? 10 : l;
     let currTimestamp = tweets[0].data.shortDate;
     for (; i < l; i++) {
       let tweet = tweets[i];
       let hsl = tweet.getColor();
-      let timestamp = dom.createNode('span', {
+      let timestamp = dom.createNode('div', {
         'class': 'timestamp'
       });
 
       let tweetTimestamp = tweet.data.shortDate;
       if (currTimestamp !== tweetTimestamp) {
         timestamp.textContent = tweetTimestamp;
-        el.appendChild(timestamp);
+        textContainer.appendChild(timestamp);
         currTimestamp = tweetTimestamp;
+      }
+
+      let media = tweet.getMedia();
+      if (media) {
+        let image = dom.createNode('div');
+        image.setAttribute('class', 'media');
+        image.style.backgroundImage = `url(${media})`;
+        textContainer.appendChild(image);
       }
 
       let text = dom.createNode('div', {
         'class': 'text'
       });
       Card.renderText(text, tweet, hsl);
-      el.appendChild(text);
+      textContainer.appendChild(text);
     }
 
     return el;
-  }
-
-  private clusterHandler(event: MouseEvent) {
-    event.stopImmediatePropagation();
-    event.stopPropagation();
-
-    if (!this._clusterContainer) {
-      this._clusterContainer = this.createCluster();
-    }
-
-    let el = this._element;
-    el.classList.add('focused');
-    this._clusterButton.classList.remove('visible');
-    this._clusterContainer.classList.add('visible');
-
-    body.addEventListener('click', this.bodyClickHandler);
-    el.addEventListener('click', this.elementClickHandler, true);
-  }
-
-  private elementClickHandler(event: MouseEvent) {
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-  }
-
-  private bodyClickHandler() {
-    body.removeEventListener('click', this.bodyClickHandler);
-    let el = this._element;
-    el.removeEventListener('click', this.elementClickHandler, true);
-    el.classList.remove('focused');
-    this._clusterButton.classList.add('visible');
-    this._clusterContainer.classList.remove('visible');
   }
 
   render(container: Node): void {

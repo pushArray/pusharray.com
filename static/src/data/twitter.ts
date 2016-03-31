@@ -99,7 +99,7 @@ export class Tweets extends EventEmitter {
   }
 }
 
-export class Cluster {
+export class Group {
   private _data: Tweet[];
 
   constructor() {
@@ -119,16 +119,16 @@ export class Cluster {
   }
 }
 
-export class Clusters {
+export class Groups {
 
-  private _data: Cluster[];
+  private _data: Group[];
 
   constructor(private _tweets: Tweets) {
     this._data = [];
     this.create(this._tweets);
   }
 
-  get data(): Cluster[] {
+  get data(): Group[] {
     return this._data;
   }
 
@@ -136,7 +136,7 @@ export class Clusters {
     let users = {};
     tweets.data.forEach((tweet: Tweet) => {
       let user = tweet.data.screen_name;
-      let cluster = users[user] || new Cluster();
+      let cluster = users[user] || new Group();
       cluster.add(tweet);
       if (!users[user]) {
         this._data.push(cluster);

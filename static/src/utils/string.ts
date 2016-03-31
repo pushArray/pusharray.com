@@ -13,9 +13,9 @@ const htmlCharMap = {
   'gt': '>'
 };
 const months: string[] = [
-  'Jan', 'Feb', 'Mar', 'Apr',
-  'May', 'Jun', 'Jul', 'Aug',
-  'Sep', 'Oct', 'Nov', 'Dec'
+  'January', 'February', 'March', 'April',
+  'May', 'June', 'July', 'August',
+  'September', 'October', 'November', 'December'
 ];
 
 const periods: Period[] = [{
@@ -58,25 +58,40 @@ export function fromTwitterDateTime(date: string): Date {
   return new Date(timestamp);
 }
 
+export function getDateDiff(date: Date): number {
+  return ((new Date().getTime() - date.getTime()) / 1000) >> 0;
+}
+
+export function getPeriod(diff: number): Period {
+  for (let i = periods.length - 1; i >= 0; i--) {
+    let period = periods[i];
+    if (diff <= period.length) {
+      return period;
+    }
+  }
+  return null;
+}
+
 /**
  * Returns formatted date object as string.
  * Forked from http://stackoverflow.com/a/1229594
  */
 export function getShortDate(date: Date): string {
-  const diff = ((new Date().getTime() - date.getTime()) / 1000) >> 0;
   let ret = '';
-  if (diff > periods[0].length) {
+  let diff = getDateDiff(date);
+  let period = getPeriod(diff);
+  if (!period) {
     ret = `${months[date.getMonth()]}`;
     if (date.getFullYear() !== new Date().getFullYear()) {
       ret = `${ret} ${String(date.getFullYear())}`;
     }
   } else {
-    for (let i = 0; i < periods.length; i++) {
-      let period = periods[i];
-      if (diff >= period.length) {
-        ret += (diff / period.length >> 0) + period.short;
-        break;
-      }
+    let month = periods[0];
+    let day = periods[2];
+    if (period.length <= day.length) {
+      return 'Today'
+    } else if (period.length <= month.length) {
+      return 'This month';
     }
   }
   return ret;

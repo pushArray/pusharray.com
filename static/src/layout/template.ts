@@ -23,8 +23,12 @@ export class CardTemplate implements Template {
          <div class="user-container">
             <div class="user-image" style="background-image: url(${data.user_image}); background-color: ${data.profile_color};"></div>
             <div class="user">
-              <span class="username">${data.username}</span>
-              <span class="screen-name">@${data.screen_name}</span>
+              <span class="username">
+                ${data.username}
+              </span>
+              <span class="screen-name">
+                @${data.screen_name}
+              </span>
             </div>
          </div>`;
     let header = '';
@@ -43,14 +47,15 @@ export class CardTemplate implements Template {
     let tweetBody = `
       ${header}
       <div class="latest-tweet tweet">
-        <span class="timestamp" title="${data.fullDate}">${data.shortDate}</span>
-        <div class="text"></div>
+        <span class="timestamp">
+          ${data.shortDate}
+        </span>
+        <div class="text-container"></div>
       </div>
       <div class="tweets-cluster tweet"></div>
       <div class="cluster-button"></div>`;
 
     return `
-      <div class="media" style="background-image: url(${tweet.getMedia()})"></div>
       <div class="tweet-container">
         ${tweetBody}
       </div>`;

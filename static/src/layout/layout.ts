@@ -2,7 +2,7 @@ import {Render} from './render';
 import {LayoutTemplate} from './template';
 import * as dom from '../utils/dom';
 
-export default class Layout implements Render {
+class Layout implements Render {
 
   static createHtml(): HTMLElement {
     let el = dom.createNode('section', {
@@ -21,10 +21,6 @@ export default class Layout implements Render {
     this._columns = dom.queryAll('.column.list', this._element);
   }
 
-  get columns(): NodeList {
-    return this._columns;
-  }
-
   getNextColumn(): Node {
     let index = this._columnIndex;
     this._columnIndex = index + 1 > this._columns.length - 1 ? 0 : index + 1;
@@ -35,3 +31,5 @@ export default class Layout implements Render {
     container.appendChild(this._element);
   }
 }
+
+export default new Layout();
