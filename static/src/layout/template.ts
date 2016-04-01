@@ -44,21 +44,33 @@ export class CardTemplate implements Template {
         </a>`;
     }
 
-    let tweetBody = `
+    this._template = `
       ${header}
-      <div class="latest-tweet tweet">
-        <span class="timestamp">
-          ${data.shortDate}
-        </span>
-        <div class="text-container"></div>
-      </div>
-      <div class="tweets-cluster tweet"></div>
-      <div class="cluster-button"></div>`;
+      <ul class='tweets'></ul>`;
 
-    return `
-      <div class="tweet-container">
-        ${tweetBody}
-      </div>`;
+    return this._template;
+  }
+}
+
+export class TweetTemplate implements  Template {
+
+  private _template: string;
+
+  get(): string {
+    if (!this._template) {
+      this.create();
+    }
+    return this._template;
+  }
+
+  create(): string {
+    this._template = `
+        <div class="media"></div>
+        <div class="text-container">
+          <div class="text"></div>
+        </div>`;
+
+    return this._template;
   }
 }
 

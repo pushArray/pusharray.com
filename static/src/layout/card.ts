@@ -1,5 +1,5 @@
 import {Render} from './render';
-import {CardTemplate} from './template';
+import {CardTemplate, TweetTemplate} from './template';
 import Text from './text';
 import {Group, Tweet} from '../data/twitter';
 import * as dom from '../utils/dom';
@@ -15,12 +15,8 @@ export default class Card implements Render {
 
   private _element: HTMLElement;
 
-  constructor(private _cluster: Group) {
+  constructor(private _group: Group) {
     this._element = this.createHtml();
-  }
-
-  get cluster(): Group {
-    return this._cluster;
   }
 
   get element(): HTMLElement {
@@ -28,49 +24,49 @@ export default class Card implements Render {
   }
 
   private createHtml(): HTMLElement {
-    let cluster = this._cluster;
-    let tweet = cluster.get(0);
+    let group = this._group;
+    let tweet = group.get(0);
     let el =  dom.createNode('li', {'class': 'card'});
-    let template = new CardTemplate(tweet);
-    el.innerHTML = template.get();
+    let cardTemplate = new CardTemplate(tweet);
+    el.innerHTML = cardTemplate.get();
+    let tweetTemplate = new TweetTemplate();
 
     let hsl = tweet.getColor();
     el.style.color = `hsl(${hsl[0]}, 100%, 50%)`;
 
-    let textContainer = <HTMLElement>dom.query('.text-container', el);
+    let tweetsContainer = <HTMLElement>dom.query('.tweets', el);
 
-    let tweets = cluster.data;
+    let tweets = group.data;
     let i = 0;
     let l = tweets.length;
     l = l > 10 ? 10 : l;
-    let currTimestamp = tweets[0].data.shortDate;
+    let currTimestamp = '';
     for (; i < l; i++) {
       let tweet = tweets[i];
-      let hsl = tweet.getColor();
-      let timestamp = dom.createNode('div', {
-        'class': 'timestamp'
-      });
-
       let tweetTimestamp = tweet.data.shortDate;
+
       if (currTimestamp !== tweetTimestamp) {
+        let timestamp = dom.createNode('li');
+        timestamp.setAttribute('class', 'timestamp');
         timestamp.textContent = tweetTimestamp;
-        textContainer.appendChild(timestamp);
+        tweetsContainer.appendChild(timestamp);
         currTimestamp = tweetTimestamp;
       }
 
-      let media = tweet.getMedia();
-      if (media) {
-        let image = dom.createNode('div');
-        image.setAttribute('class', 'media');
-        image.style.backgroundImage = `url(${media})`;
-        textContainer.appendChild(image);
-      }
+      let tweetContainer = dom.createNode('li');
+      tweetContainer.setAttribute('class', 'tweet');
+      tweetContainer.innerHTML = tweetTemplate.get();
+      tweetsContainer.appendChild(tweetContainer);
 
-      let text = dom.createNode('div', {
-        'class': 'text'
-      });
+      let text = <HTMLElement>dom.query('.text', tweetContainer);
       Card.renderText(text, tweet, hsl);
-      textContainer.appendChild(text);
+
+      let image = tweet.getMedia();
+      if (image) {
+        let media = <HTMLElement>dom.query('.media', tweetContainer);
+        media.style.backgroundImage = `url(${image})`;
+        tweetContainer.classList.add('has-media');
+      }
     }
 
     return el;
