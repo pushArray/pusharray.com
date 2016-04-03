@@ -43,18 +43,30 @@ export default class Card implements Render {
     let currTimestamp = '';
     for (; i < l; i++) {
       let tweet = tweets[i];
-      let tweetTimestamp = tweet.data.shortDate;
+      let data = tweet.data;
+      let tweetTimestamp = data.shortDate;
 
       if (currTimestamp !== tweetTimestamp) {
-        let timestamp = dom.createNode('li');
-        timestamp.setAttribute('class', 'timestamp');
+        let timestamp = dom.createNode('div', {
+          'class': 'timestamp'
+        });
         timestamp.textContent = tweetTimestamp;
         tweetsContainer.appendChild(timestamp);
         currTimestamp = tweetTimestamp;
       }
 
-      let tweetContainer = dom.createNode('li');
-      tweetContainer.setAttribute('class', 'tweet');
+      let tweetContainer: HTMLElement;
+      if (data.protected) {
+        tweetContainer = dom.createNode('div', {
+          'class': "tweet"
+        });
+      } else {
+        tweetContainer = dom.createNode('a', {
+          'class': 'tweet',
+          'href': data.url,
+          'target': '_blank'
+        });
+      }
       tweetContainer.innerHTML = tweetTemplate.get();
       tweetsContainer.appendChild(tweetContainer);
 

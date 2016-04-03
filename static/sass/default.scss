@@ -5,7 +5,7 @@ body {
   &.busy {
     cursor: progress;
     .progress {
-      display: block;
+      @extend .block;
     }
   }
   &.error {
@@ -42,7 +42,7 @@ header {
     background-color: rgb(109, 189, 255);
 
     .line1, .line2 {
-      position: absolute;
+      @extend .absolute;
       background-color: inherit;
       top: 0;
       left: 0;
@@ -62,11 +62,11 @@ header {
 
 .column {
   @extend .relative;
-  display: flex;
+  @extend .no-overflow;
+  @extend .flex;
+  @extend .no-wrap;
   flex: 1;
   flex-direction: row;
-  overflow: hidden;
-  white-space: nowrap;
 }
 
 ul.list {
@@ -83,7 +83,7 @@ ul.list {
   @extend .block;
   background-color: rgba(80, 80, 80, 0.15);
   margin: 10px;
-  padding: 20px 0 0;
+  padding: 20px 10px 10px;
 
   &.disabled {
     .media, .tweet-container {
@@ -97,9 +97,8 @@ ul.list {
 .tweet-container {
   @extend .border-box;
   @extend .clearfix;
-  @extend .block;
+  @extend .flex;
   @extend .relative;
-  display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
@@ -108,17 +107,16 @@ ul.list {
 }
 
 .header {
-  display: flex;
+  @extend .flex;
   cursor: default;
   color: inherit;
   line-height: 22px;
   font-size: 16px;
   font-weight: normal;
-  padding: 0 10px;
 
   .user-container {
+    @extend .flex;
     flex: 1;
-    display: flex;
     align-items: center;
 
     .user-image {
@@ -133,15 +131,20 @@ ul.list {
     .user {
       @extend .inline-block;
       @extend .relative;
-      margin-left: 10px;
+      margin-left: 15px;
+
+      .username, .screen-name {
+        @extend .block;
+        @extend .relative;
+      }
 
       .username {
-        @extend .block;
         font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
       }
 
       .screen-name {
-        display: block;
         font-size: 14px;
       }
     }
@@ -153,15 +156,15 @@ a.header {
 }
 
 .tweets {
-  display: flex;
+  @extend .flex;
   flex-direction: column;
   margin: 0;
   padding: 0;
 }
 
 .tweet {
-  display: block;
-  position: relative;
+  @extend .block;
+  @extend .relative;
 
   &:not(:last-child) {
     margin-bottom: 2px;
@@ -170,16 +173,38 @@ a.header {
   &.has-media {
     .text-container {
       min-height: 150px;
-      background-color: rgba(0, 0, 0, .8);
+      text-shadow:
+        1px 1px rgba(0, 0, 0, 0.5),
+        1px -1px rgba(0, 0, 0, 0.5),
+        -1px 1px rgba(0, 0, 0, 0.5),
+        -1px -1px rgba(0, 0, 0, 0.5);
       justify-content: center;
-      padding: 30px;
+      background: transparent;
+      font-weight: 500;
+      padding: 0 30px;
+    }
+  }
+}
+
+a.tweet {
+  &:hover {
+    cursor: pointer;
+
+    &:not(.has-media) {
+      .text-container {
+        background-color: #29313a;
+      }
+    }
+
+    .media {
+      opacity: .25;
     }
   }
 }
 
 .media {
   @extend .block;
-  position: absolute;
+  @extend .absolute;
   top: 0;
   right: 0;
   bottom: 0;
@@ -188,19 +213,20 @@ a.header {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center top;
+  opacity: .15;
+  transition: opacity .5s;
 }
 
 .timestamp {
   @extend .block;
   @extend .relative;
+  @extend .border-box;
   font-weight: normal;
   font-size: 12px;
   line-height: inherit;
   width: 100%;
   text-align: right;
   margin-bottom: 10px;
-  padding: 0 10px;
-  box-sizing: border-box;
 
   &:not(:first-child) {
     margin-top: 10px;
@@ -209,15 +235,16 @@ a.header {
 
 .text-container {
   @extend .no-overflow;
+  @extend .flex;
+  @extend .relative;
+  @extend .border-box;
   white-space: normal;
   font-size: 16px;
   line-height: 24px;
   padding: 30px 20px;
   background-color: hsla(210, 20%, 15%, 1);
-  position: relative;
-  display: flex;
   align-items: center;
-  box-sizing: border-box;
+  transition: background-color .5s, opacity .5s;
 
   a {
     @extend .border-box;
@@ -227,7 +254,7 @@ a.header {
   .line {
     @extend .block;
     @extend .relative;
-    white-space: nowrap;
+    @extend .no-wrap;
     text-align: left;
     margin: 15px 0;
 

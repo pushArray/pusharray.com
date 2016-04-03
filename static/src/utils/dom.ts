@@ -16,13 +16,6 @@ export function queryAll(query: string, element: NodeSelector = doc): NodeList {
 }
 
 /**
- * Queries DOM elements by id.
- */
-export function getId(id: string): HTMLElement {
-  return doc.getElementById(id);
-}
-
-/**
  * Creates HTML element.
  */
 export function createNode(node: string, attrs: Attributes = null): HTMLElement {

@@ -39,14 +39,14 @@ export class CardTemplate implements Template {
         </div>`;
     } else {
       header = `
-        <a class="header" href="${data.url}" target="_blank">
+        <a class="header" href="//twitter.com/${data.screen_name}" target="_blank">
           ${user}
         </a>`;
     }
 
     this._template = `
       ${header}
-      <ul class='tweets'></ul>`;
+      <div class='tweets'></div>`;
 
     return this._template;
   }
