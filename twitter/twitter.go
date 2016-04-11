@@ -9,8 +9,7 @@ import (
 )
 
 const (
-	IMAGE_DIR       = "./static/images/twitter/"
-	POLL_INTERVAL   = 15 * time.Minute
+	POLL_INTERVAL   = 5 * time.Minute
 	TWITTER_USER_ID = 111507370
 	TWEET_COUNT     = 50
 )
@@ -22,7 +21,6 @@ var (
 	twitterAccessTokenKey    = os.Getenv("TWITTER_ACCESS_TOKEN_KEY")
 	api                      = anaconda.NewTwitterApi(twitterAccessTokenKey, twitterAccessTokenSecret)
 	values                   = &url.Values{}
-	instance                 = &Twitter{}
 )
 
 type BasicTweet struct {
@@ -42,26 +40,6 @@ type Twitter struct {
 	Tweets []anaconda.Tweet
 }
 
-func (t *Twitter) NewBasicTweet(tweet anaconda.Tweet) BasicTweet {
-	at := tweet
-	if tweet.Retweeted {
-		at = *tweet.RetweetedStatus
-	}
-	user := at.User
-	return BasicTweet{
-		Id:           at.IdStr,
-		Username:     user.Name,
-		Url:          "https://twitter.com/" + user.ScreenName + "/statuses/" + at.IdStr,
-		Timestamp:    at.CreatedAt,
-		ScreenName:   user.ScreenName,
-		Text:         at.Text,
-		UserImage:    user.ProfileImageUrlHttps,
-		ProfileColor: "#" + user.ProfileLinkColor,
-		Entities:     at.Entities,
-		Protected:    user.Protected,
-	}
-}
-
 func (t *Twitter) GetTweetId(tweet anaconda.Tweet) (id string) {
 	if tweet.Retweeted {
 		if len(tweet.RetweetedStatus.IdStr) > 0 {
@@ -75,22 +53,8 @@ func (t *Twitter) GetTweetId(tweet anaconda.Tweet) (id string) {
 	return id
 }
 
-func (t *Twitter) ToBasicTweets(tweets []anaconda.Tweet) (basicTweets []BasicTweet) {
-	for i := range tweets {
-		basicTweets = append(basicTweets, t.NewBasicTweet(tweets[i]))
-	}
-	return basicTweets
-}
-
 func (t *Twitter) GetTweets() {
 	t.Tweets, _ = api.GetUserTimeline(*values)
-}
-
-func (t *Twitter) PollTweets() {
-	c := time.Tick(POLL_INTERVAL)
-	for range c {
-		t.GetTweets()
-	}
 }
 
 func (t *Twitter) GetMaxId(maxId string, limit int) (tweets []anaconda.Tweet) {
@@ -113,6 +77,40 @@ func (t *Twitter) GetMaxId(maxId string, limit int) (tweets []anaconda.Tweet) {
 	return tweets
 }
 
+func PollTweets(t *Twitter) {
+	c := time.Tick(POLL_INTERVAL)
+	for range c {
+		t.GetTweets()
+	}
+}
+
+func NewBasicTweet(tweet anaconda.Tweet) BasicTweet {
+	at := tweet
+	if tweet.Retweeted {
+		at = *tweet.RetweetedStatus
+	}
+	user := at.User
+	return BasicTweet{
+		Id:           at.IdStr,
+		Username:     user.Name,
+		Url:          "https://twitter.com/" + user.ScreenName + "/statuses/" + at.IdStr,
+		Timestamp:    at.CreatedAt,
+		ScreenName:   user.ScreenName,
+		Text:         at.Text,
+		UserImage:    user.ProfileImageUrlHttps,
+		ProfileColor: "#" + user.ProfileLinkColor,
+		Entities:     at.Entities,
+		Protected:    user.Protected,
+	}
+}
+
+func ToBasicTweets(tweets []anaconda.Tweet) (basicTweets []BasicTweet) {
+	for i := range tweets {
+		basicTweets = append(basicTweets, NewBasicTweet(tweets[i]))
+	}
+	return basicTweets
+}
+
 func NewTwitter() Twitter {
 	anaconda.SetConsumerKey(twitterConsumerKey)
 	anaconda.SetConsumerSecret(twitterConsumerSecret)
@@ -120,7 +118,5 @@ func NewTwitter() Twitter {
 	values.Set("count", strconv.FormatInt(TWEET_COUNT, 10))
 	values.Set("exclude_replies", "true")
 	values.Set("include_rts", "true")
-	instance.GetTweets()
-	go instance.PollTweets()
-	return *instance
+	return Twitter{}
 }

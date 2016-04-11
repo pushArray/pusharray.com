@@ -11,6 +11,7 @@
     "browserify": "^13.0.0",
     "browserify-istanbul": "^0.2.1",
     "clean": "^4.0.2",
+    "concurrently": "^2.0.0",
     "jasmine-core": "^2.4.1",
     "karma": "^0.13.19",
     "karma-browserify": "^5.0.1",
@@ -27,11 +28,12 @@
   },
   "scripts": {
     "clean": "rm -rf ./static/bin/*",
-    "watch": "watch \"npm run sass && npm run build-debug\" ./static/src/ ./static/test ./static/sass",
+    "watch": "watch \"npm run build-parallel\" ./static/src/ ./static/test ./static/sass",
     "sass": "node-sass static/sass/all.scss static/bin/p5.css --output-style compressed",
     "lint": "tslint ./static/src/**/*.ts",
     "test": "karma start",
     "build-debug": "browserify ./static/src/main.ts -p [tsify] > ./static/bin/p5.js -d",
+    "build-parallel": "concurrently -r  \"npm run build-debug\" \"npm run sass\"",
     "build-min": "uglifyjs ./static/bin/p5.js -o ./static/bin/p5.js -c",
     "build": "npm run lint && npm test && npm run clean && npm run build-debug && npm run build-min && npm run sass"
   }

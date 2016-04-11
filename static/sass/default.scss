@@ -85,11 +85,12 @@ ul.list {
   margin: 10px;
   padding: 20px 10px 10px;
 
-  &.disabled {
-    .media, .tweet-container {
-      visibility: hidden;
-      opacity: 0;
-      pointer-events: none;
+  &.protected {
+    color: #e6e6e6;
+
+    .text-container {
+      background-color: rgba(128, 128, 128, 0.15);
+      cursor: default;
     }
   }
 }
@@ -166,22 +167,15 @@ a.header {
   @extend .block;
   @extend .relative;
 
+  color: inherit;
+
   &:not(:last-child) {
     margin-bottom: 2px;
   }
 
-  &.has-media {
-    .text-container {
-      min-height: 150px;
-      text-shadow:
-        1px 1px rgba(0, 0, 0, 0.5),
-        1px -1px rgba(0, 0, 0, 0.5),
-        -1px 1px rgba(0, 0, 0, 0.5),
-        -1px -1px rgba(0, 0, 0, 0.5);
-      justify-content: center;
-      background: transparent;
-      font-weight: 500;
-      padding: 0 30px;
+  &.contains-media {
+    .media-container {
+      display: block;
     }
   }
 }
@@ -190,16 +184,22 @@ a.tweet {
   &:hover {
     cursor: pointer;
 
-    &:not(.has-media) {
-      .text-container {
-        background-color: #29313a;
-      }
+    .text-container {
+      background-color: hsla(210, 20%, 20%, 1);
     }
 
-    .media {
-      opacity: .25;
+    .media-container {
+      opacity: 1;
     }
   }
+}
+
+.media-container {
+  position: relative;
+  display: none;
+  padding-bottom: 50%;
+  opacity: .7;
+  transition: opacity .5s;
 }
 
 .media {
@@ -213,8 +213,6 @@ a.tweet {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center top;
-  opacity: .15;
-  transition: opacity .5s;
 }
 
 .timestamp {
@@ -241,7 +239,7 @@ a.tweet {
   white-space: normal;
   font-size: 16px;
   line-height: 24px;
-  padding: 30px 20px;
+  padding: 20px;
   background-color: hsla(210, 20%, 15%, 1);
   align-items: center;
   transition: background-color .5s, opacity .5s;
@@ -249,6 +247,7 @@ a.tweet {
   a {
     @extend .border-box;
     color: inherit;
+    font-weight: bold;
   }
 
   .line {
@@ -267,6 +266,7 @@ a.tweet {
     & > .word {
       @extend .relative;
       @extend .inline-block;
+      @extend .border-box;
     }
   }
 }

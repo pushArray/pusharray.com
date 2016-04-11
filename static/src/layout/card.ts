@@ -6,11 +6,10 @@ import * as dom from '../utils/dom';
 
 export default class Card implements Render {
 
-  static renderText(container: HTMLElement, tweet: Tweet, hsl: number[]) {
+  static renderText(container: HTMLElement, tweet: Tweet): Text {
     let text = new Text(tweet.text, tweet.entities);
-    text.setLinkColor(`hsl(${hsl[0]}, 100%, 50%)`);
-    container.style.color = `hsl(${hsl[0]}, 70%, 80%)`;
     text.render(container);
+    return text;
   }
 
   private _element: HTMLElement;
@@ -32,7 +31,12 @@ export default class Card implements Render {
     let tweetTemplate = new TweetTemplate();
 
     let hsl = tweet.getColor();
-    el.style.color = `hsl(${hsl[0]}, 100%, 50%)`;
+    let isProtected = tweet.data.protected;
+    if (isProtected) {
+      el.classList.add('protected');
+    } else {
+      el.style.color = `hsl(${hsl[0]}, 90%, 70%)`;
+    }
 
     let tweetsContainer = <HTMLElement>dom.query('.tweets', el);
 
@@ -70,14 +74,17 @@ export default class Card implements Render {
       tweetContainer.innerHTML = tweetTemplate.get();
       tweetsContainer.appendChild(tweetContainer);
 
-      let text = <HTMLElement>dom.query('.text', tweetContainer);
-      Card.renderText(text, tweet, hsl);
+      let textContainer = <HTMLElement>dom.query('.text', tweetContainer);
+      let text = Card.renderText(textContainer, tweet);
+      if (isProtected) {
+        text.setLinkColor(`hsla(${hsl[0]}, 90%, 70%, 1)`);
+      }
 
       let image = tweet.getMedia();
       if (image) {
         let media = <HTMLElement>dom.query('.media', tweetContainer);
         media.style.backgroundImage = `url(${image})`;
-        tweetContainer.classList.add('has-media');
+        tweetContainer.classList.add('contains-media');
       }
     }
 

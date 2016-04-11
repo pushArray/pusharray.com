@@ -65,7 +65,9 @@ export class TweetTemplate implements  Template {
 
   create(): string {
     this._template = `
-        <div class="media"></div>
+        <div class="media-container">
+          <div class="media"></div>
+        </div>
         <div class="text-container">
           <div class="text"></div>
         </div>`;
