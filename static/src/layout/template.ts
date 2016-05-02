@@ -75,28 +75,3 @@ export class TweetTemplate implements  Template {
     return this._template;
   }
 }
-
-export class LayoutTemplate implements Template {
-
-  private _template: string = '';
-
-  constructor() {
-    this._template = this.create();
-  }
-
-  get(): string {
-    return this._template;
-  }
-
-  create(): string {
-    return `
-      <div class="column col-group">
-        <ul class="column list col-1"></ul>
-        <ul class="column list col-2"></ul>
-      </div>
-      <div class="column col-group">
-        <ul class="column list col-3"></ul>
-        <ul class="column list col-4"></ul>
-      </div>`;
-  }
-}

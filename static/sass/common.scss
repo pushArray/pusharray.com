@@ -1,4 +1,6 @@
-$font-color: #f1f1f1;
+$color-white: #fff;
+$color-black: #000;
+$color-page-background: #1f2023;
 
 .border-box {
   -webkit-box-sizing: border-box;
@@ -40,7 +42,7 @@ html, body {
 }
 
 html {
-  background: #0C1017;
+  background: $color-page-background;
   min-height: 100%;
   padding: 0;
   margin: 0;
@@ -49,7 +51,7 @@ html {
 body {
   font-family: 'Roboto', sans-serif;
   font-size: 14px;
-  color: $font-color;
+  color: $color-white;
   padding: 0;
   margin: 0;
   min-height: 100%;

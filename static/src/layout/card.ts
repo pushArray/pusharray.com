@@ -35,7 +35,7 @@ export default class Card implements Render {
     if (isProtected) {
       el.classList.add('protected');
     } else {
-      el.style.color = `hsl(${hsl[0]}, 90%, 70%)`;
+      el.style.color = `hsl(${hsl[0]}, 100%, 80%)`;
     }
 
     let tweetsContainer = <HTMLElement>dom.query('.tweets', el);
@@ -77,7 +77,7 @@ export default class Card implements Render {
       let textContainer = <HTMLElement>dom.query('.text', tweetContainer);
       let text = Card.renderText(textContainer, tweet);
       if (isProtected) {
-        text.setLinkColor(`hsla(${hsl[0]}, 90%, 70%, 1)`);
+        text.setLinkColor(`hsla(${hsl[0]}, 100%, 80%, 1)`);
       }
 
       let image = tweet.getMedia();
@@ -91,7 +91,8 @@ export default class Card implements Render {
     return el;
   }
 
-  render(container: Node): void {
+  render(container: Node): HTMLElement {
     container.appendChild(this._element);
+    return this._element;
   }
 }

@@ -1,20 +1,52 @@
 import * as twitter from './data/twitter';
 import Card from './layout/card';
-import layout from './layout/layout';
+import Layout from './layout/layout';
 
 const body = document.body;
-const tweets = new twitter.Tweets();
+const cards: Card[] = [];
 
-function dataHandler() {
-  let group = new twitter.Groups(tweets);
-  group.data.forEach((cluster: twitter.Group) => {
-    let card = new Card(cluster);
-    card.render(layout.getNextColumn());
+const layout = new Layout();
+layout.render(body);
+layout.on(Layout.COLUMN_CHANGE, () => {
+  layout.emptyColumns();
+  cards.forEach(card => {
+    let col = layout.getShortestColumn();
+    card.render(col);
   });
-  body.classList.remove('busy');
+});
+
+window.addEventListener('resize', e => {
+  layout.resize();
+});
+
+function cardAnimationComplete(e: AnimationEvent) {
+  let el = <HTMLElement>e.target;
+  el.removeEventListener('animationend', cardAnimationComplete);
+  el.style.animationDelay = null;
+  el.classList.remove('animated');
 }
 
-tweets.on(twitter.EVENT_LOADED, dataHandler);
-tweets.load();
+function animateCard(el: HTMLElement, delay: number = 0) {
+  el.addEventListener('animationend', cardAnimationComplete);
+  el.style.animationDelay = delay + 's';
+  el.classList.add('animated');
+}
 
-layout.render(body);
+const tweets = new twitter.Tweets();
+tweets.on(twitter.EVENT_LOADED, () => {
+  let groups = new twitter.Groups(tweets);
+  let rowDelays: number[] = [];
+  groups.data.forEach(group => {
+    let card = new Card(group);
+    cards.push(card);
+    let col = layout.getShortestColumn();
+    let el = card.render(col);
+    let colIndex = layout.getColumnIndex(col);
+    let delay = rowDelays[colIndex] || 0;
+    rowDelays[colIndex] = delay + 0.2;
+    animateCard(el, delay);
+  });
+  body.classList.remove('busy');
+});
+
+tweets.load();

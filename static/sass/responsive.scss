@@ -1,11 +1,20 @@
-@media (max-width: 1300px) {
-  .column.col-main {
-    flex-direction: column;
-  }
-}
+.column-ruler {
+  @extend .absolute;
+  @extend .border-box;
+  @extend .block;
+  visibility: hidden;
+  pointer-events: none;
+  width: 100%;
 
-@media (max-width: 650px) {
-  .column.col-group {
-    flex-direction: column;
+  @media screen and (min-width: 640px) {
+    width: 50%;
+  }
+
+  @media screen and (min-width: 980px) {
+    width: 33.333%;
+  }
+
+  @media screen and (min-width: 1200px) {
+    width: 25%;
   }
 }
