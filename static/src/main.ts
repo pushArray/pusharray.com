@@ -43,8 +43,8 @@ tweets.on(twitter.EVENT_LOADED, () => {
     let el = card.render(col);
     let colIndex = layout.getColumnIndex(col);
     let delay = rowDelays[colIndex] || 0;
-    rowDelays[colIndex] = delay + 0.2;
-    animateCard(el, delay);
+    rowDelays[colIndex] = delay + 1;
+    animateCard(el, (delay + colIndex) * 0.075);
   });
   body.classList.remove('busy');
 });

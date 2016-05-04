@@ -3,6 +3,9 @@ $header-height: $progress-height;
 $color-card-background: #303236;
 $color-text-background-hover: #494b50;
 $color-text-background: #3d3f43;
+$min-column-width: 400px;
+$max-column-width: 520px;
+
 
 
 body {
@@ -72,6 +75,7 @@ header {
   flex: 1;
   flex-direction: row;
   align-items: flex-start;
+  justify-content: center;
 }
 
 ul.list {
@@ -81,6 +85,8 @@ ul.list {
   flex: 1;
   align-items: stretch;
   justify-content: center;
+  min-width: $min-column-width;
+  max-width: $max-column-width;
 }
 
 .card {
@@ -92,7 +98,7 @@ ul.list {
   margin: 10px;
 
   &.animated {
-    @include animation('card-reveal 0.75s cubic-bezier(0.39, 0.575, 0.565, 1) forwards');
+    @include animation('card-reveal 0.55s cubic-bezier(0.39, 0.575, 0.565, 1) forwards');
     opacity: 0;
   }
 
