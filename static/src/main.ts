@@ -15,7 +15,7 @@ layout.on(Layout.COLUMN_CHANGE, () => {
   });
 });
 
-window.addEventListener('resize', e => {
+window.addEventListener('resize', () => {
   layout.resize();
 });
 

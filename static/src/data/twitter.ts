@@ -3,7 +3,6 @@ import {EventEmitter} from 'events';
 import {BasicTweet, TweetEntity} from '../typings/tweet.d';
 import * as color from '../utils/color';
 import * as http from '../utils/http';
-import * as string from '../utils/string';
 
 export const EVENT_LOADED = 'loaded';
 
@@ -13,9 +12,6 @@ export class Tweet {
   private _id: string;
 
   constructor(private _data: BasicTweet) {
-    let date = string.fromTwitterDateTime(_data.timestamp);
-    _data.shortDate = string.getShortDate(date);
-    _data.fullDate = string.getFullDate(date);
     this._id = _data.id;
   }
 

@@ -86,11 +86,15 @@ export function getShortDate(date: Date): string {
       ret = `${ret} ${String(date.getFullYear())}`;
     }
   } else {
+    let periodLength = period.length;
     let month = periods[0];
+    let week = periods[1];
     let day = periods[2];
-    if (period.length <= day.length) {
-      return 'Today'
-    } else if (period.length <= month.length) {
+    if (periodLength <= day.length) {
+      return 'Today';
+    } else if (periodLength <= week.length) {
+      return 'This week';
+    } else if (periodLength <= month.length) {
       return 'This month';
     }
   }

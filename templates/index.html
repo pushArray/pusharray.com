@@ -16,14 +16,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js"></script>
     <script>
       WebFont.load({
-        active: function() {
-          var p5 = document.createElement('script');
-          p5.setAttribute('type','text/javascript');
-          p5.setAttribute('src','/static/bin/p5.js');
-          document.head.appendChild(p5);
-        },
         google: {
-          families: ['Roboto:400,500,700:latin']
+          families: ['Roboto:100,400,500,700:latin']
         }
       });
     </script>
@@ -37,5 +31,6 @@
         </div>
       </div>
     </header>
+    <script src="/static/bin/p5.js"></script>
   </body>
 </html>

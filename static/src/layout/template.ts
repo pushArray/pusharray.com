@@ -27,7 +27,7 @@ export class CardTemplate implements Template {
                 ${data.username}
               </span>
               <span class="screen-name">
-                @${data.screen_name}
+                <s>@</s>${data.screen_name}
               </span>
             </div>
          </div>`;

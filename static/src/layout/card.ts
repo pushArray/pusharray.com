@@ -1,8 +1,9 @@
+import {Group, Tweet} from '../data/twitter';
 import {Render} from './render';
 import {CardTemplate, TweetTemplate} from './template';
 import Text from './text';
-import {Group, Tweet} from '../data/twitter';
 import * as dom from '../utils/dom';
+import * as string from '../utils/string';
 
 export default class Card implements Render {
 
@@ -48,7 +49,8 @@ export default class Card implements Render {
     for (; i < l; i++) {
       let tweet = tweets[i];
       let data = tweet.data;
-      let tweetTimestamp = data.shortDate;
+      let date = string.fromTwitterDateTime(data.timestamp);
+      let tweetTimestamp = string.getShortDate(date);
 
       if (currTimestamp !== tweetTimestamp) {
         let timestamp = dom.createNode('div', {

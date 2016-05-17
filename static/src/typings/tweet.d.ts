@@ -64,8 +64,6 @@ export type BasicTweet = {
   profile_color: string;
   entities: TweetEntity;
   protected: boolean;
-  shortDate?: string;
-  fullDate?: string;
 }
 
 export type TweetMention = {
