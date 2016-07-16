@@ -1,6 +1,5 @@
-import '../typings/node.d';
 import {EventEmitter} from 'events';
-import {BasicTweet, TweetEntity} from '../typings/tweet.d';
+import {BasicTweet, TweetEntity} from 'tweet.d';
 import * as color from '../utils/color';
 import * as http from '../utils/http';
 
@@ -85,7 +84,7 @@ export class Tweets extends EventEmitter {
     }
   }
 
-  load(count: number = 0, maxId: string = '') {
+  load(count = 0, maxId = '') {
     if (!this._busy) {
       this._busy = true;
       let {xhr, promise} = http.get(http.buildUrl(this._baseUrl, {maxId, count}));

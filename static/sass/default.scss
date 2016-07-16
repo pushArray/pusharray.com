@@ -112,7 +112,6 @@ ul.list {
 
 .tweet-container {
   @extend .border-box;
-  @extend .clearfix;
   @extend .flex;
   @extend .relative;
   flex-direction: column;

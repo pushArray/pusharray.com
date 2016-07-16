@@ -1,5 +1,3 @@
-import '../typings/promise.d';
-
 type XhrPromise = {
   xhr: XMLHttpRequest;
   promise: Promise<string>;
@@ -9,7 +7,7 @@ type UrlParams = {
   [param: string]: string|number
 }
 
-export function buildUrl(url: string, params: UrlParams = null): string {
+export function buildUrl(url: string, params: UrlParams = {}): string {
   if (params) {
     let urlParams = '';
     for (let param in params) {

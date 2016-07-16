@@ -8,7 +8,9 @@ export function rgbToHsl(red: number, green: number, blue: number): number[] {
   let b = blue / 255;
   let max = Math.max(r, g, b);
   let min = Math.min(r, g, b);
-  let h: number, s: number, l: number = (max + min) / 2;
+  let h = 0;
+  let s = 0;
+  let l = (max + min) / 2;
   if (max == min) {
     h = s = 0;
   } else {

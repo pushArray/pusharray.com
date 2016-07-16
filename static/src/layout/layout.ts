@@ -28,11 +28,11 @@ export default class Layout extends EventEmitter implements Render {
   }
 
   getShortestColumn(): HTMLElement {
-    let shortest: HTMLElement;
+    let shortest: HTMLElement = this._columns[0];
     let maxCol = this._columnCount;
-    for (let i = 0; i < maxCol; i++) {
+    for (let i = 1; i < maxCol; i++) {
       let col = this._columns[i];
-      if (!shortest || col.offsetHeight < shortest.offsetHeight) {
+      if (col.offsetHeight < shortest.offsetHeight) {
         shortest = col;
       }
     }

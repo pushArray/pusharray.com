@@ -62,7 +62,7 @@ export function getDateDiff(date: Date): number {
   return ((new Date().getTime() - date.getTime()) / 1000) >> 0;
 }
 
-export function getPeriod(diff: number): Period {
+export function getPeriod(diff: number): Period | null {
   for (let i = periods.length - 1; i >= 0; i--) {
     let period = periods[i];
     if (diff <= period.length) {

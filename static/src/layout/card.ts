@@ -64,7 +64,7 @@ export default class Card implements Render {
       let tweetContainer: HTMLElement;
       if (data.protected) {
         tweetContainer = dom.createNode('div', {
-          'class': "tweet"
+          'class': 'tweet'
         });
       } else {
         tweetContainer = dom.createNode('a', {

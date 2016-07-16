@@ -5,7 +5,7 @@ import {
   TweetMedia,
   TweetMention,
   TweetUrl
-} from '../typings/tweet';
+} from 'tweet.d';
 import * as string from '../utils/string';
 import {
   EntityWord,

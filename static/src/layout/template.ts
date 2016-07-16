@@ -1,4 +1,4 @@
-import {Tweet} from "../data/twitter";
+import {Tweet} from '../data/twitter';
 
 export interface Template {
   create(data: any): string;
@@ -21,7 +21,10 @@ export class CardTemplate implements Template {
     let data = tweet.data;
     let user = `
          <div class="user-container">
-            <div class="user-image" style="background-image: url(${data.user_image}); background-color: ${data.profile_color};"></div>
+            <div class="user-image" 
+                 style="background-image: url(${data.user_image}); 
+                        background-color: ${data.profile_color};">     
+            </div>
             <div class="user">
               <span class="username">
                 ${data.username}

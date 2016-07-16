@@ -18,7 +18,7 @@ export function queryAll(query: string, element: NodeSelector = doc): NodeList {
 /**
  * Creates HTML element.
  */
-export function createNode(node: string, attrs: Attributes = null): HTMLElement {
+export function createNode(node: string, attrs: Attributes = {}): HTMLElement {
   let nodeEl: HTMLElement = doc.createElement(node);
   for (let attr in attrs) {
     if (attrs.hasOwnProperty(attr)) {

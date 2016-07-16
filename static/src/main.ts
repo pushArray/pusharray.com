@@ -26,7 +26,7 @@ function cardAnimationComplete(e: AnimationEvent) {
   el.classList.remove('animated');
 }
 
-function animateCard(el: HTMLElement, delay: number = 0) {
+function animateCard(el: HTMLElement, delay = 0) {
   el.addEventListener('animationend', cardAnimationComplete);
   el.style.animationDelay = delay + 's';
   el.classList.add('animated');
