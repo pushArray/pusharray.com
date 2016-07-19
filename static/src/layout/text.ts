@@ -1,4 +1,4 @@
-import {Render} from './render';
+import {IRender} from './render';
 import {
   TweetEntity,
   TweetHashtag,
@@ -14,7 +14,7 @@ import {
   Word,
 } from './word';
 
-export default class Text implements Render {
+export default class Text implements IRender {
 
   private _linkColor: string;
   private _word: Word;

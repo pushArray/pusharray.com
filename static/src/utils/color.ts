@@ -40,5 +40,13 @@ export function hexToRgb(hex: number): number[] {
 }
 
 export function fromHexString(hex: string): number {
-  return parseInt(hex.replace(/^#/, ''), 16);
+  let str = hex.replace(/^#/, '');
+  if (str.length === 3) {
+    let arr = str.split('');
+    arr = arr.map((v: string) => {
+      return v + v;
+    });
+    str = arr.join('');
+  }
+  return parseInt(str, 16);
 }

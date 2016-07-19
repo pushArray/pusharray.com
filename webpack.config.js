@@ -8,6 +8,7 @@ module.exports = {
     filename: '[name].js'
   },
   resolve: {
+    modulesDirectories: ['./static/src', './static/test', 'node_modules'],
     extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js']
   },
   module: {

@@ -1,9 +1,9 @@
-import {Render} from './render';
-import * as dom from '../utils/dom';
-import Link from '../utils/link';
-import * as string from '../utils/string';
+import {IRender} from './render';
+import * as dom from 'utils/dom';
+import Link from 'utils/link';
+import * as string from 'utils/string';
 
-export abstract class Word extends Link implements Render {
+export abstract class Word extends Link implements IRender {
 
   protected _html: HTMLElement;
 

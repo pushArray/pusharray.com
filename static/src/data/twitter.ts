@@ -1,7 +1,7 @@
 import {EventEmitter} from 'events';
 import {BasicTweet, TweetEntity} from 'tweet.d';
-import * as color from '../utils/color';
-import * as http from '../utils/http';
+import * as color from 'utils/color';
+import * as http from 'utils/http';
 
 export const EVENT_LOADED = 'loaded';
 

@@ -1,6 +1,6 @@
-import * as twitter from './data/twitter';
-import Card from './layout/card';
-import Layout from './layout/layout';
+import * as twitter from 'data/twitter';
+import Card from 'layout/card';
+import Layout from 'layout/layout';
 
 const body = document.body;
 const cards: Card[] = [];

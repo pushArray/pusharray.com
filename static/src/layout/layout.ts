@@ -1,8 +1,8 @@
 import {EventEmitter} from 'events';
-import {Render} from './render';
-import * as dom from '../utils/dom';
+import {IRender} from './render';
+import * as dom from 'utils/dom';
 
-export default class Layout extends EventEmitter implements Render {
+export default class Layout extends EventEmitter implements IRender {
 
   static COLUMN_CHANGE = 'columnChange';
 

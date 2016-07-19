@@ -1,11 +1,11 @@
-import {Group, Tweet} from '../data/twitter';
-import {Render} from './render';
+import {Group, Tweet} from 'data/twitter';
+import {IRender} from './render';
 import {CardTemplate, TweetTemplate} from './template';
 import Text from './text';
-import * as dom from '../utils/dom';
-import * as string from '../utils/string';
+import * as dom from 'utils/dom';
+import * as string from 'utils/string';
 
-export default class Card implements Render {
+export default class Card implements IRender {
 
   static renderText(container: HTMLElement, tweet: Tweet): Text {
     let text = new Text(tweet.text, tweet.entities);

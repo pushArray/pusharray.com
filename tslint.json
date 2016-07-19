@@ -1,6 +1,7 @@
 {
   "rules": {
     "class-name": true,
+    "interface-name": [true, "always-prefix"],
     "comment-format": [true, "check-space"],
     "indent": [true, "spaces"],
     "max-line-length": [true, 100],
@@ -35,6 +36,7 @@
       "allow-leading-underscore"
     ],
     "curly": true,
-    "eofline": true
+    "eofline": true,
+    "align": [true, "parameters", "statements", "statements"]
   }
 }
