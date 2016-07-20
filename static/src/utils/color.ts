@@ -42,11 +42,12 @@ export function hexToRgb(hex: number): number[] {
 export function fromHexString(hex: string): number {
   let str = hex.replace(/^#/, '');
   if (str.length === 3) {
-    let arr = str.split('');
-    arr = arr.map((v: string) => {
-      return v + v;
-    });
-    str = arr.join('');
+    let s = '';
+    for (let i = 0; i < 3; i++) {
+      let c = str[i];
+      s += `${c}${c}`;
+    }
+    str = s;
   }
   return parseInt(str, 16);
 }

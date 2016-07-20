@@ -58,18 +58,32 @@ export function fromTwitterDateTime(date: string): Date {
   return new Date(timestamp);
 }
 
-export function getDateDiff(date: Date): number {
-  return ((new Date().getTime() - date.getTime()) / 1000) >> 0;
+/**
+ * Returns difference between dates in seconds.
+ * @param {Date} date - End date.
+ * @param {?Date} start - Optional start date.
+ * @returns {number} - Difference between provided dates in seconds.
+ */
+export function getDateDiff(date: Date, start = new Date()): number {
+  return (Math.abs(date.getTime() - start.getTime()) / 1000) >> 0;
 }
 
-export function getPeriod(diff: number): Period | null {
-  for (let i = periods.length - 1; i >= 0; i--) {
-    let period = periods[i];
-    if (diff <= period.length) {
-      return period;
+/**
+ * Returns {@link Period} object based on time length provided in seconds.
+ * @param {number} len - Time length in seconds.
+ * @returns {Period}
+ */
+export function getPeriod(len: number): Period {
+  let l = periods.length;
+  let p = periods[--l];
+  while (p) {
+    let n = periods[l];
+    if (!n || len >= p.length && len < n.length) {
+      break;
     }
+    p = periods[l--];
   }
-  return null;
+  return p;
 }
 
 /**
@@ -78,23 +92,24 @@ export function getPeriod(diff: number): Period | null {
  */
 export function getShortDate(date: Date): string {
   let ret = '';
-  let diff = getDateDiff(date);
+  let today = new Date();
+  let diff = getDateDiff(date, today);
   let period = getPeriod(diff);
-  if (!period) {
+  let month = periods[0];
+  if (diff > month.length) {
     ret = `${months[date.getMonth()]}`;
-    if (date.getFullYear() !== new Date().getFullYear()) {
+    if (date.getFullYear() !== today.getFullYear()) {
       ret = `${ret} ${String(date.getFullYear())}`;
     }
   } else {
     let periodLength = period.length;
-    let month = periods[0];
     let week = periods[1];
     let day = periods[2];
-    if (periodLength <= day.length) {
+    if (periodLength < day.length) {
       return 'Today';
-    } else if (periodLength <= week.length) {
+    } else if (periodLength < week.length) {
       return 'This week';
-    } else if (periodLength <= month.length) {
+    } else if (periodLength < month.length) {
       return 'This month';
     }
   }
@@ -108,16 +123,6 @@ export function getFullDate(date: Date): string {
   let hours = date.getHours();
   let minutes = date.getMinutes();
   return `${monthDate} ${month}, ${year} - ${hours}:${minutes}`;
-}
-
-/**
- * Returns string truncated to the length specified.
- */
-export function limitString(str: string, length: number): string {
-  if (str.length <= length) {
-    return str;
-  }
-  return str.substring(0, length - 3) + '…';
 }
 
 export function extractDomain(url: string): string {

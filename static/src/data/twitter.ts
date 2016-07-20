@@ -79,6 +79,7 @@ export class Tweets extends EventEmitter {
   }
 
   cancel() {
+    this._busy = false;
     if (this._xhr instanceof XMLHttpRequest) {
       this._xhr.abort();
     }
