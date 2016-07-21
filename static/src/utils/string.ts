@@ -74,21 +74,19 @@ export function getDateDiff(date: Date, start = new Date()): number {
  * @returns {Period}
  */
 export function getPeriod(len: number): Period {
-  let l = periods.length;
-  let p = periods[--l];
+  let p = periods[0];
+  let i = 1;
   while (p) {
-    let n = periods[l];
-    if (!n || len >= p.length && len < n.length) {
+    if (len / p.length >= 1) {
       break;
     }
-    p = periods[l--];
+    p = periods[i++];
   }
   return p;
 }
 
 /**
  * Returns formatted date object as string.
- * Forked from http://stackoverflow.com/a/1229594
  */
 export function getShortDate(date: Date): string {
   let ret = '';

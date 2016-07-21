@@ -11,12 +11,13 @@ export function buildUrl(url: string, params: UrlParams = {}): string {
   if (params) {
     let urlParams = '';
     for (let param in params) {
-      if (params.hasOwnProperty(param) && params[param]) {
+      if (params.hasOwnProperty(param) && typeof params[param] !== 'undefined') {
         urlParams += `${param}=${params[param]}&`;
       }
     }
     if (urlParams) {
-      url += `?${urlParams}`.substr(0, urlParams.length - 1);
+      url = `${url}?${encodeURI(urlParams)}`;
+      url = url.substr(0, url.length - 1);
     }
   }
   return url;

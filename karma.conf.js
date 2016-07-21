@@ -4,7 +4,11 @@ module.exports = function(config) {
   config.set({
     basePath: '',
     frameworks: ['mocha', 'chai', 'sinon'],
-    files: ['static/test/**/*_spec.ts'],
+    files: [
+      'node_modules/es6-promise/dist/es6-promise.js',
+      'node_modules/chai-as-promised/lib/chai-as-promised.js',
+      'static/test/**/*_spec.ts'
+    ],
     exclude: [
     ],
     preprocessors: {
