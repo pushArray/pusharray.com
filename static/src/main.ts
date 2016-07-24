@@ -1,4 +1,4 @@
-import * as twitter from 'data/twitter';
+import {Groups, Tweets, Tweet} from 'data/twitter';
 import Card from 'layout/card';
 import Layout from 'layout/layout';
 
@@ -32,9 +32,8 @@ function animateCard(el: HTMLElement, delay = 0) {
   el.classList.add('animated');
 }
 
-const tweets = new twitter.Tweets();
-tweets.on(twitter.EVENT_LOADED, () => {
-  let groups = new twitter.Groups(tweets);
+function nextHandler(data: Tweet[]) {
+  let groups = new Groups(data);
   let rowDelays: number[] = [];
   groups.data.forEach(group => {
     let card = new Card(group);
@@ -47,6 +46,7 @@ tweets.on(twitter.EVENT_LOADED, () => {
     animateCard(el, (delay + colIndex) * 0.075);
   });
   body.classList.remove('busy');
-});
+}
 
-tweets.load();
+const tweets = new Tweets();
+tweets.next(nextHandler);

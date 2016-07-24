@@ -1,9 +1,10 @@
 import {EventEmitter} from 'events';
 import {BasicTweet, TweetEntity} from 'tweet.d';
 import * as color from 'utils/color';
-import * as http from 'utils/http';
+import {Http, buildUrl} from 'utils/http';
 
-export const EVENT_LOADED = 'loaded';
+export const DATA_LOADED = 'dataLoaded';
+export const DATA_NEXT = 'dataNext';
 
 export class Tweet {
 
@@ -53,44 +54,63 @@ export class Tweets extends EventEmitter {
 
   private _baseUrl = '/tweets';
   private _data: Tweet[];
-  private _xhr: XMLHttpRequest;
+  private _http = new Http();
   private _busy = false;
+  private _lastId = '';
 
   constructor() {
     super();
-    this.dataHandler = this.dataHandler.bind(this);
+    this.processData = this.processData.bind(this);
+    this.onNext = this.onNext.bind(this);
+    this.onLoad = this.onLoad.bind(this);
   }
 
-  get data(): Tweet[] {
-    return this._data;
-  }
-
-  protected dataHandler(data: string) {
+  protected processData(data: any) {
     this._data = [];
-    let tweets: BasicTweet[] = JSON.parse(data);
+    let tweets = <BasicTweet[]>data;
     let i = 0;
     let l = tweets.length;
     for (; i < l; i++) {
       let d = tweets[i];
       this._data.push(new Tweet(d));
     }
+    this._lastId = tweets[l - 1].id;
+    return this._data;
+  }
+
+  private onLoad(data: any) {
     this._busy = false;
-    this.emit(EVENT_LOADED, this._data);
+    this.emit(DATA_LOADED, this.processData(data));
+  }
+
+  private onNext(data: any) {
+    this._busy = false;
+    this.emit(DATA_NEXT, this.processData(data));
+  }
+
+  protected createUrl(count = 0, maxId = this._lastId) {
+    return buildUrl(this._baseUrl, {maxId, count});
+  }
+
+  next(listener: (data: any) => void) {
+    if (!this._busy) {
+      this._busy = true;
+      this._http.complete(this.onNext).send(this.createUrl());
+      this.once(DATA_NEXT, listener);
+    }
   }
 
   cancel() {
     this._busy = false;
-    if (this._xhr instanceof XMLHttpRequest) {
-      this._xhr.abort();
+    if (this._http instanceof Http) {
+      this._http.cancel();
     }
   }
 
   load(count = 0, maxId = '') {
     if (!this._busy) {
       this._busy = true;
-      let {xhr, promise} = http.get(http.buildUrl(this._baseUrl, {maxId, count}));
-      this._xhr = xhr;
-      promise.then(this.dataHandler);
+      this._http.complete(this.onLoad).send(this.createUrl(count, maxId));
     }
   }
 }
@@ -119,7 +139,7 @@ export class Groups {
 
   private _data: Group[];
 
-  constructor(private _tweets: Tweets) {
+  constructor(private _tweets: Tweet[]) {
     this._data = [];
     this.create(this._tweets);
   }
@@ -128,9 +148,9 @@ export class Groups {
     return this._data;
   }
 
-  private create(tweets: Tweets) {
+  private create(tweets: Tweet[]) {
     let users = {};
-    tweets.data.forEach((tweet: Tweet) => {
+    tweets.forEach((tweet: Tweet) => {
       let user = tweet.data.screen_name;
       let cluster = users[user] || new Group();
       cluster.add(tweet);

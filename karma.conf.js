@@ -6,7 +6,6 @@ module.exports = function(config) {
     frameworks: ['mocha', 'chai', 'sinon'],
     files: [
       'node_modules/es6-promise/dist/es6-promise.js',
-      'node_modules/chai-as-promised/lib/chai-as-promised.js',
       'static/test/**/*_spec.ts'
     ],
     exclude: [

@@ -44,7 +44,7 @@
     "ts-loader": "^0.8.2",
     "tslint": "^3.14.0-dev.0",
     "tweet.d": "logashoff/tweet.d",
-    "typescript": "^2.1.0-dev.20160715",
+    "typescript": "^2.1.0-dev.20160722",
     "uglify-js": "^2.6.1",
     "watch": "^0.19.1",
     "webpack": "^1.13.1"

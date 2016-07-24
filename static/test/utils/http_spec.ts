@@ -1,8 +1,10 @@
 import {expect} from 'chai';
+import {initialSet} from 'data';
 import {
   buildUrl,
   get,
-  request
+  request,
+  Http
 } from 'utils/http';
 
 describe('utils/http.ts', () => {
@@ -22,12 +24,11 @@ describe('utils/http.ts', () => {
   describe('::async::', () => {
     let server: Sinon.SinonFakeServer;
     let contentType = {'Content-Type': 'application/json'};
-    let responseData = [{}];
-    let responseError = '';
 
     before(() => {
       server = sinon.fakeServer.create();
-      server.respondWith('GET', '/tweets', [200, contentType, JSON.stringify(responseData)]);
+      server.respondWith('GET', '/tweets', [
+        200, contentType, JSON.stringify(initialSet)]);
     });
 
     after(() => {
@@ -35,18 +36,9 @@ describe('utils/http.ts', () => {
     });
 
     it('get', (done) => {
-      let {xhr, promise} = get('/tweets');
-      promise.then((value: any) => {
-        expect(value).to.equal('[{}]');
-        done();
-      });
-      server.respond();
-    });
-
-    it('request', (done) => {
-      let {xhr, promise} = request('GET', '/tweets');
-      promise.then((value: any) => {
-        expect(value).to.equal('[{}]');
+      let http = get('/tweets');
+      http.complete((data: Object[]) => {
+        expect(data.length).to.equal(50);
         done();
       });
       server.respond();
