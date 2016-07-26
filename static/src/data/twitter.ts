@@ -1,10 +1,8 @@
-import {EventEmitter} from 'events';
 import {BasicTweet, TweetEntity} from 'tweet.d';
+import {Observable} from 'rxjs/observable';
+import {map} from 'rxjs/operator/map';
 import * as color from 'utils/color';
-import {Http, buildUrl} from 'utils/http';
-
-export const DATA_LOADED = 'dataLoaded';
-export const DATA_NEXT = 'dataNext';
+import {get, buildUrl} from 'utils/http';
 
 export class Tweet {
 
@@ -50,68 +48,33 @@ export class Tweet {
   }
 }
 
-export class Tweets extends EventEmitter {
+export class Tweets {
 
   private _baseUrl = '/tweets';
   private _data: Tweet[];
-  private _http = new Http();
   private _busy = false;
-  private _lastId = '';
 
-  constructor() {
-    super();
-    this.processData = this.processData.bind(this);
-    this.onNext = this.onNext.bind(this);
-    this.onLoad = this.onLoad.bind(this);
-  }
-
-  next(listener: (data: any) => void) {
+  load(count = 0, maxId = ''): Observable<Tweet[]> {
     if (!this._busy) {
       this._busy = true;
-      this._http.complete(this.onNext).send(this.createUrl());
-      this.once(DATA_NEXT, listener);
+      let observable = get<BasicTweet[]>(this.createUrl(count, maxId));
+      return map.call(observable, this.processData, this);
     }
   }
 
-  cancel() {
-    this._busy = false;
-    if (this._http instanceof Http) {
-      this._http.cancel();
-    }
-  }
-
-  load(count = 0, maxId = '') {
-    if (!this._busy) {
-      this._busy = true;
-      this._http.complete(this.onLoad).send(this.createUrl(count, maxId));
-    }
-  }
-
-  protected processData(data: any) {
+  protected processData(tweets: BasicTweet[]): Tweet[] {
     this._data = [];
-    let tweets = <BasicTweet[]>data;
     let i = 0;
     let l = tweets.length;
     for (; i < l; i++) {
       let d = tweets[i];
       this._data.push(new Tweet(d));
     }
-    this._lastId = tweets[l - 1].id;
     return this._data;
   }
 
-  protected createUrl(count = 0, maxId = this._lastId) {
+  protected createUrl(count = 0, maxId = ''): string {
     return buildUrl(this._baseUrl, {maxId, count});
-  }
-
-  private onLoad(data: any) {
-    this._busy = false;
-    this.emit(DATA_LOADED, this.processData(data));
-  }
-
-  private onNext(data: any) {
-    this._busy = false;
-    this.emit(DATA_NEXT, this.processData(data));
   }
 }
 

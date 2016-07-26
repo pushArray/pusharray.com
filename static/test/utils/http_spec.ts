@@ -34,8 +34,7 @@ describe('utils/http.ts', () => {
     });
 
     it('get', (done) => {
-      let http = get('/tweets');
-      http.complete((data: Object[]) => {
+      get('/tweets').subscribe((data: any) => {
         expect(data.length).to.equal(50);
         done();
       });

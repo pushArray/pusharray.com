@@ -1,7 +1,13 @@
 import {EventEmitter} from 'events';
+import {Observable} from 'rxjs/Observable';
+import {Subscriber} from 'rxjs/Subscriber';
 
 type UrlParams = {
   [param: string]: string|number
+}
+
+type HttpError = {
+  error: string;
 }
 
 export function buildUrl(url: string, params: UrlParams = {}): string {
@@ -20,24 +26,39 @@ export function buildUrl(url: string, params: UrlParams = {}): string {
   return url;
 }
 
-export function get(url: string): Http {
-  return request('GET', url);
+export function get<T>(url: string): Observable<T> {
+  return request<T>('GET', url);
 }
 
-export function request(method: string, url: string): Http {
-  let http = new Http();
-  http.send(url, method);
-  return http;
+export function request<T>(method: string, url: string): Observable<T> {
+  let http = new Http<T>(url,  method);
+  return Observable.create((subscriber: Subscriber<T>) => {
+    http.complete((data: T) => {
+      http.dispose();
+      subscriber.next(data);
+      subscriber.complete();
+    });
+
+    http.error((error: HttpError) => {
+      subscriber.error(error);
+    });
+
+    http.send();
+
+    return () => {
+      http.dispose();
+    };
+  });
 }
 
 const HTTP_COMPLETE = 'httpComplete';
 const HTTP_ERROR = 'httpError';
 
-export class Http extends EventEmitter {
+export class Http<T> extends EventEmitter {
 
   private xhr = new XMLHttpRequest();
 
-  constructor() {
+  constructor(url: string, method = 'GET') {
     super();
 
     this.onLoad = this.onLoad.bind(this);
@@ -45,24 +66,25 @@ export class Http extends EventEmitter {
 
     this.xhr.addEventListener('load', this.onLoad);
     this.xhr.addEventListener('error', this.onError);
+    this.xhr.open(method, url, true);
   }
 
-  complete(callback: (data: any) => void): Http {
+  complete(callback: (data: T) => void): Http<T> {
     this.once(HTTP_COMPLETE, callback);
     return this;
   }
 
-  error(callback: (error: Object) => void): Http {
+  error(callback: (error: HttpError) => void): Http<T> {
     this.once(HTTP_ERROR, callback);
     return this;
   }
 
-  send(url: string, method = 'GET') {
-    this.xhr.open(method, url, true);
+  send() {
     this.xhr.send();
   }
 
   dispose() {
+    this.cancel();
     this.xhr.removeEventListener('load', this.onLoad);
     this.xhr.removeEventListener('error', this.onError);
   }
@@ -78,7 +100,7 @@ export class Http extends EventEmitter {
     }
   }
 
-  private getResponse(response: string): any {
+  private getResponse(response: string): T | HttpError | string {
     try {
       return JSON.parse((response));
     } catch (e) {

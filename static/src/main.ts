@@ -49,4 +49,4 @@ function nextHandler(data: Tweet[]) {
 }
 
 const tweets = new Tweets();
-tweets.next(nextHandler);
+tweets.load().subscribe(nextHandler);
