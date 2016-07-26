@@ -1,5 +1,6 @@
 import {expect} from 'chai';
 import {initialSet} from 'data';
+import {BasicTweet} from 'tweet.d';
 import {
   buildUrl,
   get
@@ -34,7 +35,7 @@ describe('utils/http.ts', () => {
     });
 
     it('get', (done) => {
-      get('/tweets').subscribe((data: any) => {
+      get<BasicTweet[]>('/tweets').subscribe((data: BasicTweet[]) => {
         expect(data.length).to.equal(50);
         done();
       });

@@ -1,5 +1,5 @@
-import {EventEmitter} from 'events';
 import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs/Subject';
 import {Subscriber} from 'rxjs/Subscriber';
 
 type UrlParams = {
@@ -33,14 +33,14 @@ export function get<T>(url: string): Observable<T> {
 export function request<T>(method: string, url: string): Observable<T> {
   let http = new Http<T>(url,  method);
   return Observable.create((subscriber: Subscriber<T>) => {
-    http.complete((data: T) => {
-      http.dispose();
+    http.subscribe((data: T) => {
       subscriber.next(data);
-      subscriber.complete();
-    });
-
-    http.error((error: HttpError) => {
+    }, (error: HttpError) => {
       subscriber.error(error);
+      http.dispose();
+    }, () => {
+      subscriber.complete();
+      http.dispose();
     });
 
     http.send();
@@ -51,10 +51,7 @@ export function request<T>(method: string, url: string): Observable<T> {
   });
 }
 
-const HTTP_COMPLETE = 'httpComplete';
-const HTTP_ERROR = 'httpError';
-
-export class Http<T> extends EventEmitter {
+export class Http<T> extends Subject<T> {
 
   private xhr = new XMLHttpRequest();
 
@@ -69,35 +66,18 @@ export class Http<T> extends EventEmitter {
     this.xhr.open(method, url, true);
   }
 
-  complete(callback: (data: T) => void): Http<T> {
-    this.once(HTTP_COMPLETE, callback);
-    return this;
-  }
-
-  error(callback: (error: HttpError) => void): Http<T> {
-    this.once(HTTP_ERROR, callback);
-    return this;
-  }
-
   send() {
     this.xhr.send();
   }
 
   dispose() {
-    this.cancel();
     this.xhr.removeEventListener('load', this.onLoad);
     this.xhr.removeEventListener('error', this.onError);
+    this.cancel();
   }
 
   cancel() {
     this.xhr.abort();
-  }
-
-  private onLoad() {
-    if (this.xhr.status >= 200 && this.xhr.status < 300) {
-      let response = this.getResponse(this.xhr.responseText);
-      this.emit(HTTP_COMPLETE, response);
-    }
   }
 
   private getResponse(response: string): T | HttpError | string {
@@ -108,7 +88,14 @@ export class Http<T> extends EventEmitter {
     }
   }
 
+  private onLoad() {
+    if (this.xhr.status >= 200 && this.xhr.status < 300) {
+      let response = this.getResponse(this.xhr.responseText);
+      this.next(<T>response);
+    }
+  }
+
   private onError() {
-    this.emit(HTTP_ERROR, this.getResponse(this.xhr.responseText));
+    this.error(<HttpError>this.getResponse(this.xhr.responseText));
   }
 }
