@@ -3,11 +3,11 @@ import {Observable} from 'rxjs/Observable';
 import {Subscriber} from 'rxjs/Subscriber';
 
 type UrlParams = {
-  [param: string]: string|number
+  [param: string]: string | number | boolean
 }
 
 type HttpError = {
-  error: string;
+  errors: {message: string, code: number}[];
 }
 
 export function buildUrl(url: string, params: UrlParams = {}): string {
