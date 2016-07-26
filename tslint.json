@@ -13,7 +13,7 @@
     "quotemark": [true,
       "single"
     ],
-    "semicolon": true,
+    "semicolon": [true, "always"],
     "whitespace": [true,
       "check-branch",
       "check-operator",
@@ -28,6 +28,14 @@
       "property-declaration": "nospace",
       "variable-declaration": "nospace"
     }],
+    "member-ordering": [true, {
+        "order": "statics-first"
+    }],
+    "no-any": false,
+    "no-reference": true,
+    "no-unreachable": true,
+    "no-unused-variable": true,
+    "no-unused-expression": true,
     "no-internal-module": false,
     "no-trailing-whitespace": true,
     "no-inferrable-types": true,

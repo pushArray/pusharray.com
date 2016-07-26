@@ -65,33 +65,6 @@ export class Tweets extends EventEmitter {
     this.onLoad = this.onLoad.bind(this);
   }
 
-  protected processData(data: any) {
-    this._data = [];
-    let tweets = <BasicTweet[]>data;
-    let i = 0;
-    let l = tweets.length;
-    for (; i < l; i++) {
-      let d = tweets[i];
-      this._data.push(new Tweet(d));
-    }
-    this._lastId = tweets[l - 1].id;
-    return this._data;
-  }
-
-  private onLoad(data: any) {
-    this._busy = false;
-    this.emit(DATA_LOADED, this.processData(data));
-  }
-
-  private onNext(data: any) {
-    this._busy = false;
-    this.emit(DATA_NEXT, this.processData(data));
-  }
-
-  protected createUrl(count = 0, maxId = this._lastId) {
-    return buildUrl(this._baseUrl, {maxId, count});
-  }
-
   next(listener: (data: any) => void) {
     if (!this._busy) {
       this._busy = true;
@@ -112,6 +85,33 @@ export class Tweets extends EventEmitter {
       this._busy = true;
       this._http.complete(this.onLoad).send(this.createUrl(count, maxId));
     }
+  }
+
+  protected processData(data: any) {
+    this._data = [];
+    let tweets = <BasicTweet[]>data;
+    let i = 0;
+    let l = tweets.length;
+    for (; i < l; i++) {
+      let d = tweets[i];
+      this._data.push(new Tweet(d));
+    }
+    this._lastId = tweets[l - 1].id;
+    return this._data;
+  }
+
+  protected createUrl(count = 0, maxId = this._lastId) {
+    return buildUrl(this._baseUrl, {maxId, count});
+  }
+
+  private onLoad(data: any) {
+    this._busy = false;
+    this.emit(DATA_LOADED, this.processData(data));
+  }
+
+  private onNext(data: any) {
+    this._busy = false;
+    this.emit(DATA_NEXT, this.processData(data));
   }
 }
 

@@ -2,9 +2,7 @@ import {expect} from 'chai';
 import {initialSet} from 'data';
 import {
   buildUrl,
-  get,
-  request,
-  Http
+  get
 } from 'utils/http';
 
 describe('utils/http.ts', () => {

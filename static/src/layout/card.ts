@@ -23,6 +23,11 @@ export default class Card implements IRender {
     return this._element;
   }
 
+  render(container: Node): HTMLElement {
+    container.appendChild(this._element);
+    return this._element;
+  }
+
   private createHtml(): HTMLElement {
     let group = this._group;
     let tweet = group.get(0);
@@ -91,10 +96,5 @@ export default class Card implements IRender {
     }
 
     return el;
-  }
-
-  render(container: Node): HTMLElement {
-    container.appendChild(this._element);
-    return this._element;
   }
 }

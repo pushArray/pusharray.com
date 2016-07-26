@@ -1,5 +1,7 @@
 /* tslint:disable */
-export const initialSet = [
+import {BasicTweet} from 'tweet.d';
+
+export const initialSet: BasicTweet[] = [
   {
     "id": "752540859191603200",
     "username": "TypeScript",

@@ -9,11 +9,12 @@
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "sourceMap": true,
-    "baseUrl": "./static",
+    "baseUrl": "",
     "paths": {
-        "*": ["test/*", "src/*"]
+        "*": ["./static/test/*", "./static/src/*"],
+        "rxjs/*": ["./node_modules/rxjs/src/*"]
     }
   },
   "files": [

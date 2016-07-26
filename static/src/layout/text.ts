@@ -25,6 +25,27 @@ export default class Text implements IRender {
     this.parseText();
   }
 
+  render(container: Node): void {
+    let w = this._word;
+    while (w) {
+      if (!(w instanceof MediaWord)) {
+        container.appendChild(w.html);
+      }
+      w = <Word>w.next;
+    }
+  }
+
+  setLinkColor(color: string) {
+    this._linkColor = color;
+    let w = this._word;
+    while (w) {
+      if (w instanceof EntityWord) {
+        w.setColor(color);
+      }
+      w = <Word>w.next;
+    }
+  }
+
   private insertWord(word: Word) {
     if (!this._word) {
       this._word = word;
@@ -107,26 +128,5 @@ export default class Text implements IRender {
       let word = new EntityWord(str, url, start, end);
       this.insertWord(word);
     });
-  }
-
-  render(container: Node): void {
-    let w = this._word;
-    while (w) {
-      if (!(w instanceof MediaWord)) {
-        container.appendChild(w.html);
-      }
-      w = <Word>w.next;
-    }
-  }
-
-  setLinkColor(color: string) {
-    this._linkColor = color;
-    let w = this._word;
-    while (w) {
-      if (w instanceof EntityWord) {
-        w.setColor(color);
-      }
-      w = <Word>w.next;
-    }
   }
 }
