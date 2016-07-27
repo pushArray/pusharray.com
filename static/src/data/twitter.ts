@@ -1,5 +1,5 @@
 import {BasicTweet, TweetEntity} from 'tweet.d';
-import {Observable} from 'rxjs/observable';
+import {Observable} from 'rxjs/Observable';
 import {map} from 'rxjs/operator/map';
 import * as color from 'utils/color';
 import {get, buildUrl} from 'utils/http';
