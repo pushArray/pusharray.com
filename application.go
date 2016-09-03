@@ -3,14 +3,14 @@ package main
 import (
 	"./twitter"
 	"encoding/json"
-	"github.com/gorilla/mux"
+	"github.com/julienschmidt/httprouter"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
 )
 
-const PAGE_TITLE = "pushArray(com)"
+const pageTitle = "pushArray(com)"
 
 var (
 	client   = twitter.NewTwitter()
@@ -18,9 +18,9 @@ var (
 	tmplVars = make(map[string]string)
 )
 
-func tweetsHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	count, _ := strconv.ParseInt(vars["count"], 10, 0)
+func tweetsHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	vars := r.URL.Query()
+	count, _ := strconv.ParseInt(vars.Get("count"), 10, 0)
 	if count == 0 {
 		count = int64(len(client.Tweets))
 	}
@@ -31,31 +31,18 @@ func tweetsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
+func indexHandler(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 	tmpl.ExecuteTemplate(w, "index.html", tmplVars)
-}
-
-func handleStatic(r *mux.Router, p []string) {
-	for _, path := range p {
-		name := "/" + path + "/"
-		r.PathPrefix(name).Handler(
-			http.StripPrefix(name, http.FileServer(http.Dir(path+"/"))))
-	}
 }
 
 func main() {
 	go client.GetTweets()
 	go twitter.PollTweets(&client)
-	tmplVars["Title"] = PAGE_TITLE
-	router := mux.NewRouter()
-	router.Queries("maxId", "count", "userId")
-	router.HandleFunc("/", indexHandler)
-	router.HandleFunc("/tweets", tweetsHandler)
-	http.Handle("/", router)
-	handleStatic(router, []string{"static"})
+	tmplVars["Title"] = pageTitle
+	router := httprouter.New()
+	router.GET("/", indexHandler)
+	router.GET("/tweets", tweetsHandler)
+	router.ServeFiles("/static/*filepath", http.Dir("static"))
 	log.Println("Listening at 8080")
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+	log.Fatal(http.ListenAndServe(":8080", router))
 }

@@ -1,63 +1,65 @@
 package twitter
 
 import (
-	"github.com/logashoff/anaconda"
-	"net/url"
+	"github.com/dghubble/go-twitter/twitter"
+	"github.com/dghubble/oauth1"
 	"os"
-	"strconv"
 	"time"
 )
 
 const (
-	POLL_INTERVAL   = 5 * time.Minute
-	TWITTER_USER_ID = 111507370
-	TWEET_COUNT     = 50
+	pollInterval  = 5 * time.Minute
+	twitterUserId = 111507370
+	tweetCount    = 50
 )
 
 var (
-	twitterConsumerKey       = os.Getenv("TWITTER_CONSUMER_KEY")
-	twitterConsumerSecret    = os.Getenv("TWITTER_CONSUMER_SECRET")
-	twitterAccessTokenSecret = os.Getenv("TWITTER_ACCESS_TOKEN_SECRET")
-	twitterAccessTokenKey    = os.Getenv("TWITTER_ACCESS_TOKEN_KEY")
-	api                      = anaconda.NewTwitterApi(twitterAccessTokenKey, twitterAccessTokenSecret)
-	values                   = &url.Values{}
+	accessTokenKey    = os.Getenv("TWITTER_ACCESS_TOKEN_KEY")
+	accessTokenSecret = os.Getenv("TWITTER_ACCESS_TOKEN_SECRET")
+	consumerKey       = os.Getenv("TWITTER_CONSUMER_KEY")
+	consumerSecret    = os.Getenv("TWITTER_CONSUMER_SECRET")
+	config            = oauth1.NewConfig(consumerKey, consumerSecret)
+	token             = oauth1.NewToken(accessTokenKey, accessTokenSecret)
+	httpClient        = config.Client(oauth1.NoContext, token)
 )
 
 type BasicTweet struct {
+	Entities     *twitter.Entities `json:"entities"`
 	Id           string            `json:"id"`
-	Username     string            `json:"username"`
-	Url          string            `json:"url"`
-	Timestamp    string            `json:"timestamp"`
+	ProfileColor string            `json:"profile_color"`
+	Protected    bool              `json:"protected"`
 	ScreenName   string            `json:"screen_name"`
 	Text         string            `json:"text"`
+	Timestamp    string            `json:"timestamp"`
+	Url          string            `json:"url"`
 	UserImage    string            `json:"user_image"`
-	ProfileColor string            `json:"profile_color"`
-	Entities     anaconda.Entities `json:"entities"`
-	Protected    bool              `json:"protected"`
+	Username     string            `json:"username"`
 }
 
 type Twitter struct {
-	Tweets []anaconda.Tweet
+	Tweets []twitter.Tweet
+	client *twitter.Client
+	params twitter.UserTimelineParams
 }
 
-func (t *Twitter) GetTweetId(tweet anaconda.Tweet) (id string) {
+func (t *Twitter) GetTweetId(tweet twitter.Tweet) (id string) {
 	if tweet.Retweeted {
-		if len(tweet.RetweetedStatus.IdStr) > 0 {
-			id = tweet.RetweetedStatus.IdStr
+		if len(tweet.RetweetedStatus.IDStr) > 0 {
+			id = tweet.RetweetedStatus.IDStr
 		} else {
-			id = tweet.IdStr
+			id = tweet.IDStr
 		}
 	} else {
-		id = tweet.IdStr
+		id = tweet.IDStr
 	}
 	return id
 }
 
 func (t *Twitter) GetTweets() {
-	t.Tweets, _ = api.GetUserTimeline(*values)
+	t.Tweets, _, _ = t.client.Timelines.UserTimeline(&t.params)
 }
 
-func (t *Twitter) GetMaxId(maxId string, limit int) (tweets []anaconda.Tweet) {
+func (t *Twitter) GetMaxId(maxId string, limit int) (tweets []twitter.Tweet) {
 	if len(maxId) > 0 {
 		length := len(t.Tweets)
 		for i := range t.Tweets {
@@ -78,33 +80,33 @@ func (t *Twitter) GetMaxId(maxId string, limit int) (tweets []anaconda.Tweet) {
 }
 
 func PollTweets(t *Twitter) {
-	c := time.Tick(POLL_INTERVAL)
+	c := time.Tick(pollInterval)
 	for range c {
 		t.GetTweets()
 	}
 }
 
-func NewBasicTweet(tweet anaconda.Tweet) BasicTweet {
-	at := tweet
+func NewBasicTweet(tweet twitter.Tweet) BasicTweet {
+	tw := tweet
 	if tweet.Retweeted {
-		at = *tweet.RetweetedStatus
+		tw = *tweet.RetweetedStatus
 	}
-	user := at.User
+	user := tw.User
 	return BasicTweet{
-		Id:           at.IdStr,
-		Username:     user.Name,
-		Url:          "https://twitter.com/" + user.ScreenName + "/statuses/" + at.IdStr,
-		Timestamp:    at.CreatedAt,
-		ScreenName:   user.ScreenName,
-		Text:         at.Text,
-		UserImage:    user.ProfileImageUrlHttps,
+		Entities:     tw.Entities,
+		Id:           tw.IDStr,
 		ProfileColor: "#" + user.ProfileLinkColor,
-		Entities:     at.Entities,
 		Protected:    user.Protected,
+		ScreenName:   user.ScreenName,
+		Timestamp:    tw.CreatedAt,
+		Text:         tw.Text,
+		UserImage:    user.ProfileImageURLHttps,
+		Username:     user.Name,
+		Url:          "https://twitter.com/" + user.ScreenName + "/statuses/" + tw.IDStr,
 	}
 }
 
-func ToBasicTweets(tweets []anaconda.Tweet) (basicTweets []BasicTweet) {
+func ToBasicTweets(tweets []twitter.Tweet) (basicTweets []BasicTweet) {
 	for i := range tweets {
 		basicTweets = append(basicTweets, NewBasicTweet(tweets[i]))
 	}
@@ -112,11 +114,13 @@ func ToBasicTweets(tweets []anaconda.Tweet) (basicTweets []BasicTweet) {
 }
 
 func NewTwitter() Twitter {
-	anaconda.SetConsumerKey(twitterConsumerKey)
-	anaconda.SetConsumerSecret(twitterConsumerSecret)
-	values.Set("user_id", strconv.FormatInt(TWITTER_USER_ID, 10))
-	values.Set("count", strconv.FormatInt(TWEET_COUNT, 10))
-	values.Set("exclude_replies", "true")
-	values.Set("include_rts", "true")
-	return Twitter{}
+	return Twitter{
+		client: twitter.NewClient(httpClient),
+		params: twitter.UserTimelineParams{
+			Count:           tweetCount,
+			ExcludeReplies:  twitter.Bool(true),
+			IncludeRetweets: twitter.Bool(true),
+			UserID:          twitterUserId,
+		},
+	}
 }
