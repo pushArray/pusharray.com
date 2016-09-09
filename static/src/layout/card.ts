@@ -7,6 +7,8 @@ import * as string from 'utils/string';
 
 export default class Card implements IRender {
 
+  static  INIT_VISIBLE_COUNT = 5;
+
   static renderText(container: HTMLElement, tweet: Tweet): Text {
     let text = new Text(tweet.text, tweet.entities);
     text.render(container);
@@ -49,7 +51,7 @@ export default class Card implements IRender {
     let tweets = group.data;
     let i = 0;
     let l = tweets.length;
-    l = l > 10 ? 10 : l;
+    l = l > Card.INIT_VISIBLE_COUNT ? Card.INIT_VISIBLE_COUNT : l;
     let currTimestamp = '';
     for (; i < l; i++) {
       let tweet = tweets[i];
@@ -82,10 +84,7 @@ export default class Card implements IRender {
       tweetsContainer.appendChild(tweetContainer);
 
       let textContainer = <HTMLElement>dom.query('.text', tweetContainer);
-      let text = Card.renderText(textContainer, tweet);
-      if (isProtected) {
-        text.setLinkColor(`hsla(${hsl[0]}, 100%, 80%, 1)`);
-      }
+      Card.renderText(textContainer, tweet);
 
       let image = tweet.getMedia();
       if (image) {

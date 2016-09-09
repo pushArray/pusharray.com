@@ -143,6 +143,7 @@ ul.list {
       height: 48px;
       background-repeat: no-repeat;
       background-position: center;
+      border: 2px solid $color-page-background;
     }
 
     .user {
@@ -193,7 +194,7 @@ a.header {
   color: inherit;
 
   &:not(:last-child) {
-    margin-bottom: 2px;
+    margin-bottom: 4px;
   }
 
   &.contains-media {
@@ -243,11 +244,11 @@ a.tweet {
   @extend .relative;
   @extend .border-box;
   font-weight: normal;
-  font-size: 12px;
+  font-size: 14px;
   line-height: inherit;
   width: 100%;
   text-align: right;
-  margin-bottom: 10px;
+  margin-bottom: 14px;
   padding-right: 10px;
 
   &:not(:first-child) {
@@ -261,17 +262,26 @@ a.tweet {
   @extend .relative;
   @extend .border-box;
   white-space: normal;
-  font-size: 16px;
-  line-height: 24px;
-  padding: 20px;
+  font-size: 18px;
+  line-height: 34px;
+  padding: 20px 15px;
   background-color: $color-text-background;
   align-items: center;
   transition: background-color .5s, opacity .5s;
+  font-weight: 300;
 
   a {
     @extend .border-box;
     color: inherit;
-    font-weight: bold;
+
+    &.url {
+      font-weight: normal;
+      border: 1px solid;
+      padding: 5px 8px;
+      font-size: 0.85em;
+      box-sizing: border-box;
+      background: rgba(0, 0, 0, 0.35);
+    }
   }
 
   .line {

@@ -11,6 +11,7 @@ import {
   EntityWord,
   MediaWord,
   TextWord,
+  UrlWord,
   Word,
 } from './word';
 
@@ -111,7 +112,7 @@ export default class Text implements IRender {
     urls.forEach((url: TweetUrl) => {
       let str = string.extractDomain(url.expanded_url);
       let [start, end] = url.indices;
-      let word = new EntityWord(str, url.expanded_url, start, end);
+      let word = new UrlWord(str, url.expanded_url, start, end);
       this.insertWord(word);
     });
     userMentions.forEach((mention: TweetMention) => {

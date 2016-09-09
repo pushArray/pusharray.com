@@ -68,11 +68,11 @@ export class TweetTemplate implements ITemplate {
 
   create(): string {
     this._template = `
-        <div class="media-container">
-          <div class="media"></div>
-        </div>
         <div class="text-container">
           <div class="text"></div>
+        </div>
+        <div class="media-container">
+          <div class="media"></div>
         </div>`;
 
     return this._template;

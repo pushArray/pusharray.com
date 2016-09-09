@@ -1,6 +1,7 @@
 package twitter
 
 import (
+	"fmt"
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/dghubble/oauth1"
 	"os"
@@ -95,14 +96,14 @@ func NewBasicTweet(tweet twitter.Tweet) BasicTweet {
 	return BasicTweet{
 		Entities:     tw.Entities,
 		Id:           tw.IDStr,
-		ProfileColor: "#" + user.ProfileLinkColor,
+		ProfileColor: fmt.Sprintf("#%s", user.ProfileLinkColor),
 		Protected:    user.Protected,
 		ScreenName:   user.ScreenName,
 		Timestamp:    tw.CreatedAt,
 		Text:         tw.Text,
 		UserImage:    user.ProfileImageURLHttps,
 		Username:     user.Name,
-		Url:          "https://twitter.com/" + user.ScreenName + "/statuses/" + tw.IDStr,
+		Url:          fmt.Sprintf("https://twitter.com/%s/statuses/%s", user.ScreenName, tw.IDStr),
 	}
 }
 

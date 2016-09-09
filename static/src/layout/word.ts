@@ -77,4 +77,12 @@ export class EntityWord extends Word {
   }
 }
 
+export class UrlWord extends EntityWord {
+  createHtml(): HTMLElement {
+    super.createHtml();
+    this._html.classList.add('url');
+    return this._html;
+  }
+}
+
 export class MediaWord extends EntityWord {}
