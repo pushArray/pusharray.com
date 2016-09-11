@@ -5,13 +5,12 @@ import (
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/dghubble/oauth1"
 	"os"
+	"strconv"
 	"time"
 )
 
 const (
-	pollInterval  = 5 * time.Minute
 	twitterUserId = 111507370
-	tweetCount    = 50
 )
 
 var (
@@ -25,16 +24,16 @@ var (
 )
 
 type BasicTweet struct {
-	Entities     *twitter.Entities `json:"entities"`
-	Id           string            `json:"id"`
-	ProfileColor string            `json:"profile_color"`
-	Protected    bool              `json:"protected"`
-	ScreenName   string            `json:"screen_name"`
-	Text         string            `json:"text"`
-	Timestamp    string            `json:"timestamp"`
-	Url          string            `json:"url"`
-	UserImage    string            `json:"user_image"`
-	Username     string            `json:"username"`
+	Entities     *twitter.Entities `json:"entities,omitempty"`
+	Id           string            `json:"id,omitempty"`
+	ProfileColor string            `json:"profile_color,omitempty"`
+	Protected    bool              `json:"protected,omitempty"`
+	ScreenName   string            `json:"screen_name,omitempty"`
+	Text         string            `json:"text,omitempty"`
+	Timestamp    string            `json:"timestamp,omitempty"`
+	Url          string            `json:"url,omitempty"`
+	UserImage    string            `json:"user_image,omitempty"`
+	Username     string            `json:"username,omitempty"`
 }
 
 type Twitter struct {
@@ -56,8 +55,18 @@ func (t *Twitter) GetTweetId(tweet twitter.Tweet) (id string) {
 	return id
 }
 
-func (t *Twitter) GetTweets() {
-	t.Tweets, _, _ = t.client.Timelines.UserTimeline(&t.params)
+func (t *Twitter) GetTweets() ([]twitter.Tweet, int64, time.Duration) {
+	tweets, r, _ := t.client.Timelines.UserTimeline(&t.params)
+
+	t.Tweets = tweets
+
+	limit, _ := strconv.ParseInt(r.Header.Get("X-Rate-Limit-Remaining"), 10, 64)
+	reset, _ := strconv.ParseInt(r.Header.Get("X-Rate-Limit-Reset"), 10, 64)
+
+	now := time.Now()
+	diff := reset - now.Unix()
+
+	return t.Tweets, limit, time.Duration(diff) * time.Second
 }
 
 func (t *Twitter) GetMaxId(maxId string, limit int) (tweets []twitter.Tweet) {
@@ -78,13 +87,6 @@ func (t *Twitter) GetMaxId(maxId string, limit int) (tweets []twitter.Tweet) {
 		}
 	}
 	return tweets
-}
-
-func PollTweets(t *Twitter) {
-	c := time.Tick(pollInterval)
-	for range c {
-		t.GetTweets()
-	}
 }
 
 func NewBasicTweet(tweet twitter.Tweet) BasicTweet {
@@ -118,7 +120,7 @@ func NewTwitter() Twitter {
 	return Twitter{
 		client: twitter.NewClient(httpClient),
 		params: twitter.UserTimelineParams{
-			Count:           tweetCount,
+			Count:           3200,
 			ExcludeReplies:  twitter.Bool(true),
 			IncludeRetweets: twitter.Bool(true),
 			UserID:          twitterUserId,

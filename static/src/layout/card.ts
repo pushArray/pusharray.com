@@ -61,7 +61,8 @@ export default class Card implements IRender {
 
       if (currTimestamp !== tweetTimestamp) {
         let timestamp = dom.createNode('div', {
-          'class': 'timestamp'
+          'class': 'timestamp',
+          'title': string.getFullDate(date)
         });
         timestamp.textContent = tweetTimestamp;
         tweetsContainer.appendChild(timestamp);

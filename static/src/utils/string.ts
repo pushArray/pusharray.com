@@ -131,5 +131,6 @@ export function extractDomain(url: string): string {
     domain = url.split('/')[0];
   }
   domain = domain.split(':')[0];
+  domain = domain.replace(/^www./gi, '');
   return domain;
 }

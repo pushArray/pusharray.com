@@ -118,14 +118,14 @@ export default class Text implements IRender {
     userMentions.forEach((mention: TweetMention) => {
       let str = `@${mention.screen_name}`;
       let [start, end] = mention.indices;
-      let url = `//twitter.com/${mention.screen_name}`;
+      let url = `https://twitter.com/${mention.screen_name}`;
       let word = new EntityWord(str, url, start, end);
       this.insertWord(word);
     });
     hashtags.forEach((hash: TweetHashtag) => {
       let str = `#${hash.text}`;
       let [start, end] = hash.indices;
-      let url = `//twitter.com/search?q=%23${hash.text}&src=hash`;
+      let url = `https://twitter.com/search?q=%23${hash.text}&src=hash`;
       let word = new EntityWord(str, url, start, end);
       this.insertWord(word);
     });

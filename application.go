@@ -8,9 +8,13 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
-const pageTitle = "pushArray(com)"
+const (
+	pageTitle    = "pushArray(com)"
+	pollInterval = time.Second * 10
+)
 
 var (
 	client   = twitter.NewTwitter()
@@ -35,9 +39,17 @@ func indexHandler(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 	tmpl.ExecuteTemplate(w, "index.html", tmplVars)
 }
 
+func getTweets() {
+	_, limit, reset := client.GetTweets()
+	timeout := reset + pollInterval
+	if limit > 0 {
+		timeout = pollInterval
+	}
+	time.AfterFunc(timeout, getTweets)
+}
+
 func main() {
-	go client.GetTweets()
-	go twitter.PollTweets(&client)
+	go getTweets()
 	tmplVars["Title"] = pageTitle
 	router := httprouter.New()
 	router.GET("/", indexHandler)
