@@ -1,6 +1,6 @@
 # pusharray.com
 
-[![Build Status](https://travis-ci.org/logashoff/pusharray.com.svg?branch=r0.9)](https://travis-ci.org/logashoff/pusharray.com)
+[![Build Status](https://travis-ci.org/pusharray/pusharray.com.svg?branch=r0.9)](https://travis-ci.org/logashoff/pusharray.com)
 
 ## Usage
 
