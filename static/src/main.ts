@@ -1,12 +1,13 @@
 import {Groups, Tweets, Tweet} from 'data/twitter';
 import Card from 'layout/card';
 import Layout from 'layout/layout';
+import progress from 'layout/progress';
 
-const body = document.body;
+progress.set(.25).start();
+
 const cards: Card[] = [];
-
 const layout = new Layout();
-layout.render(body);
+layout.render(document.body);
 layout.on(Layout.COLUMN_CHANGE, () => {
   layout.emptyColumns();
   cards.forEach(card => {
@@ -45,8 +46,9 @@ function nextHandler(data: Tweet[]) {
     rowDelays[colIndex] = delay + 1;
     animateCard(el, (delay + colIndex) * 0.075);
   });
-  body.classList.remove('busy');
+  progress.done();
 }
 
 const tweets = new Tweets();
-tweets.load().subscribe(nextHandler);
+tweets.subscribe(nextHandler);
+tweets.load();

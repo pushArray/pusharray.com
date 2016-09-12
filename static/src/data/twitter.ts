@@ -1,6 +1,5 @@
 import {BasicTweet, TweetEntity} from 'tweet.d';
-import {Observable} from 'rxjs/Observable';
-import {map} from 'rxjs/operator/map';
+import {Subject} from 'rxjs/Subject';
 import * as color from 'utils/color';
 import {get, buildUrl} from 'utils/http';
 
@@ -48,17 +47,19 @@ export class Tweet {
   }
 }
 
-export class Tweets {
+export class Tweets extends Subject<Tweet[]> {
 
   private _baseUrl = '/tweets';
   private _data: Tweet[];
   private _busy = false;
 
-  load(count = 0, maxId = ''): Observable<Tweet[]> {
+  load(count = 0, maxId = '') {
     if (!this._busy) {
       this._busy = true;
-      let observable = get<BasicTweet[]>(this.createUrl(count, maxId));
-      return map.call(observable, this.processData, this);
+      const url = this.createUrl(count, maxId);
+      get<BasicTweet[]>(url).subscribe((data: BasicTweet[]) => {
+        this.next(this.processData(data));
+      });
     }
   }
 
