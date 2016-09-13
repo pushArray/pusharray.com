@@ -1,14 +1,15 @@
 package main
 
 import (
-	"./twitter"
 	"encoding/json"
-	"github.com/julienschmidt/httprouter"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
+	"twitter"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 const (
