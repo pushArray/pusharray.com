@@ -3,6 +3,15 @@ ENV WORK_PATH=/go/src/github.com/pusharray/pusharray.com
 ADD . $WORK_PATH
 WORKDIR $WORK_PATH
 
+ARG TOKEN_KEY
+ENV TWITTER_ACCESS_TOKEN_KEY $TOKEN_KEY
+ARG TOKEN_SECRET
+ENV TWITTER_ACCESS_TOKEN_SECRET $TOKEN_SECRET
+ARG CONSUMER_KEY
+ENV TWITTER_CONSUMER_KEY $CONSUMER_KEY
+ARG CONSUMER_SECRET
+ENV TWITTER_CONSUMER_SECRET $CONSUMER_SECRET
+
 RUN go version
 RUN go get
 RUN go build -o app .
@@ -11,7 +20,6 @@ RUN curl -sL https://deb.nodesource.com/setup_4.x | bash -
 RUN apt-get install -y nodejs
 RUN npm -v
 RUN node -v
-RUN rm -rf node_modules
 RUN npm install --production
 RUN npm run build
 
