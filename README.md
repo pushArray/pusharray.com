@@ -27,12 +27,18 @@ go run application.go
 
 ## Docker Build
 
+Generate ```Dockerfile```:
+
+```
+pushd scripts && sh Dockerfile.sh && popd
+```
+
 To build Docker image run:
 ```
-docker build -t=<MY_IMAGE_TAG> --build-arg TOKEN_KEY=<YOUR_TWITTER_ACCESS_TOKEN_KEY> --build-arg TOKEN_SECRET=<YOUR_TWITTER_ACCESS_TOKEN_SECRET> --build-arg CONSUMER_KEY=<YOUR_TWITTER_CONSUMER_KEY> --build-arg CONSUMER_SECRET=<YOUR_TWITTER_CONSUMER_SECRET> .
+docker build -t=<MY_IMAGE_TAG> .
 ```
 
 Run Docker image:
 ```
-docker run -p=<SOME_PORT> -d <MY_IMAGE_TAG>
+docker run -p=8080 -d <MY_IMAGE_TAG>
 ```
