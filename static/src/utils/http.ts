@@ -1,6 +1,7 @@
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 import {Subscriber} from 'rxjs/Subscriber';
+import {start, end} from 'layout/progress';
 
 type UrlParams = {
   [param: string]: string | number | boolean
@@ -67,6 +68,7 @@ export class Http<T> extends Subject<T> {
   }
 
   send() {
+    start();
     this.xhr.send();
   }
 
@@ -77,6 +79,7 @@ export class Http<T> extends Subject<T> {
   }
 
   cancel() {
+    end();
     this.xhr.abort();
   }
 
@@ -92,10 +95,12 @@ export class Http<T> extends Subject<T> {
     if (this.xhr.status >= 200 && this.xhr.status < 300) {
       let response = this.getResponse(this.xhr.responseText);
       this.next(<T>response);
+      end();
     }
   }
 
   private onError() {
     this.error(<HttpError>this.getResponse(this.xhr.responseText));
+    end();
   }
 }

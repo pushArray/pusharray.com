@@ -6,4 +6,20 @@ nprogress.configure({
   parent: '#progress'
 });
 
-export default nprogress;
+let pending = 0;
+
+export function start() {
+  if (!pending || !nprogress.isStarted()) {
+    nprogress.start();
+  }
+  pending++;
+}
+
+export function end() {
+  pending = pending - 1 < 0 ? 0 : pending - 1;
+  if (pending === 0) {
+    nprogress.done();
+  } else {
+    nprogress.inc();
+  }
+}

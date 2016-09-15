@@ -1,9 +1,6 @@
 import {Groups, Tweets, Tweet} from 'data/twitter';
 import Card from 'layout/card';
 import Layout from 'layout/layout';
-import progress from 'layout/progress';
-
-progress.set(.25).start();
 
 const cards: Card[] = [];
 const layout = new Layout();
@@ -46,7 +43,6 @@ function nextHandler(data: Tweet[]) {
     rowDelays[colIndex] = delay + 1;
     animateCard(el, (delay + colIndex) * 0.075);
   });
-  progress.done();
 }
 
 const tweets = new Tweets();
