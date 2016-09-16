@@ -1,24 +1,16 @@
-import {EventEmitter} from 'events';
-import {IRender} from './render';
+import {Render} from 'layout/render';
 import * as dom from 'utils/dom';
 
-export default class Layout extends EventEmitter implements IRender {
+export default class Layout implements Render {
 
-  static COLUMN_CHANGE = 'columnChange';
-
-  private _element: HTMLElement;
-  private _columns: HTMLElement[];
-  private _ruler: HTMLElement;
-  private _columnCount = 0;
+  protected _element: HTMLElement;
+  protected _columns: HTMLElement[];
+  protected _ruler: HTMLElement;
+  protected _columnCount = 0;
 
   constructor() {
-    super();
     this._columns = [];
     this.createHtml();
-  }
-
-  get columnCount(): number {
-    return this._columnCount;
   }
 
   createHtml() {
@@ -83,14 +75,15 @@ export default class Layout extends EventEmitter implements IRender {
     }
   }
 
-  resize() {
+  resize(): boolean {
     let colCount = this.getColumnCount();
     this.createColumns(colCount);
     if (colCount !== this._columnCount) {
       this._columnCount = colCount;
       this.hideEmptyColumns();
-      this.emit(Layout.COLUMN_CHANGE);
+      return true;
     }
+    return false;
   }
 
   render(container: Node) {

@@ -1,11 +1,11 @@
 import {Group, Tweet} from 'data/twitter';
-import {IRender} from './render';
-import {CardTemplate, TweetTemplate} from './template';
-import Text from './text';
+import {Render} from 'layout/render';
+import {CardTemplate, TweetTemplate} from 'layout/template';
+import Text from 'layout/text';
 import * as dom from 'utils/dom';
 import * as string from 'utils/string';
 
-export default class Card implements IRender {
+export default class Card implements Render {
 
   static  INIT_VISIBLE_COUNT = 5;
 

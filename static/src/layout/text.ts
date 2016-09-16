@@ -1,4 +1,4 @@
-import {IRender} from './render';
+import {Render} from 'layout/render';
 import {
   TweetEntity,
   TweetHashtag,
@@ -6,16 +6,16 @@ import {
   TweetMention,
   TweetUrl
 } from 'tweet.d';
-import * as string from '../utils/string';
+import * as string from 'utils/string';
 import {
   EntityWord,
   MediaWord,
   TextWord,
   UrlWord,
   Word,
-} from './word';
+} from 'layout/word';
 
-export default class Text implements IRender {
+export default class Text implements Render {
 
   private _linkColor: string;
   private _word: Word;

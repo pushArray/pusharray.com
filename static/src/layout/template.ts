@@ -1,11 +1,11 @@
 import {Tweet} from 'data/twitter';
 
-export interface ITemplate {
+export interface Template {
   create(data: any): string;
   get(): string;
 }
 
-export class CardTemplate implements ITemplate {
+export class CardTemplate implements Template {
 
   private _template: string;
 
@@ -55,7 +55,7 @@ export class CardTemplate implements ITemplate {
   }
 }
 
-export class TweetTemplate implements ITemplate {
+export class TweetTemplate implements Template {
 
   private _template: string;
 

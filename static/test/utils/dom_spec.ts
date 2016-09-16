@@ -1,7 +1,6 @@
 import {expect} from 'chai';
 import {
   query,
-  queryAll,
   createNode
 } from 'utils/dom';
 
@@ -52,14 +51,5 @@ describe('utils/dom.ts', () => {
 
     let e3 = query('.root.element > .child.element > #child10.children');
     expect(e3).to.be.an.instanceof(HTMLElement);
-  });
-
-  it('queryAll', () => {
-    let q1 = queryAll('.children');
-    expect(q1.length).to.equal(10);
-    let q2 = queryAll('#rootId > #childId > .children');
-    expect(q2.length).to.equal(10);
-    expect(q2[0]).to.be.an.instanceof(Node);
-    expect(q2[9]).to.be.an.instanceof(Node);
   });
 });

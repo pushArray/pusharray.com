@@ -9,13 +9,6 @@ export function query(query: string, element: NodeSelector = doc): NodeSelector 
 }
 
 /**
- * Queries all elements by specified selector.
- */
-export function queryAll(query: string, element: NodeSelector = doc): NodeList {
-  return element.querySelectorAll(query);
-}
-
-/**
  * Creates HTML element.
  */
 export function createNode(node: string, attrs: Attributes = {}): HTMLElement {

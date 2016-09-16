@@ -1,3 +1,3 @@
-export interface IRender {
+export interface Render {
   render(container: Node): void;
 }

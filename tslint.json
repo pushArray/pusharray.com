@@ -1,7 +1,7 @@
 {
   "rules": {
     "class-name": true,
-    "interface-name": [true, "always-prefix"],
+    "interface-name": [false, "always-prefix"],
     "comment-format": [true, "check-space"],
     "indent": [true, "spaces"],
     "max-line-length": [true, 100],
