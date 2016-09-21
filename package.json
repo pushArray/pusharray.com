@@ -1,0 +1,58 @@
+{
+  "name": "pusharray.com",
+  "version": "1.0.0",
+  "description": "pusharray.com source code.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:logashoff/pusharray.com.git"
+  },
+  "scripts": {
+    "clean": "rimraf ./static/bin/*",
+    "lint": "tslint ./static/src/**/*.ts ./static/test/**/*.ts",
+    "test": "karma start",
+    "prebuild": "npm run clean",
+    "build": "npm run sass & webpack --progress --profile",
+    "postbuild": "uglifyjs ./static/bin/p5.js -o ./static/bin/p5.js -c --stats",
+    "build:dev": "npm run lint & npm test && npm run build",
+    "sass": "node-sass static/sass/all.scss static/bin/p5.css --output-style compressed",
+    "sass:watch": "watch \"npm run sass\" ./static/sass",
+    "webpack:watch": "webpack -w",
+    "dev": "concurrently -k \"npm run sass:watch\" \"npm run webpack:watch\" \"karma start karma.conf.js --single-run false --auto-watch true\""
+  },
+  "dependencies": {
+    "@types/assertion-error": "^1.0.29",
+    "@types/chai": "^3.4.28",
+    "@types/es6-shim": "0.0.28",
+    "@types/mocha": "^2.2.27",
+    "@types/node": "^4.0.29",
+    "@types/nprogress": "0.0.27",
+    "node-sass": "^3.8.0",
+    "nprogress": "^0.2.0",
+    "rimraf": "^2.5.3",
+    "rxjs": "^5.0.0-beta.11",
+    "sinon.d": "logashoff/sinon.d",
+    "ts-loader": "^0.8.2",
+    "tweet.d": "logashoff/tweet.d",
+    "typescript": "^2.0.2",
+    "uglify-js": "^2.6.1",
+    "webpack": "^1.13.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "concurrently": "^2.2.0",
+    "es6-shim": "^0.35.1",
+    "karma": "^1.1.1",
+    "karma-chai": "^0.1.0",
+    "karma-mocha": "^1.1.1",
+    "karma-phantomjs-launcher": "^1.0.1",
+    "karma-sinon": "^1.0.5",
+    "karma-typescript-preprocessor2": "^1.2.1",
+    "karma-webpack": "^1.7.0",
+    "mocha": "^2.5.3",
+    "phantomjs-prebuilt": "^2.1.7",
+    "sinon": "^1.17.4",
+    "tslint": "^3.14.0-dev.0",
+    "watch": "^0.19.1"
+  }
+}

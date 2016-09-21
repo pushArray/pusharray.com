@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noResolve": false,
+    "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strictNullChecks": false,
+    "sourceMap": true,
+    "baseUrl": "",
+    "paths": {
+        "*": ["./static/test/*", "./static/src/*"],
+        "rxjs/*": ["./node_modules/rxjs/*"]
+    }
+  },
+  "files": [
+    "./node_modules/@types/assertion-error/index.d.ts",
+    "./node_modules/@types/chai/index.d.ts",
+    "./node_modules/@types/es6-shim/index.d.ts",
+    "./node_modules/@types/mocha/index.d.ts",
+    "./node_modules/@types/node/index.d.ts",
+    "./node_modules/sinon.d/index.d.ts"
+  ]
+}

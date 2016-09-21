@@ -1,0 +1,7 @@
+/Dockerfile
+.idea/
+.vscode/
+static/images/twitter/
+node_modules/
+static/bin/
+coverage/
