@@ -1,4 +1,4 @@
-import {Render} from 'layout/render';
+import Render from 'layout/render';
 import * as dom from 'utils/dom';
 import Link from 'utils/link';
 import * as string from 'utils/string';

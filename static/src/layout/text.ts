@@ -1,4 +1,4 @@
-import {Render} from 'layout/render';
+import Render from 'layout/render';
 import {
   TweetEntity,
   TweetHashtag,

@@ -1,3 +1,4 @@
+import Iterable from 'core/iterable';
 import {BasicTweet, TweetEntity} from 'tweet.d';
 import {Subject} from 'rxjs/Subject';
 import * as color from 'utils/color';
@@ -99,17 +100,22 @@ export class Group {
   }
 }
 
-export class Groups {
+export class Groups implements Iterable<Group> {
 
   private _data: Group[];
+  private _index = 0;
 
   constructor(private _tweets: Tweet[]) {
     this._data = [];
     this.create(this._tweets);
   }
 
-  get data(): Group[] {
-    return this._data;
+  next(): Group {
+    const ret = this._data[this._index++];
+    if (!ret) {
+      this._index = 0;
+    }
+    return ret;
   }
 
   private create(tweets: Tweet[]) {

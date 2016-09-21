@@ -1,8 +1,8 @@
-import {Groups, Tweets, Tweet} from 'data/twitter';
+import {Group, Groups, Tweet, Tweets} from 'data/twitter';
 import Animator from 'layout/animator';
 import Card from 'layout/card';
-import CardLayout from 'layout/card_layout';
-import {Render} from 'layout/render';
+import {CardLayout} from 'layout/layout';
+import Render from 'layout/render';
 
 export default class App implements Render {
 
@@ -27,7 +27,8 @@ export default class App implements Render {
     const groups = new Groups(data);
     const rowDelays: number[] = [];
     const layout = this.layout;
-    groups.data.forEach(group => {
+    let group: Group;
+    while (group = groups.next()) {
       const card = new Card(group);
       const el = layout.addCard(card);
 
@@ -38,12 +39,6 @@ export default class App implements Render {
 
       const animator = new Animator(el);
       animator.animate((delay + colIndex) * 0.075);
-    });
+    }
   }
 }
-
-
-
-
-
-

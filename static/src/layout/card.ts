@@ -1,5 +1,5 @@
 import {Group, Tweet} from 'data/twitter';
-import {Render} from 'layout/render';
+import Render from 'layout/render';
 import {CardTemplate, TweetTemplate} from 'layout/template';
 import Text from 'layout/text';
 import * as dom from 'utils/dom';
@@ -7,7 +7,7 @@ import * as string from 'utils/string';
 
 export default class Card implements Render {
 
-  static  INIT_VISIBLE_COUNT = 5;
+  static MAX_VISIBLE = 5;
 
   static renderText(container: HTMLElement, tweet: Tweet): Text {
     let text = new Text(tweet.text, tweet.entities);
@@ -51,7 +51,7 @@ export default class Card implements Render {
     let tweets = group.data;
     let i = 0;
     let l = tweets.length;
-    l = l > Card.INIT_VISIBLE_COUNT ? Card.INIT_VISIBLE_COUNT : l;
+    l = l > Card.MAX_VISIBLE ? Card.MAX_VISIBLE : l;
     let currTimestamp = '';
     for (; i < l; i++) {
       let tweet = tweets[i];
